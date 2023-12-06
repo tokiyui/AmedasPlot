@@ -2,7 +2,6 @@ numpy
 cartopy
 metpy
 matplotlib
-sys
 glob
 pandas
 datetime
