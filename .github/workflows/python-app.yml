@@ -28,7 +28,6 @@ jobs:
         run: |
           git clone https://github.com/weathersource/wgrib2
           cd wgrib2
-          ./configure
           make
           sudo make install
 
