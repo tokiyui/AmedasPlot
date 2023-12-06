@@ -28,6 +28,8 @@ jobs:
         run: |
           git clone https://github.com/weathersource/wgrib2
           cd wgrib2
+          CC=gcc
+　　　　　　FC=gfortran
           make
           sudo make install
 
