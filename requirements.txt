@@ -1,7 +1,6 @@
 numpy
 cartopy
 metpy
-urllib
 math
 matplotlib
 subprocess
