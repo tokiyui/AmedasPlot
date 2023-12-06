@@ -1,0 +1,14 @@
+numpy
+cartopy
+metpy
+json
+urllib
+math
+matplotlib
+subprocess
+os
+sys
+glob
+pandas
+datetime
+pybufrkit
