@@ -21,8 +21,8 @@ jobs:
 
     steps:    
 
-          - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout repository
+      - uses: actions/checkout@v2
 
       - name: Install build dependencies
         run: |
