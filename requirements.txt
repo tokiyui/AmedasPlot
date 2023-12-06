@@ -1,7 +1,6 @@
 numpy
 cartopy
 metpy
-math
 matplotlib
 subprocess
 os
