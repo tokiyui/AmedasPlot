@@ -27,6 +27,9 @@ jobs:
       - name: Set up environment variables
         run: |
           export CC=gcc
+
+      - name: Set up environment variables
+        run: |
           export FC=gfortran
 
       - name: Download and build wgrib2
