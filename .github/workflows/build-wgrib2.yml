@@ -19,6 +19,7 @@ jobs:
       run: |
         export FC=gfortran
         export CC=gcc
+        export COMP_SYS=gnu_linux
         
     - name: Clone wgrib2 repository
       run: git clone https://github.com/weathersource/wgrib2
