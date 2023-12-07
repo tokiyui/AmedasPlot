@@ -24,26 +24,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential
          
-      - name: Install GCC and gfortran
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y gcc gfortran
-
-      - name: Set up environment variables
-        run: |
-          export CC=gcc
-
-      - name: Set up environment variables
-        run: |
-          export FC=gfortran
-
-      - name: Download and build wgrib2
-        run: |
-          git clone https://github.com/weathersource/wgrib2
-          cd wgrib2
-          make
-          sudo make install
-
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
