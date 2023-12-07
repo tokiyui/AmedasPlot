@@ -39,7 +39,6 @@ jobs:
           export COMP_SYS=gnu_linux
           cd wgrib2
           make
-          sudo make install
           echo "::add-path::/usr/local/bin" 
          
       - name: Set up Python 3.10
