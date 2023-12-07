@@ -39,7 +39,8 @@ jobs:
           export COMP_SYS=gnu_linux
           cd wgrib2
           make
-          echo "::add-path::/usr/local/bin" 
+          echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
+          source $HOME/.bashrc
          
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
