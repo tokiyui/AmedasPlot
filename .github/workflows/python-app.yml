@@ -36,7 +36,7 @@ jobs:
           echo $PATH
           pip show eccodes
           ls -l /home/runner/.local/lib/python3.10/site-packages
-          export $DEFPATH=/home/runner/.local/lib/python3.10/site-packages/pygrib/share/eccodes/definitions/grib2/
+          export DEFPATH=/home/runner/.local/lib/python3.10/site-packages/pygrib/share/eccodes/definitions/grib2/
           cp $DEFPATH/template.4.8.def $DEFPATH/template.4.50008.def
 
       - name: Lint with flake8
