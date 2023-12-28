@@ -42,8 +42,9 @@ jobs:
       - name: Copy Latest Image to Directory
         run: |
           mkdir -p docs  # ディレクトリが存在しない場合は作成します
-          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg docs/  # latest.pngのパスを適切に修正してください
-
+          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg docs/  
+　　　　　　ls -l docs
+          
       - name: Commit and Push Changes
         run: |
           git config --global user.email "actions@github.com"
