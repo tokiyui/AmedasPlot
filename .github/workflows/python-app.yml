@@ -51,8 +51,12 @@ jobs:
           source $HOME/.bashrc
 
       - name: Ls directory
-        run: ls -l /usr/local/bin/wgrib2
-         
+        run: |
+          ls -l /usr/local/bin/wgrib2
+          chown runner /usr/local/bin/wgrib2
+          sudo chgrp docker /usr/local/bin/wgrib2   
+          ls -l /usr/local/bin/wgrib2
+               
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
