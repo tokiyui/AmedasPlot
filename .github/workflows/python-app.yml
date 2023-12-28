@@ -37,4 +37,17 @@ jobs:
       - name: Test with pytest
         run: |
           python amedasplot.py
-          pwd
+
+      - name: Copy Latest Image to Directory
+        run: |
+          mkdir -p docs  # ディレクトリが存在しない場合は作成します
+          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.png docs/  # latest.pngのパスを適切に修正してください
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          git add docs/latest.png
+          git commit -m "Add latest.png"
+          git push origin main 
