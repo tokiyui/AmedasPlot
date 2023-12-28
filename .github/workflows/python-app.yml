@@ -81,6 +81,10 @@ jobs:
           mount
           fuser -v /usr/local/bin/wgrib2
 
+      - name: Check fuser with error message
+        run: |
+          fuser -v /usr/local/bin/wgrib2 || echo "fuser failed: $?"
+
       - name: Test with pytest
         run: |
           # Execute your Python script for testing
