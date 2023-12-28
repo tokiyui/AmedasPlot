@@ -42,7 +42,7 @@ jobs:
       - name: Copy Latest Image to Directory
         run: |
           mkdir -p docs  # ディレクトリが存在しない場合は作成します
-          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.png docs/  # latest.pngのパスを適切に修正してください
+          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg docs/  # latest.pngのパスを適切に修正してください
 
       - name: Commit and Push Changes
         run: |
