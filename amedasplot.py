@@ -123,7 +123,7 @@ barb_length=8
 (lat_center, lon_center) = (35.5, 138.5)   # 関東付近
 # 地図の描画範囲指定
 #i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
-i_area = [lon_center - 3.0, lon_center + 3.0, lat_center - 2.0, lat_center + 2.0]
+i_area = [lon_center - 3.5, lon_center + 3.5, lat_center - 2.5, lat_center + 2.5]
 # 緯線・経線の指定
 dlon,dlat=1,1   # 1度ごとに
 
@@ -202,8 +202,7 @@ if len(sys.argv) == 2:
         print('Usage: python script.py [YYYYMMDDHH(MM)]')
 elif len(sys.argv) == 1:
     jst = pytz.timezone('Asia/Tokyo')
-    current_time = datetime.now(jst)
-    dt = datetime.now() - timedelta(minutes=30)
+    dt = datetime.now(jst) - timedelta(minutes=30)
     year=dt.year
     month=dt.month
     day=dt.day
@@ -309,7 +308,7 @@ LON, LAT = np.meshgrid(lon, lat)
 LON, LAT = LON.T, LAT.T
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs)    
-cb.ax.tick_params(labelsize=15)
+cb.ax.tick_params(labelsize=10)
 
 # グリッド線を引く                                                               
 xticks=np.arange(-180,180,dlon)
