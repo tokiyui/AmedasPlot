@@ -63,7 +63,7 @@ jobs:
 
       - name: GPV
         run: |
-          pip show
+          pip show pygrib
           which pygrib
           pwd
           ls -l /home/
