@@ -9,7 +9,9 @@ on:
     - cron: '00 * * * *'
 
 permissions:
-  contents: read
+  actions: write
+  checks: write
+  contents: write
 
 jobs:
   build:
