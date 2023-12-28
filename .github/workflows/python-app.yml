@@ -73,6 +73,6 @@ jobs:
       - name: Test with pytest
         run: |
           # Execute your Python script for testing
-          whoami
-          whoami
+          groups
+          groups
           python amedasplot.py
