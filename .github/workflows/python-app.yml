@@ -33,7 +33,7 @@ jobs:
         run: |
           ls -l
           cat $HOME/.bashrc
-#          echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
+#         echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
           source $HOME/.bashrc
                
