@@ -36,7 +36,7 @@ jobs:
           export DEFPATH=/home/runner/.local/lib/python3.10/site-packages/pygrib/share/eccodes/definitions/grib2
           cat $DEFPATH/template.4.8.def
           mkdir -p $DEFPATH/local/rjtd
-          cp $DEFPATH/template.4.8.def $DEFPATH/template.4.50008.def
+          cp -r $DEFPATH/*.def $DEFPATH/local/rjtd/
 
       - name: Test with pytest
         run: |
