@@ -32,9 +32,6 @@ jobs:
       - name: A b
         run: |
           ls -l
-          chown runner wgrib2
-#          sudo cp -r wgrib2 /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
-#          ls -l /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/
           cat $HOME/.bashrc
           echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
           source $HOME/.bashrc
