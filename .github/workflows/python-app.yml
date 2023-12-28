@@ -44,9 +44,8 @@ jobs:
           echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
           source $HOME/.bashrc
 
-      - name: Ls
-        run: |
-　　　　　 ls -l /usr/local/bin/wgrib2
+      - name: Ls directory
+        run: ls -l /usr/local/bin/wgrib2
          
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
