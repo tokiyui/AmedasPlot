@@ -5,5 +5,3 @@ matplotlib
 pandas
 datetime
 pybufrkit
-eccodes
-pygrib
