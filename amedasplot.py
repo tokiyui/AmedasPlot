@@ -119,11 +119,9 @@ char_size=16
 barb_length=8
 
 # 地図の中心位置を指定
-#(lat_center, lon_center) = (35.5, 139.5)   # 関東付近
-(lat_center, lon_center) = (35, 135)
+(lat_center, lon_center) = (35.5, 139.5)   # 関東付近
 # 地図の描画範囲指定
-#i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
-i_area = [lon_center - 15, lon_center + 15, lat_center - 15, lat_center + 15]
+i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
 # 緯線・経線の指定
 dlon,dlat=1,1   # 1度ごとに
 
@@ -257,24 +255,6 @@ def download_time(time):
     #if not os.path.exists(outfile):
     #    subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
     return GgisFile
-
-"""
-def mkdata_time(time):
-    day_dir = time.strftime("%Y/%m/%d")
-    # 入力ファイルの次元の指定（水平解像度約1km)
-    mlon0, mlat0 = 2560, 3360
-    # 入力ファイルの読み込み
-    Opath = "./data"
-    GgisFile = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
-    infile  = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL.dat".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
-    rain = np.fromfile(infile, dtype="float32", sep="").reshape((mlon0, mlat0), order="F")
-    day_dir = time.strftime("%Y/%m/%d")
-    #rain = np.fromfile(outfile, dtype="float32", sep="")
-    print("read ({}) OK".format(infile))
-    rain[rain>10000]=-10  
-    rain[rain==0]=np.nan
-    return rain
-"""
     
 # 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
 # アメダスデータと同じ時刻のレーダーGPVをダウンロード
@@ -404,5 +384,5 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解�
 # 図の説明
 plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
 plt.title('Valid Time: {}'.format(dt), loc='right',size=20);
-plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-#plt.savefig("latest.jpg", format="jpg")
+#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
+plt.savefig("latest.jpg", format="jpg")
