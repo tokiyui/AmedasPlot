@@ -34,6 +34,8 @@ jobs:
         run: |
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
           echo $PATH
+          find /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/pygrib -name "template.4.8.def"
+          cp /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/pygrib/template.4.8.def /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/pygrib/template.4.50008.def
 
       - name: Lint with flake8
         run: |
