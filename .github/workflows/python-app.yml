@@ -40,6 +40,9 @@ jobs:
           export COMP_SYS=gnu_linux
           cd wgrib2
           make
+          
+        - name: A b
+        run: |
           chown runner wgrib2
           sudo cp -r wgrib2 /usr/local/bin/
           echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
