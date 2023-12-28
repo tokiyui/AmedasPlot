@@ -307,7 +307,7 @@ lat = np.arange(slat, elat, rlat)
 LON, LAT = np.meshgrid(lon, lat)
 LON, LAT = LON.T, LAT.T
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
-cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.5)    
+cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
 cb.ax.tick_params(labelsize=15)
 
 # グリッド線を引く                                                               
