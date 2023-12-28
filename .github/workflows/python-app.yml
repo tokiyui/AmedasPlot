@@ -31,7 +31,7 @@ jobs:
 
       - name: Clone wgrib2 repository
         run: git clone https://github.com/weathersource/wgrib2
-      
+
       - name: Build wgrib2
         run: |
           pwd
