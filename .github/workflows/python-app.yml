@@ -50,5 +50,5 @@ jobs:
           git config --global user.name "GitHub Actions"
 
           git add docs/latest.png
-          git commit -m "Add latest.png"
+          git commit -m "Add latest.jpg"
           git push origin main 
