@@ -37,6 +37,7 @@ jobs:
           cat $DEFPATH/template.4.8.def
           mkdir -p $DEFPATH/local/rjtd
           cp -r $DEFPATH/*.def $DEFPATH/local/rjtd/
+          ls -l $DEFPATH/local/rjtd/
 
       - name: Test with pytest
         run: |
