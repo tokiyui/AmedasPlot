@@ -205,7 +205,11 @@ def download_time(time):
     # wgrib2コマンドでgrib2データをバイナリファイルに変換
     outfile  = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL.dat".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
     if not os.path.exists(outfile):
-        subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
+        #subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
+        grbs = pygrib.open(GgisFile)
+        message = grbs.message(1)
+        with open(outfile, 'wb') as f:
+            f.write(message.tostring())
 
 def mkdata_time(time):
     day_dir = time.strftime("%Y/%m/%d")
