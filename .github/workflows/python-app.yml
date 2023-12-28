@@ -35,7 +35,7 @@ jobs:
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
           echo $PATH
           pip show eccodes
-          ls -l /home/runner/.local/lib/python3.10/site-packages
+          ls -l /home/runner/.local/lib/python3.10/site-packages/pygrib/share/eccodes/definitions/grib2
           export DEFPATH=/home/runner/.local/lib/python3.10/site-packages/pygrib/share/eccodes/definitions/grib2
           mkdir -p $DEFPATH/local/rjtd
           cp $DEFPATH/template.4.8.def $DEFPATH/local/rjtd/template.4.50008.def
