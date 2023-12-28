@@ -273,7 +273,7 @@ proj = ccrs.PlateCarree()
 latlon_proj = ccrs.PlateCarree()
 
 # 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize=(20,16))
+fig = plt.figure(figsize=(20,15))
 # 余白設定                                                                                
 plt.subplots_adjust(left=0.04, right=1, bottom=0.06, top=0.98)                  
 # 作図                                                                                    
