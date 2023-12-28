@@ -32,21 +32,21 @@ jobs:
       - name: Clone wgrib2 repository
         run: git clone https://github.com/weathersource/wgrib2
 
-      - name: Build wgrib2
-        run: |
-          pwd
-          export FC=gfortran
-          export CC=gcc
-          export COMP_SYS=gnu_linux
-          cd wgrib2
-          make
+ #     - name: Build wgrib2
+ #       run: |
+ #         pwd
+ #         export FC=gfortran
+ #         export CC=gcc
+ #         export COMP_SYS=gnu_linux
+ #         cd wgrib2
+ #         make
           
       - name: A b
         run: |
           ls -l
           chown runner wgrib2
           sudo cp -r wgrib2 /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
-          ls -l /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
+          find /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/* -name "pygrib"
           echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
           source $HOME/.bashrc
                
