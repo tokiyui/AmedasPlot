@@ -69,4 +69,5 @@ jobs:
         run: |
           # Execute your Python script for testing
           whoami
+          whoami
           python amedasplot.py
