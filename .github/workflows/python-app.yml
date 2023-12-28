@@ -44,7 +44,7 @@ jobs:
           echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
           source $HOME/.bashrc
 
-      - name: Build wgrib2
+      - name: Ls
         run: |
 　　　　　 ls -l /usr/local/bin/wgrib2
          
