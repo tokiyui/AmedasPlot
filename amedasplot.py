@@ -29,6 +29,7 @@ import pandas as pd
 import pandas.tseries.offsets as offsets
 from metpy.units import units
 from datetime import datetime, timedelta
+import pytz
 from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
 import pybufrkit
 import struct
@@ -199,7 +200,8 @@ if len(sys.argv) == 2:
     else:
         print('Usage: python script.py [YYYYMMDDHH(MM)]')
 elif len(sys.argv) == 1:
-    current_time = datetime.now()
+    jst = pytz.timezone('Asia/Tokyo')
+    current_time = datetime.now(jst)
     dt = datetime.now() - timedelta(minutes=30)
     year=dt.year
     month=dt.month
