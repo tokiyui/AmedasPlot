@@ -47,9 +47,9 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.email "ryohorita105@gmail.com"
-          git config --global user.name "tokiyui"
-
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add docs/latest.jpg
           git commit -m "Add latest.jpg"
           git push origin main 
