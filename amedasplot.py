@@ -31,7 +31,8 @@ from metpy.units import units
 from datetime import datetime, timedelta
 from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
 import pybufrkit
-import pygrib
+import struct
+from itertools import repeat
 
 def parse_datetime(arg):
     try:
@@ -56,6 +57,52 @@ def parse_datetime(arg):
     except ValueError:
         return None
 
+def set_table(section5):
+    max_level = struct.unpack_from('>H', section5, 15)[0]
+    table = (
+        -10, # define representative of level 0 (Missing Value)
+        *struct.unpack_from('>'+str(max_level)+'H', section5, 18)
+    )
+    return np.array(table, dtype=np.int16)
+
+def decode_runlength(code, hi_level):
+    for raw in code:
+        if raw <= hi_level:
+            level = raw
+            pwr = 0
+            yield level
+        else:
+            length = (0xFF - hi_level)**pwr * (raw - (hi_level + 1))
+            pwr += 1
+            yield from repeat(level, length)
+
+def load_jmara_grib2(file):
+    with open(file, 'rb') as f:
+        binary = f.read()
+
+    len_ = {'sec0':16, 'sec1':21, 'sec3':72, 'sec4':82, 'sec6':6}
+
+    end4 = len_['sec0'] + len_['sec1'] + len_['sec3'] + len_['sec4'] - 1
+    len_['sec5'] = struct.unpack_from('>I', binary, end4+1)[0]
+    section5 = binary[end4:(end4+len_['sec5']+1)]
+
+    end6 = end4 + len_['sec5'] + len_['sec6']
+    len_['sec7'] = struct.unpack_from('>I', binary, end6+1)[0]
+    section7 = binary[end6:(end6+len_['sec7']+1)]
+
+    highest_level = struct.unpack_from('>H', section5, 13)[0]
+    level_table = set_table(section5)
+    decoded = np.fromiter(
+        decode_runlength(section7[6:], highest_level), dtype=np.int16
+    ).reshape((3360, 2560))
+    
+    # 転置するとうまくいく
+    transposed_flipped_data = np.flip(np.transpose(decoded), axis=1)
+
+    # convert level to representative
+    return level_table[transposed_flipped_data]
+
+
 # 地点テーブル
 # 読み込み設定
 n_station_json='data/amedastable.json'
@@ -72,9 +119,11 @@ char_size=16
 barb_length=8
 
 # 地図の中心位置を指定
-(lat_center, lon_center) = (35.5, 139.5)   # 関東付近
+#(lat_center, lon_center) = (35.5, 139.5)   # 関東付近
+(lat_center, lon_center) = (35, 135)
 # 地図の描画範囲指定
-i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
+#i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
+i_area = [lon_center - 15, lon_center + 15, lat_center - 15, lat_center + 15]
 # 緯線・経線の指定
 dlon,dlat=1,1   # 1度ごとに
 
@@ -204,14 +253,12 @@ def download_time(time):
         subprocess.run("tar -xvf {} -C {}/{}/".format(fname, Opath, day_dir), shell=True)   
     GgisFile = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
     # wgrib2コマンドでgrib2データをバイナリファイルに変換
-    outfile  = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL.dat".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
-    if not os.path.exists(outfile):
-        #subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
-        grbs = pygrib.open(GgisFile)
-        message = grbs.message(1)
-        with open(outfile, 'wb') as f:
-            f.write(message.tostring())
+    #outfile  = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL.dat".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
+    #if not os.path.exists(outfile):
+    #    subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
+    return GgisFile
 
+"""
 def mkdata_time(time):
     day_dir = time.strftime("%Y/%m/%d")
     # 入力ファイルの次元の指定（水平解像度約1km)
@@ -227,14 +274,18 @@ def mkdata_time(time):
     rain[rain>10000]=-10  
     rain[rain==0]=np.nan
     return rain
-
+"""
+    
 # 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
 # アメダスデータと同じ時刻のレーダーGPVをダウンロード
 time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
-download_time(utc)
-rain = mkdata_time(utc)
+filepath = download_time(utc)
+#rain = mkdata_time(utc)
 
+# データを読む
+rain = load_jmara_grib2(filepath) / 100 
+        
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 latlon_proj = ccrs.PlateCarree()
@@ -353,5 +404,5 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解�
 # 図の説明
 plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
 plt.title('Valid Time: {}'.format(dt), loc='right',size=20);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest.jpg", format="jpg")
+plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
+#plt.savefig("latest.jpg", format="jpg")
