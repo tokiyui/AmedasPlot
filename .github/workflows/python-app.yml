@@ -79,7 +79,6 @@ jobs:
         run: |
           whoami
           mount
-          fuser -v /usr/local/bin/wgrib2
 
       - name: Check fuser with error message
         run: |
