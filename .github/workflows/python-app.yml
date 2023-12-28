@@ -53,8 +53,8 @@ jobs:
       - name: Ls directory
         run: |
           ls -l /usr/local/bin/wgrib2
-          sudo chown runner /usr/local/bin/wgrib2
-          sudo chgrp docker /usr/local/bin/wgrib2   
+          sudo chown runner /usr/local/bin/wgrib2/wgrib2
+          sudo chgrp docker /usr/local/bin/wgrib2/wgrib2   
           ls -l /usr/local/bin/wgrib2
                
       - name: Set up Python 3.10
