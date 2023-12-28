@@ -71,7 +71,8 @@ jobs:
         run: |
           pwd
           ls -l
-          mv install/share/eccodes/definitions/grib2/template.4.50008.def install/share/eccodes/definitions/grib2/template.4.8.def
+          find ../../../* -name "template.4.8.def"
+          mv install/share/eccodes/definitions/grib2/template.4.8.def install/share/eccodes/definitions/grib2/template.4.50008.def
 
       - name: Lint with flake8
         run: |
