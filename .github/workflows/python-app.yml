@@ -69,6 +69,7 @@ jobs:
 
       - name: GPV
         run: |
+          which eccodes
           pwd
           ls -l /home/
           ls -l /usr/local/bin/
