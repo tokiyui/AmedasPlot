@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p docs  # ディレクトリが存在しない場合は作成します
           cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg docs/  
-　　　　　　ls -l docs
+          ls -l docs
 
       - name: Commit and Push Changes
         run: |
