@@ -46,7 +46,7 @@ jobs:
           ls -l
           chown runner wgrib2
           sudo cp -r wgrib2 /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
-          find /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/* -name "pygrib"
+          ls -l /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages/
           echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
           source $HOME/.bashrc
                
@@ -63,8 +63,6 @@ jobs:
 
       - name: GPV
         run: |
-          pip show pygrib
-          which pygrib
           pwd
           ls -l /home/
           ls -l /usr/local/bin/
