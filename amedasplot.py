@@ -120,9 +120,10 @@ char_size=16
 barb_length=8
 
 # 地図の中心位置を指定
-(lat_center, lon_center) = (35.5, 139.5)   # 関東付近
+(lat_center, lon_center) = (35.5, 138.5)   # 関東付近
 # 地図の描画範囲指定
-i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
+#i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
+i_area = [lon_center - 3.0, lon_center + 3.0, lat_center - 2.0, lat_center + 2.0]
 # 緯線・経線の指定
 dlon,dlat=1,1   # 1度ごとに
 
