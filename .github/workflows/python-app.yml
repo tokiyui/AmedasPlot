@@ -74,16 +74,6 @@ jobs:
           # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-          # ワークフローの実行ユーザーを確認　
-      - name: Check user
-        run: |
-          whoami
-          mount
-
-      - name: Check fuser with error message
-        run: |
-          fuser -v /usr/local/bin/wgrib2 || echo "fuser failed: $?"
-
       - name: Test with pytest
         run: |
           # Execute your Python script for testing
