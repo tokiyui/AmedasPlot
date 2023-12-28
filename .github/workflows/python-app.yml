@@ -45,8 +45,8 @@ jobs:
         run: |
           ls -l
           chown runner wgrib2
-          sudo cp -r wgrib2 /usr/local/bin/
-          echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
+          sudo cp -r wgrib2 /opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages
+          echo 'export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages' >> $HOME/.bashrc
           source $HOME/.bashrc
 
       - name: Ls directory
