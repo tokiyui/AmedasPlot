@@ -31,6 +31,7 @@ from metpy.units import units
 from datetime import datetime, timedelta
 from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
 import pybufrkit
+import pygrib
 
 def parse_datetime(arg):
     try:
