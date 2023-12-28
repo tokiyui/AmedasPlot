@@ -39,6 +39,7 @@ jobs:
           export COMP_SYS=gnu_linux
           cd wgrib2
           make
+          sudo cp wgrib2 /usr/local/bin/
           echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
           source $HOME/.bashrc
          
