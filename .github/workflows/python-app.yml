@@ -48,6 +48,7 @@ jobs:
       - name: Commit and Push Changes
         run: |
           echo ${{ secrets.TOKEN }}
+          echo ${GITHUB_ACTOR}
           git config --global user.email
           git config --global user.name
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
