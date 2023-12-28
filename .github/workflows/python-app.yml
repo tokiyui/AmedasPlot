@@ -41,7 +41,7 @@ jobs:
           cd wgrib2
           make
           
-        - name: A b
+      - name: A b
         run: |
         　ls -l
           chown runner wgrib2
