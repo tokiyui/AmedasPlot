@@ -43,7 +43,7 @@ jobs:
           
       - name: A b
         run: |
-        　ls -l
+          ls -l
           chown runner wgrib2
           sudo cp -r wgrib2 /usr/local/bin/
           echo 'export PATH=$PATH:/usr/local/bin' >> $HOME/.bashrc
