@@ -364,10 +364,16 @@ for stno,val in dat_json.items():
     wb_temp = -200.0
     if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
         wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
-                
+
+    # npre_listを2次元グリッドに変換
+    lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
+    npre_grid = np.array(npre_list).reshape(lon_grid.shape)
+    
     ## プロット
-    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-    cont = ax.contour(lon_list, lat_list, npre_list)
+    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
+    # 等値線の描画
+    cont = plt.contour(lon_grid, lat_grid, npre_grid)
+    # cont = ax.contour(lon_list, lat_list, npre_list)
     cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
         ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
