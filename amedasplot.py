@@ -34,6 +34,7 @@ from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
 import pybufrkit
 import struct
 from itertools import repeat
+from scipy.interpolate import griddata
 
 def parse_datetime(arg):
     try:
