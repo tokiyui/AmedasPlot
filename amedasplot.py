@@ -367,9 +367,9 @@ for stno,val in dat_json.items():
         wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
 
     # npre_listを2次元グリッドに変換
-    lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
-    npre_grid = np.array(npre_list).reshape(lon_grid.shape)
-    lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
+    lon_grid, lat_grid = np.meshgrid(np.unique(lon_list), np.unique(lat_list))
+    #npre_grid = np.array(npre_list).reshape(lon_grid.shape)
+    #lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
     z_new = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
     
     ## プロット
