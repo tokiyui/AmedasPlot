@@ -317,6 +317,11 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
 
+# 配列の宣言
+lat_list = []
+lon_list = []
+npre_list = []
+
 # 地点プロット                                                                                                 
 for stno,val in dat_json.items():
     # データ取得
@@ -345,10 +350,16 @@ for stno,val in dat_json.items():
     npre = get_obs_value(val,'normalPressure')
     if npre is None:
         npre = -1.0
+    # 配列に格納
+    lat_list.append(wlat)
+    lon_list.append(wlon)
+    npre_list.append(npre)
+    
     # 気圧
     pre = get_obs_value(val,'pressure')
     if pre is None:
         pre = -1.0
+
     # 湿球温度
     wb_temp = -200.0
     if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
@@ -356,7 +367,7 @@ for stno,val in dat_json.items():
                 
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-    cont = ax.contour(wlon, wlat, npre)
+    cont = ax.contour(lon_list, lat_list, npre_list)
     cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
         ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
