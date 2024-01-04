@@ -356,6 +356,8 @@ for stno,val in dat_json.items():
                 
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+    cont = ax.contour(wlon, wlat, npre)
+    cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
         ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
         if wind_ok: # 矢羽プロット
