@@ -373,9 +373,9 @@ for stno,val in dat_json.items():
     #npre_grid = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
     
     ## プロット
-    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
+    #fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
     # 等値線の描画
-    cont = plt.contour(lon_grid, lat_grid, npre_grid)
+    #cont = plt.contour(lon_grid, lat_grid, npre_grid)
     # cont = ax.contour(lon_list, lat_list, npre_list)
     cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
