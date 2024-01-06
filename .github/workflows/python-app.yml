@@ -44,8 +44,8 @@ jobs:
       - name: Copy Latest Image to Directory
         run: |
           mkdir -p docs  # ディレクトリが存在しない場合は作成します
-          git rm docs/latest.jpg
-          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg docs  
+          git rm latest.jpg
+          cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg .
           ls -l docs
 
       - name: Commit and Push Changes
@@ -55,7 +55,6 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          ls -l docs/
-          git add docs/latest.jpg
+          git add latest.jpg
           git commit -m "Add latest.jpg"
           git push origin main 
