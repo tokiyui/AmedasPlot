@@ -38,7 +38,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pwd
+          git rm ./latest.jpg
           python amedasplot.py
 
       - name: Commit and Push Changes
@@ -48,9 +48,6 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          pwd 
-          ls -l
-          git rm ./latest.jpg
           git add ./latest.jpg
           git commit -m "Add latest.jpg"
           git push origin main 
