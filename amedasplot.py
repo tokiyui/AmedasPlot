@@ -380,8 +380,8 @@ for stno,val in dat_json.items():
             ax.barbs(wlon, wlat, 
                      (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m,
                      length=barb_length, transform=latlon_proj)
-        if npre >= 0.0: # 気圧プロット
-           # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+        # if npre >= 0.0: # 気圧プロット
+        # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
         if temp_dispflag and temp > -200.0: # 気温プロット
             color_temp = "red"
             ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
