@@ -351,6 +351,7 @@ for stno,val in dat_json.items():
     npre = get_obs_value(val,'normalPressure')
     if npre is None:
         npre = np.nan
+    else:
         # 配列に格納
         lat_list.append(wlat)
         lon_list.append(wlon)
