@@ -38,6 +38,7 @@ jobs:
 
       - name: Test with pytest
         run: |
+          git rm ./latest.jpg
           python amedasplot.py
 
       - name: Commit and Push Changes
