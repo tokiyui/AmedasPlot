@@ -366,12 +366,6 @@ for stno,val in dat_json.items():
     wb_temp = -200.0
     if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
         wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
-
-    # npre_listを2次元グリッドに変換
-    #lon_grid, lat_grid = np.meshgrid(np.unique(lon_list), np.unique(lat_list))
-    #npre_grid = np.array(npre_list).reshape(lon_grid.shape)
-    #lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
-    #npre_grid = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
     
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
@@ -403,12 +397,12 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 不規則な点のデータから等高線を描画
-cont = plt.tricontour(lon_list, lat_list, npre_list, levels=20)  # levelsは等高線の数
+# 等高線をプロット
+levels = np.linspace(900, 1050, 1)
+cont = plt.tricontour(lon_list, lat_list, npre_list, levels=levels, linewidths=2, colors='black')  # levelsは等高線の数
 
 # 等高線のラベルを付ける（オプション）
 plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
-
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
