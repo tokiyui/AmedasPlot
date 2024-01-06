@@ -406,8 +406,8 @@ grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
 grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='cubic')
 
 # ガウシアンフィルタを適用
-#sigma = 1.0  # ガウス分布の標準偏差
-#filtered_data = gaussian_filter(grid_npre, sigma=sigma)
+sigma = 1.0  # ガウス分布の標準偏差
+filtered_data = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
