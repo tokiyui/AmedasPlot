@@ -411,10 +411,10 @@ grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), meth
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
-cont = plt.contour(upsampled_grid_lon, upsampled_grid_lat, grid_npre_upsampled, levels=levels, linewidths=2, colors='black', interpolation='spline')
+cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
 
 # 等圧線のラベルを付ける（オプション）
-plt.clabel(cont, fmt='%1.1f', fontsize=20)  # ラベルのフォーマットやサイズを指定
+plt.clabel(cont, fontsize=20)  # ラベルのフォーマットやサイズを指定
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
