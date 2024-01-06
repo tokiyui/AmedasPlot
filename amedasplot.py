@@ -406,21 +406,12 @@ grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
 grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='cubic')
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウス分布の標準偏差
-filtered_data = gaussian_filter(grid_npre, sigma=sigma)
-
-# 0.25度単位のグリッドデータを0.01度単位にリグリッド（等圧線をなめらかにするため）
-upsampled_lon = np.arange(i_area[0], i_area[1], 0.01)
-upsampled_lat = np.arange(i_area[2], i_area[3], 0.01)
-upsampled_grid_lon, upsampled_grid_lat = np.meshgrid(upsampled_lon, upsampled_lat)
-
-# 線形補間したデータをRectBivariateSplineを使って0.01度単位に拡大補間
-interp = RectBivariateSpline(grid_lon[:, 0], grid_lat[0, :], grid_npre.T)
-grid_npre_upsampled = interp.ev(upsampled_lon, upsampled_lat)
+#sigma = 1.0  # ガウス分布の標準偏差
+#filtered_data = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
-cont = plt.contour(upsampled_grid_lon, upsampled_grid_lat, grid_npre_upsampled, levels=levels, linewidths=2, colors='black')
+cont = plt.contour(upsampled_grid_lon, upsampled_grid_lat, grid_npre_upsampled, levels=levels, linewidths=2, colors='black', interpolation='spline')　
 
 # 等圧線のラベルを付ける（オプション）
 plt.clabel(cont, fmt='%1.1f', fontsize=20)  # ラベルのフォーマットやサイズを指定
