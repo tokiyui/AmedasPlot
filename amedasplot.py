@@ -381,7 +381,7 @@ for stno,val in dat_json.items():
                      (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m,
                      length=barb_length, transform=latlon_proj)
         if npre >= 0.0: # 気圧プロット
-            ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+           # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
         if temp_dispflag and temp > -200.0: # 気温プロット
             color_temp = "red"
             ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
@@ -398,20 +398,12 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 等高線をプロット
-#print(npre_list)
-#levels = np.arange(900, 1050, 1)
-#cont = plt.tricontour(lon_list, lat_list, npre_list, levels=levels, linewidths=2, colors='black')  # levelsは等高線の数
-
-# 等高線のラベルを付ける（オプション）
-#plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
-
-# 0.1度単位のグリッドを作成
-grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
-                                 np.arange(i_area[2], i_area[3], 0.25))
+# 0.5度単位のグリッドを作成
+grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.5),
+                                 np.arange(i_area[2], i_area[3], 0.5))
 
 # 線形補間
-grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='linear')
+grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='cubic')
 
 # ガウシアンフィルタを適用
 sigma = 1.0  # ガウス分布の標準偏差
