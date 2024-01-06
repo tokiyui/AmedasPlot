@@ -370,7 +370,7 @@ for stno,val in dat_json.items():
     lon_grid, lat_grid = np.meshgrid(np.unique(lon_list), np.unique(lat_list))
     #npre_grid = np.array(npre_list).reshape(lon_grid.shape)
     #lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
-    z_new = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
+    npre_grid = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
     
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
