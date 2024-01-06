@@ -402,14 +402,10 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 線形補間で2次元グリッドを作成
-lon_grid, lat_grid = np.meshgrid(np.unique(lon_list), np.unique(lat_list))
-npre_grid = np.array(npre_list).reshape(lon_grid.shape)
+# 不規則な点のデータから等高線を描画
+cont = plt.tricontour(lon_list, lat_list, npre_list, levels=20)  # levelsは等高線の数
 
-# 等値線を描画
-cont = plt.contour(lon_grid, lat_grid, npre_grid, levels=20)  # levelsは等値線の数
-
-# 等値線のラベルを付ける（オプション）
+# 等高線のラベルを付ける（オプション）
 plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
 
 
