@@ -402,18 +402,16 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# npre_listを2次元グリッドに変換
+# 線形補間で2次元グリッドを作成
 lon_grid, lat_grid = np.meshgrid(np.unique(lon_list), np.unique(lat_list))
-    #npre_grid = np.array(npre_list).reshape(lon_grid.shape)
-    #lon_grid, lat_grid = np.meshgrid(lon_list, lat_list)
-npre_grid = griddata((lon_list, lat_list), npre_list, (lon_grid, lat_grid))
-    
-## プロット
-fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
-# 等値線の描画
-cont = plt.contour(lon_grid, lat_grid, npre_grid)
-# cont = ax.contour(lon_list, lat_list, npre_list)
-# cont.clabel(fmt='%1.1f', fontsize=14)
+npre_grid = np.array(npre_list).reshape(lon_grid.shape)
+
+# 等値線を描画
+cont = plt.contour(lon_grid, lat_grid, npre_grid, levels=20)  # levelsは等値線の数
+
+# 等値線のラベルを付ける（オプション）
+plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
+
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
