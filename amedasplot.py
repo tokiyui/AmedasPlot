@@ -350,7 +350,7 @@ for stno,val in dat_json.items():
     # 更正気圧
     npre = get_obs_value(val,'normalPressure')
     if npre is None:
-        npre = -1.0
+        npre = np.nan
     # 配列に格納
     lat_list.append(wlat)
     lon_list.append(wlon)
