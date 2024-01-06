@@ -44,9 +44,7 @@ jobs:
       - name: Copy Latest Image to Directory
         run: |
           mkdir -p docs  # ディレクトリが存在しない場合は作成します
-          git rm latest.jpg
           cp /home/runner/work/AmedasPlot/AmedasPlot/latest.jpg .
-          ls -l docs
 
       - name: Commit and Push Changes
         run: |
