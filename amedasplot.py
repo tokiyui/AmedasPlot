@@ -351,10 +351,10 @@ for stno,val in dat_json.items():
     npre = get_obs_value(val,'normalPressure')
     if npre is None:
         npre = np.nan
-    # 配列に格納
-    lat_list.append(wlat)
-    lon_list.append(wlon)
-    npre_list.append(npre)
+        # 配列に格納
+        lat_list.append(wlat)
+        lon_list.append(wlon)
+        npre_list.append(npre)
     
     # 気圧
     pre = get_obs_value(val,'pressure')
