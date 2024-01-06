@@ -35,6 +35,7 @@ import pybufrkit
 import struct
 from itertools import repeat
 from scipy.interpolate import griddata
+from scipy.ndimage import gaussian_filter
 
 def parse_datetime(arg):
     try:
@@ -396,6 +397,10 @@ for stno,val in dat_json.items():
             else:
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
+
+# ガウシアンフィルタを適用
+sigma = 1.0  # ガウス分布の標準偏差
+filtered_data = gaussian_filter(npre_list, sigma=sigma)
 
 # 等高線をプロット
 print(npre_list)
