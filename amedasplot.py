@@ -107,7 +107,7 @@ def load_jmara_grib2(file):
 
 # 地点テーブル
 # 読み込み設定
-n_station_json='data/amedastable.json'
+n_station_json='./amedastable.json'
 # 描画指定：順に気温(左上),湿球温度(右下),露点温度(左下))
 temp_dispflag=True
 wbt_dispflag=False
@@ -238,7 +238,7 @@ def download_time(time):
     # 生存圏研究所ダウンロード元サイト
     http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original"  
     # 保存先ディレクトリの指定
-    Opath = "./data"
+    Opath = "."
     day_dir = time.strftime("%Y/%m/%d")
     basename = "Z__C_RJTD_{}00_RDR_JMAGPV__grib2.tar".format(time.strftime("%Y%m%d%H%M"))
     fname    = "{}/{}/{}".format(Opath, day_dir, basename)
