@@ -50,7 +50,6 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           pwd 
           ls -l
-          git rm ./latest.jpg
-          git add latest.jpg
+          git add ./latest.jpg
           git commit -m "Add latest.jpg"
           git push origin main 
