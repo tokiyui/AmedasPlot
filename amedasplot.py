@@ -403,8 +403,7 @@ for stno,val in dat_json.items():
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
 # データから三角形メッシュを作成
-triang = plt.tricontour(lon_list, lat_list, npre_list, levels=np.arange(min(npre_list), max(npre_list) + 1, 1))
-
+triang = plt.tricontour(lon_list, lat_list, npre_list, levels=np.arange(900, 1050, 1))
 # 等高線のプロット
 plt.tricontourf(triang, levels=np.arange(900, 1050, 1))  # 等高線塗りつぶし（オプション）
 
