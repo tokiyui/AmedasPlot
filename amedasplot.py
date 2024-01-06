@@ -398,6 +398,7 @@ for stno,val in dat_json.items():
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
 # 等高線をプロット
+print(npre_list)
 levels = np.arange(900, 1050, 1)
 cont = plt.tricontour(lon_list, lat_list, npre_list, levels=levels, linewidths=2, colors='black')  # levelsは等高線の数
 
