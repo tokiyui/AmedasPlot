@@ -415,12 +415,6 @@ cont = plt.contour(lon_grid, lat_grid, npre_grid)
 # cont = ax.contour(lon_list, lat_list, npre_list)
 # cont.clabel(fmt='%1.1f', fontsize=14)
 
-
-# データから三角形メッシュを作成
-triang = plt.tricontour(lon_list, lat_list, npre_list, levels=np.arange(900, 1050, 1))
-# 等高線のプロット
-plt.tricontourf(triang, levels=np.arange(900, 1050, 1))  # 等高線塗りつぶし（オプション）
-
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
             
