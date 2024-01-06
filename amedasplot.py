@@ -34,7 +34,7 @@ from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
 import pybufrkit
 import struct
 from itertools import repeat
-from scipy.interpolate import griddata
+from scipy.interpolate import griddata,RectBivariateSpline
 from scipy.ndimage import gaussian_filter
 
 def parse_datetime(arg):
@@ -398,9 +398,9 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 0.5度単位のグリッドを作成
-grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.5),
-                                 np.arange(i_area[2], i_area[3], 0.5))
+# 0.25度単位のグリッドを作成
+grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
+                                 np.arange(i_area[2], i_area[3], 0.25))
 
 # 線形補間
 grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='cubic')
@@ -409,13 +409,21 @@ grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), meth
 sigma = 1.0  # ガウス分布の標準偏差
 filtered_data = gaussian_filter(grid_npre, sigma=sigma)
 
-# 等高線をプロット
+# 0.25度単位のグリッドデータを0.01度単位にリグリッド（等圧線をなめらかにするため）
+upsampled_lon = np.arange(i_area[0], i_area[1], 0.01)
+upsampled_lat = np.arange(i_area[2], i_area[3], 0.01)
+upsampled_grid_lon, upsampled_grid_lat = np.meshgrid(upsampled_lon, upsampled_lat)
+
+# 線形補間したデータをRectBivariateSplineを使って0.01度単位に拡大補間
+interp = RectBivariateSpline(grid_lon[:, 0], grid_lat[0, :], grid_npre.T)
+grid_npre_upsampled = interp.ev(upsampled_lon, upsampled_lat)
+
+# 等圧線をプロット
 levels = np.arange(900, 1050, 1)
-cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black')
+cont = plt.contour(upsampled_grid_lon, upsampled_grid_lat, grid_npre_upsampled, levels=levels, linewidths=2, colors='black')
 
-# 等高線のラベルを付ける（オプション）
-plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
-
+# 等圧線のラベルを付ける（オプション）
+plt.clabel(cont, fmt='%1.1f', fontsize=20)  # ラベルのフォーマットやサイズを指定
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
