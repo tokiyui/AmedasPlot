@@ -398,10 +398,6 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# ガウシアンフィルタを適用
-#sigma = 1.0  # ガウス分布の標準偏差
-#filtered_data = gaussian_filter(npre_list, sigma=sigma)
-
 # 等高線をプロット
 #print(npre_list)
 #levels = np.arange(900, 1050, 1)
@@ -411,11 +407,15 @@ for stno,val in dat_json.items():
 #plt.clabel(cont, fmt='%1.1f', fontsize=10)  # ラベルのフォーマットやサイズを指定
 
 # 0.1度単位のグリッドを作成
-grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.1),
-                                 np.arange(i_area[2], i_area[3], 0.1))
+grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
+                                 np.arange(i_area[2], i_area[3], 0.25))
 
 # 線形補間
 grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='linear')
+
+# ガウシアンフィルタを適用
+sigma = 1.0  # ガウス分布の標準偏差
+filtered_data = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等高線をプロット
 levels = np.arange(900, 1050, 1)
