@@ -425,14 +425,14 @@ grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等温線をプロット
 levels = np.arange(-30, 60, 3)
-cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='red', interpolation='spline')
+cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, colors='red', interpolation='spline')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=20)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
-cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
+cont = plt.contour(grid_lon_p, grid_lat_p, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
 
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
