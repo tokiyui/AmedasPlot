@@ -429,7 +429,7 @@ cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, c
 plt.clabel(cont, fontsize=20)
 
 # 等温線をプロット
-levels = np.arange(−30, 60, 3)
+levels = np.arange(-30, 60, 3)
 cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='red', interpolation='spline')
 
 # 等温線のラベルを付ける
