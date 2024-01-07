@@ -416,7 +416,7 @@ grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='linear')
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウス分布の標準偏差
+sigma = 0.0  # ガウス分布の標準偏差
 grid_temp = gaussian_filter(grid_temp, sigma=sigma)
 grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
