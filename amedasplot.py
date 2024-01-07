@@ -417,8 +417,8 @@ grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_
 
 # ガウシアンフィルタを適用
 sigma = 1.0  # ガウス分布の標準偏差
-#grid_temp = gaussian_filter(grid_temp, sigma=0.5)
-#grid_npre = gaussian_filter(grid_npre, sigma=0.5)
+#grid_temp = gaussian_filter(grid_temp, sigma=sigma)
+#grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等温線をプロット
 levels = np.arange(-30, 60, 3)
