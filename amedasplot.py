@@ -416,8 +416,8 @@ grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
                                      np.arange(i_area[2], i_area[3], 0.25))
 
 # 線形補間
-grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='solid')
-grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='solid')
+grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t))
+grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p))
 
 # ガウシアンフィルタを適用
 #sigma = 1.0  # ガウス分布の標準偏差
