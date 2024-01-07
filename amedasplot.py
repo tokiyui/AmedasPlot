@@ -508,6 +508,8 @@ plt.clabel(cont, fontsize=20)
 ## H stamp
 #maxid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0)
 maxid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0)
+print(grid_lon_p)
+print(grid_lat_p)
 for i in range(len(maxid[0])):
     wlon = grid_lon_p[maxid[1][i]]
     wlat = grid_lat_p[maxid[0][i]]
