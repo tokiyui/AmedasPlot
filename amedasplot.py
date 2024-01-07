@@ -322,10 +322,10 @@ gl.ylocator = mticker.FixedLocator(yticks)
 # 配列の宣言
 lat_list_t = []
 lon_list_t = []
-npre_list_t = []
+temp_list = []
 lat_list_p = []
 lon_list_p = []
-npre_list_p = []
+npre_list = []
 
 # 地点プロット                                                                                                 
 for stno,val in dat_json.items():
@@ -347,7 +347,7 @@ for stno,val in dat_json.items():
         # 配列に格納
         lat_list_t.append(wlat)
         lon_list_t.append(wlon)
-        temp_list_t.append(temp)
+        temp_list.append(temp)
     # 湿度
     hu = get_obs_value(val,'humidity')
     if hu is None:
@@ -364,7 +364,7 @@ for stno,val in dat_json.items():
         # 配列に格納
         lat_list_p.append(wlat)
         lon_list_p.append(wlon)
-        npre_list_p.append(npre)
+        npre_list.append(npre)
     
     # 気圧
     pre = get_obs_value(val,'pressure')
