@@ -320,9 +320,12 @@ gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
 
 # 配列の宣言
-lat_list = []
-lon_list = []
-npre_list = []
+lat_list_t = []
+lon_list_t = []
+npre_list_t = []
+lat_list_p = []
+lon_list_p = []
+npre_list_p = []
 
 # 地点プロット                                                                                                 
 for stno,val in dat_json.items():
@@ -403,36 +406,35 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 0.25度単位のグリッドを作成
-grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
-                                     np.arange(i_area[2], i_area[3], 0.25))
-
 # 0.05度単位のグリッドを作成
 grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1], 0.05),
                                      np.arange(i_area[2], i_area[3], 0.05))
 
-# 線形補間
-grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='cubic')
+# 0.25度単位のグリッドを作成
+grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
+                                     np.arange(i_area[2], i_area[3], 0.25))
+
 # 線形補間
 grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='cubic')
+grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='cubic')
 
 # ガウシアンフィルタを適用
 sigma = 1.0  # ガウス分布の標準偏差
-grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 grid_temp = gaussian_filter(grid_temp, sigma=sigma)
-
-# 等圧線をプロット
-levels = np.arange(900, 1050, 1)
-cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
-
-# 等圧線のラベルを付ける
-plt.clabel(cont, fontsize=20)
+grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等温線をプロット
 levels = np.arange(-30, 60, 3)
 cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='red', interpolation='spline')
 
 # 等温線のラベルを付ける
+plt.clabel(cont, fontsize=20)
+
+# 等圧線をプロット
+levels = np.arange(900, 1050, 1)
+cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
+
+# 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
 
 # 海岸線
