@@ -426,7 +426,7 @@ grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_
 
 # 等温線をプロット
 levels = np.arange(-30, 60, 3)
-cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle="solid", colors='red', interpolation='spline')
+cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle='solid', colors='red')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=20)
