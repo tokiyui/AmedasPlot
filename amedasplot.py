@@ -39,17 +39,15 @@ from scipy.ndimage import gaussian_filter
 from scipy.ndimage import maximum_filter, minimum_filter
 
 ## 極大/極小ピーク検出関数                                                             
-def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
+def detect_peaks(image, filter_size, dist_cut, flag=0):
     # filter_size: この値xこの値 の範囲内の最大値のピークを検出                        
     # dist_cut: この距離内のピークは1つにまとめる                                      
     # flag:  0:maximum検出  0以外:minimum検出                                          
     if flag==0:
-      local_max = maximum_filter(image,
-            footprint=np.ones((filter_size, filter_size)), mode='constant')
+      local_max = maximum_filter(image, footprint=np.ones((filter_size, filter_size)), mode='constant') 
       detected_peaks = np.ma.array(image, mask=~(image == local_max))
     else:
-      local_min = minimum_filter(image,
-            footprint=np.ones((filter_size, filter_size)), mode='constant')
+      local_min = minimum_filter(image, footprint=np.ones((filter_size, filter_size)), mode='constant')
       detected_peaks = np.ma.array(image, mask=~(image == local_min))
     peaks_index = np.where((detected_peaks.mask != True))
     # peak間の距離行例を求める                                                         
@@ -61,8 +59,7 @@ def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
         if i == j:
           dist[i][j]=0.0
         elif i>j:
-          d = math.sqrt(((y[i] - y[j])*(y[i] - y[j]))
-                        +((x[i] - x[j])*(x[i] - x[j])))
+          d = math.sqrt(((y[i] - y[j])*(y[i] - y[j])) + ((x[i] - x[j])*(x[i] - x[j])))
           dist[i][j]= d
           dist[j][i]= d
     # 距離がdist_cut内のpeaksの距離の和と、そのピーク番号を取得する 
@@ -504,36 +501,33 @@ cont = plt.contour(grid_lon_p, grid_lat_p, grid_npre, levels=levels, linewidths=
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
 
-#
 ## H stamp
-#maxid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0)
-maxid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0)
+maxid = detect_peaks(grid_npre, filter_size=6, dist_cut=2)
 for i in range(len(maxid[0])):
     wlon = grid_lon_p[0][maxid[1][i]]
     wlat = grid_lat_p[maxid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=4, color="blue",transform=latlon_proj)
-        ax.text(wlon - 0.5, wlat + 0.5, 'H', size=16, color="blue", transform=latlon_proj)
-        val = grid_lon_p[maxid[0][i]][maxid[1][i]]
+        ax.plot(wlon, wlat, marker='x' , markersize=32, color="blue", transform=latlon_proj)
+        ax.text(wlon - 0.12, wlat + 0.12, 'H', size=60, color="blue", transform=latlon_proj)
+        val = grid_npre[maxid[0][i]][maxid[1][i]]
         ival = int(val)
-        ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
-#
+        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+
 ## L stamp
-#minid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0, flag=1)
-minid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0, flag=1)
+minid = detect_peaks(grid_npre, filter_size=6, dist_cut=2, flag=1)
 for i in range(len(minid[0])):
-    wlon = grid_lon_p[minid[1][i]]
-    wlat = grid_lat_p[minid[0][i]]
+    wlon = grid_lon_p[0][minid[1][i]]
+    wlat = grid_lat_p[minid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=4, color="red",transform=latlon_proj)
-        ax.text(wlon - 0.5, wlat + 0.5, 'L', size=16, color="red", transform=latlon_proj)
-        val = grid_lon_p[minid[0][i]][minid[1][i]]
+        ax.plot(wlon, wlat, marker='x' , markersize=32, color="red", transform=latlon_proj)
+        ax.text(wlon - 0.12, wlat + 0.12, 'L', size=60, color="red", transform=latlon_proj)
+        val = grid_npre[minid[0][i]][minid[1][i]]
         ival = int(val)
-        ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
