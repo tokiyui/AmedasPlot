@@ -391,9 +391,9 @@ for stno,val in dat_json.items():
                      length=barb_length, transform=latlon_proj)
         # if npre >= 0.0: # 気圧プロット
         # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
-        #if temp_dispflag and temp > -200.0: # 気温プロット
-        #    color_temp = "red"
-        #    ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+        if temp_dispflag and temp > -200.0: # 気温プロット
+            color_temp = "red"
+            ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
         if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
             if dp_temp < 0:
                 color_temp = "purple"
@@ -426,7 +426,7 @@ grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等温線をプロット
 levels = np.arange(-30, 60, 3)
-cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, colors='red', interpolation='spline')
+cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle="solid", colors='red', interpolation='spline')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=20)
