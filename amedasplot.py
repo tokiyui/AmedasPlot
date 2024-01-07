@@ -505,8 +505,8 @@ plt.clabel(cont, fontsize=20)
 
 #
 ## H stamp
-#maxid = detect_peaks(grid_npre.values, filter_size=6, dist_cut=2.0)
-maxid = detect_peaks(grid_npre.values, filter_size=8, dist_cut=4.0)
+#maxid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0)
+maxid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0)
 for i in range(len(maxid[0])):
   wlon = grid_lon_p[maxid[1][i]]
   wlat = grid_lat_p[maxid[0][i]]
@@ -515,15 +515,15 @@ for i in range(len(maxid[0])):
   if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
     ax.plot(wlon, wlat, marker='x' , markersize=4, color="blue",transform=latlon_proj)
     ax.text(wlon - 0.5, wlat + 0.5, 'H', size=16, color="blue", transform=latlon_proj)
-    val = grid_lon_p.values[maxid[0][i]][maxid[1][i]]
+    val = grid_lon_p[maxid[0][i]][maxid[1][i]]
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue",
             transform=ax.transAxes,
             verticalalignment="top", horizontalalignment="center")
 #
 ## L stamp
-#minid = detect_peaks(grid_npre.values, filter_size=6, dist_cut=2.0, flag=1)
-minid = detect_peaks(grid_npre.values, filter_size=8, dist_cut=4.0, flag=1)
+#minid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0, flag=1)
+minid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0, flag=1)
 for i in range(len(minid[0])):
   wlon = grid_lon_p[minid[1][i]]
   wlat = grid_lat_p[minid[0][i]]
@@ -532,7 +532,7 @@ for i in range(len(minid[0])):
   if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
     ax.plot(wlon, wlat, marker='x' , markersize=4, color="red",transform=latlon_proj)
     ax.text(wlon - 0.5, wlat + 0.5, 'L', size=16, color="red", transform=latlon_proj)
-    val = grid_lon_p.values[minid[0][i]][minid[1][i]]
+    val = grid_lon_p[minid[0][i]][minid[1][i]]
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red",
             transform=ax.transAxes,
