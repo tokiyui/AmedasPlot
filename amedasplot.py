@@ -331,6 +331,7 @@ npre_list = []
 for stno,val in dat_json.items():
     # データ取得
     (wlat,wlon) = trans_tupleLL(amd_json[stno]['lat'], amd_json[stno]['lon'])
+    walt = amd_json[stno]['alt']
     # 風
     wind_ok = True
     ws = get_obs_value(val,'wind')
@@ -343,7 +344,7 @@ for stno,val in dat_json.items():
     temp = get_obs_value(val,'temp')
     if temp is None:
         temp = np.nan
-    else:
+    elif walt < 1500:
         # 配列に格納
         lat_list_t.append(wlat)
         lon_list_t.append(wlon)
