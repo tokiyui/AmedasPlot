@@ -508,11 +508,9 @@ plt.clabel(cont, fontsize=20)
 ## H stamp
 #maxid = detect_peaks(grid_npre, filter_size=6, dist_cut=2.0)
 maxid = detect_peaks(grid_npre, filter_size=8, dist_cut=4.0)
-print(grid_lon_p)
-print(grid_lat_p)
 for i in range(len(maxid[0])):
-    wlon = grid_lon_p[maxid[1][i]]
-    wlat = grid_lat_p[maxid[0][i]]
+    wlon = grid_lon_p[0][maxid[1][i]]
+    wlat = grid_lat_p[maxid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
