@@ -122,7 +122,7 @@ char_size=16
 barb_length=8
 
 # 地図の中心位置を指定
-(lat_center, lon_center) = (35.5, 138.5)   # 関東付近
+(lat_center, lon_center) = (36, 138)   # 関東付近
 # 地図の描画範囲指定
 #i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
 i_area = [lon_center - 3.5, lon_center + 3.5, lat_center - 2.5, lat_center + 2.5]
@@ -339,7 +339,12 @@ for stno,val in dat_json.items():
     # 気温
     temp = get_obs_value(val,'temp')
     if temp is None:
-        temp = -200.0
+        temp = np.nan
+    else:
+        # 配列に格納
+        lat_list_t.append(wlat)
+        lon_list_t.append(wlon)
+        temp_list_t.append(temp)
     # 湿度
     hu = get_obs_value(val,'humidity')
     if hu is None:
@@ -354,9 +359,9 @@ for stno,val in dat_json.items():
         npre = np.nan
     else:
         # 配列に格納
-        lat_list.append(wlat)
-        lon_list.append(wlon)
-        npre_list.append(npre)
+        lat_list_p.append(wlat)
+        lon_list_p.append(wlon)
+        npre_list_p.append(npre)
     
     # 気圧
     pre = get_obs_value(val,'pressure')
@@ -376,15 +381,15 @@ for stno,val in dat_json.items():
     # cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
         ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
-        if wind_ok: # 矢羽プロット
+        if wind_ok and au*au+av*av>4.0: # 矢羽プロット
             ax.barbs(wlon, wlat, 
                      (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m,
                      length=barb_length, transform=latlon_proj)
         # if npre >= 0.0: # 気圧プロット
         # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
-        if temp_dispflag and temp > -200.0: # 気温プロット
-            color_temp = "red"
-            ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+        #if temp_dispflag and temp > -200.0: # 気温プロット
+        #    color_temp = "red"
+        #    ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
         if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
             if dp_temp < 0:
                 color_temp = "purple"
@@ -399,22 +404,36 @@ for stno,val in dat_json.items():
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
 # 0.25度単位のグリッドを作成
-grid_lon, grid_lat = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
-                                 np.arange(i_area[2], i_area[3], 0.25))
+grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
+                                     np.arange(i_area[2], i_area[3], 0.25))
+
+# 0.05度単位のグリッドを作成
+grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1], 0.05),
+                                     np.arange(i_area[2], i_area[3], 0.05))
 
 # 線形補間
-grid_npre = griddata((lon_list, lat_list), npre_list, (grid_lon, grid_lat), method='cubic')
+grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='cubic')
+# 線形補間
+grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='cubic')
 
 # ガウシアンフィルタを適用
 sigma = 1.0  # ガウス分布の標準偏差
-filtered_data = gaussian_filter(grid_npre, sigma=sigma)
+grid_npre = gaussian_filter(grid_npre, sigma=sigma)
+grid_temp = gaussian_filter(grid_temp, sigma=sigma)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
 cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='black', interpolation='spline')
 
-# 等圧線のラベルを付ける（オプション）
-plt.clabel(cont, fontsize=20)  # ラベルのフォーマットやサイズを指定
+# 等圧線のラベルを付ける
+plt.clabel(cont, fontsize=20)
+
+# 等温線をプロット
+levels = np.arange(−30, 60, 3)
+cont = plt.contour(grid_lon, grid_lat, grid_npre, levels=levels, linewidths=2, colors='red', interpolation='spline')
+
+# 等温線のラベルを付ける
+plt.clabel(cont, fontsize=20)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
