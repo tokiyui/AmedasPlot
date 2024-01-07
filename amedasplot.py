@@ -105,12 +105,12 @@ def load_jmara_grib2(file):
     # convert level to representative
     return level_table[transposed_flipped_data]
 
-
 # 地点テーブル
 # 読み込み設定
 n_station_json='./amedastable.json'
-# 描画指定：順に気温(左上),湿球温度(右下),露点温度(左下))
-temp_dispflag=True
+# 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
+npre_dispflag=False
+temp_dispflag=False
 wbt_dispflag=False
 dp_dispflag=False
 
@@ -379,18 +379,14 @@ for stno,val in dat_json.items():
     
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
-    # 等値線の描画
-    #cont = plt.contour(lon_grid, lat_grid, npre_grid)
-    # cont = ax.contour(lon_list, lat_list, npre_list)
-    # cont.clabel(fmt='%1.1f', fontsize=14)
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
         ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
         if wind_ok and au*au+av*av>4.0: # 矢羽プロット
             ax.barbs(wlon, wlat, 
                      (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m,
                      length=barb_length, transform=latlon_proj)
-        # if npre >= 0.0: # 気圧プロット
-        # ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+        if npre_dispflag and pre >= 0.0: # 気圧プロット
+        ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
         if temp_dispflag and temp > -200.0: # 気温プロット
             color_temp = "red"
             ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
