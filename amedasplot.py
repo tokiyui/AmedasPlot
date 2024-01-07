@@ -36,6 +36,7 @@ import struct
 from itertools import repeat
 from scipy.interpolate import griddata,RectBivariateSpline
 from scipy.ndimage import gaussian_filter
+from scipy.ndimage import maximum_filter, minimum_filter
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
