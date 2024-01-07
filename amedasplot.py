@@ -37,6 +37,75 @@ from itertools import repeat
 from scipy.interpolate import griddata,RectBivariateSpline
 from scipy.ndimage import gaussian_filter
 
+## 極大/極小ピーク検出関数                                                             
+def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
+    # filter_size: この値xこの値 の範囲内の最大値のピークを検出                        
+    # dist_cut: この距離内のピークは1つにまとめる                                      
+    # flag:  0:maximum検出  0以外:minimum検出                                          
+    if flag==0:
+      local_max = maximum_filter(image,
+            footprint=np.ones((filter_size, filter_size)), mode='constant')
+      detected_peaks = np.ma.array(image, mask=~(image == local_max))
+    else:
+      local_min = minimum_filter(image,
+            footprint=np.ones((filter_size, filter_size)), mode='constant')
+      detected_peaks = np.ma.array(image, mask=~(image == local_min))
+    peaks_index = np.where((detected_peaks.mask != True))
+    # peak間の距離行例を求める                                                         
+    (x,y) = peaks_index
+    size=y.size
+    dist=np.full((y.size, y.size), -1.0)
+    for i in range(size):
+      for j in range(size):
+        if i == j:
+          dist[i][j]=0.0
+        elif i>j:
+          d = math.sqrt(((y[i] - y[j])*(y[i] - y[j]))
+                        +((x[i] - x[j])*(x[i] - x[j])))
+          dist[i][j]= d
+          dist[j][i]= d
+    # 距離がdist_cut内のpeaksの距離の和と、そのピーク番号を取得する 
+    Kinrin=[]
+    dSum=[]
+    for i in range(size):
+      tmpA=[]
+      distSum=0.0
+      for j in range(size):
+        if dist[i][j] < dist_cut and dist[i][j] > 0.0:
+          tmpA.append(j)
+          distSum=distSum+dist[i][j]
+      dSum.append(distSum)
+      Kinrin.append(tmpA)
+    # Peakから外すPeak番号を求める.  peak間の距離和が最も小さいものを残す              
+    cutPoint=[]
+    for i in range(size):
+      val = dSum[i]
+      val_i=image[x[i]][y[i]]
+      for k in Kinrin[i]:
+        val_k=image[x[k]][y[k]]
+        if flag==0 and val_i < val_k:
+            cutPoint.append(i)
+            break
+        if flag!=0 and val_i > val_k:
+            cutPoint.append(i)
+            break
+        if val > dSum[k]:
+            cutPoint.append(i)
+            break
+        if val == dSum[k] and i > k:
+            cutPoint.append(i)
+            break
+    # 戻り値用に外すpeak番号を配列から削除                                             
+    newx=[]
+    newy=[]
+    for i in range(size):
+      if (i in cutPoint):
+        continue
+      newx.append(x[i])
+      newy.append(y[i])
+    peaks_index=(np.array(newx),np.array(newy))
+    return peaks_index
+
 def parse_datetime(arg):
     try:
         # 引数が12桁の数字の場合、YYYYMMDDHHMM形式の文字列を解析
@@ -433,6 +502,41 @@ cont = plt.contour(grid_lon_p, grid_lat_p, grid_npre, levels=levels, linewidths=
 
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
+
+#
+## H stamp
+#maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
+maxid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0)
+for i in range(len(maxid[0])):
+  wlon = dss['lon'][maxid[1][i]]
+  wlat = dss['lat'][maxid[0][i]]
+  # 図の範囲内に座標があるか確認                                                                           
+  fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+  if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+    ax.plot(wlon, wlat, marker='x' , markersize=4, color="blue",transform=latlon_proj)
+    ax.text(wlon - 0.5, wlat + 0.5, 'H', size=16, color="blue", transform=latlon_proj)
+    val = dss['prmsl'].values[maxid[0][i]][maxid[1][i]]
+    ival = int(val)
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue",
+            transform=ax.transAxes,
+            verticalalignment="top", horizontalalignment="center")
+#
+## L stamp
+#minid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0, flag=1)
+minid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0, flag=1)
+for i in range(len(minid[0])):
+  wlon = dss['lon'][minid[1][i]]
+  wlat = dss['lat'][minid[0][i]]
+  # 図の範囲内に座標があるか確認                                                                           
+  fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+  if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+    ax.plot(wlon, wlat, marker='x' , markersize=4, color="red",transform=latlon_proj)
+    ax.text(wlon - 0.5, wlat + 0.5, 'L', size=16, color="red", transform=latlon_proj)
+    val = dss['prmsl'].values[minid[0][i]][minid[1][i]]
+    ival = int(val)
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red",
+            transform=ax.transAxes,
+            verticalalignment="top", horizontalalignment="center")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
