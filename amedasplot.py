@@ -413,9 +413,10 @@ for stno,val in dat_json.items():
         temp = np.nan
     elif walt < 1500:
         # 配列に格納
+        tempsl = temp + alt * 0.0065
         lat_list_t.append(wlat)
         lon_list_t.append(wlon)
-        temp_list.append(temp)
+        temp_list.append(tempsl)
     # 湿度
     hu = get_obs_value(val,'humidity')
     if hu is None:
@@ -471,12 +472,10 @@ for stno,val in dat_json.items():
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
 # 0.05度単位のグリッドを作成
-grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1], 0.05),
-                                     np.arange(i_area[2], i_area[3], 0.05))
+grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
 
 # 0.25度単位のグリッドを作成
-grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1], 0.25),
-                                     np.arange(i_area[2], i_area[3], 0.25))
+grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
 
 # 線形補間
 grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='linear')
@@ -488,11 +487,11 @@ grid_temp = gaussian_filter(grid_temp, sigma=sigma)
 grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 
 # 等温線をプロット
-#levels = np.arange(-30, 60, 3)
-#cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle='solid', colors='red')
+levels = np.arange(-30, 60, 3)
+cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle='solid', colors='red')
 
 # 等温線のラベルを付ける
-#plt.clabel(cont, fontsize=20)
+plt.clabel(cont, fontsize=20)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
