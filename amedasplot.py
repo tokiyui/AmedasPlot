@@ -471,10 +471,8 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 0.05度単位のグリッドを作成
+# グリッドを作成
 grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
-
-# 0.25度単位のグリッドを作成
 grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
 
 # 線形補間
@@ -529,7 +527,7 @@ for i in range(len(minid[0])):
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black') # 海岸線の解像度を上げる   
+ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
 plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
