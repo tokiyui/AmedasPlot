@@ -413,7 +413,7 @@ for stno,val in dat_json.items():
         temp = np.nan
     elif walt < 1500:
         # 配列に格納
-        tempsl = temp + alt * 0.0065
+        tempsl = temp + walt * 0.0065
         lat_list_t.append(wlat)
         lon_list_t.append(wlon)
         temp_list.append(tempsl)
