@@ -499,7 +499,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, grid_npre, levels=levels, linewidths=
 plt.clabel(cont, fontsize=20)
 
 ## H stamp
-maxid = detect_peaks(grid_npre, filter_size=20, dist_cut=5)
+maxid = detect_peaks(grid_npre, filter_size=20, dist_cut=1)
 for i in range(len(maxid[0])):
     wlon = grid_lon_p[0][maxid[1][i]]
     wlat = grid_lat_p[maxid[0][i]][0]
@@ -513,7 +513,7 @@ for i in range(len(maxid[0])):
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
-minid = detect_peaks(grid_npre, filter_size=20, dist_cut=5, flag=1)
+minid = detect_peaks(grid_npre, filter_size=20, dist_cut=1, flag=1)
 for i in range(len(minid[0])):
     wlon = grid_lon_p[0][minid[1][i]]
     wlat = grid_lat_p[minid[0][i]][0]
