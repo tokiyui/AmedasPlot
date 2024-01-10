@@ -225,7 +225,7 @@ def read_msm(time):
 
     # 要素 'PRMSL' のメッセージを取得する
     grbs = pygrib.open(basename)
-    prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=0)[0]
+    prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=ft)[0]
 
     prmsl, lats, lons = prmsl_fc0.data()
     prmsl /= 100
