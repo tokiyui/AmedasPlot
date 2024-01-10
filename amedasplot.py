@@ -173,7 +173,6 @@ def load_jmara_grib2(file):
     # convert level to representative
     return level_table[transposed_flipped_data]
 
-#def chikei(lon_msm, lat_msm):
 def chikei():
     # 地形バイナリデータの読み込み
     file_path = 'LANDSEA.MSM_5K'  # ファイルのパス（実際のファイルパスに置き換えてください）
@@ -201,9 +200,9 @@ def chikei():
     return data_flipped
     
 def read_msm(time):
-    # 初期値から3時間後に配信される
-    time = time - offsets.Hour(3)
-    # 1つ前の03シリーズ
+    # 初期値から4時間後に配信される
+    time = time - offsets.Hour(4)
+    # MSMは03シリーズ
     base_time = time.replace(hour=time.hour - (time.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
     ft = time - base_time 
@@ -544,6 +543,7 @@ grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.ar
 grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='linear')
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='linear')
 
+# 海上のデータは観測がないためMSMで置換する
 grid_npre[sealand == 0] = prmsl[sealand == 0]
 
 # ガウシアンフィルタを適用
@@ -558,38 +558,51 @@ grid_npre = gaussian_filter(grid_npre, sigma=sigma)
 # 等温線のラベルを付ける
 #plt.clabel(cont, fontsize=20)
 
+# 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
+lon_range = np.where((grid_lon_t[0, :] >= i_area[0] - 1.0) & (grid_lon_t[0, :] <= i_area[1] + 1.0))
+lat_range = np.where((grid_lat_t[:, 0] >= i_area[2] - 1.0) & (grid_lat_t[:, 0] <= i_area[3] + 1.0))
+
+# 切り出したい範囲のインデックスを取得
+lon_indices = lon_range[0]
+lat_indices = lat_range[0]
+
+# 切り出し
+grid_lon_p_sliced = grid_lon_p[lat_indices][:, lon_indices]
+grid_lat_p_sliced = grid_lat_p[lat_indices][:, lon_indices]
+psea_grid = grid_npre[lat_indices][:, lon_indices]
+
 # 等圧線をプロット
 levels = np.arange(900, 1050, 1)
-cont = plt.contour(grid_lon_p, grid_lat_p, grid_npre, levels=levels, linewidths=2, colors='black')
+cont = plt.contour(grid_lon_p_sliced, grid_lat_p_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
 
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
 
 ## H stamp
-maxid = detect_peaks(grid_npre, filter_size=20, dist_cut=5)
+maxid = detect_peaks(psea_grid, filter_size=20, dist_cut=5)
 for i in range(len(maxid[0])):
-    wlon = grid_lon_p[0][maxid[1][i]]
-    wlat = grid_lat_p[maxid[0][i]][0]
+    wlon = grid_lon_p_sliced[0][maxid[1][i]]
+    wlat = grid_lat_p_sliced[maxid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
         ax.plot(wlon, wlat, marker='x' , markersize=32, color="blue", transform=latlon_proj)
         ax.text(wlon - 0.12, wlat + 0.12, 'H', size=60, color="blue", transform=latlon_proj)
-        val = grid_npre[maxid[0][i]][maxid[1][i]]
+        val = psea_grid[maxid[0][i]][maxid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
-minid = detect_peaks(grid_npre, filter_size=20, dist_cut=5, flag=1)
+minid = detect_peaks(psea_grid, filter_size=20, dist_cut=5, flag=1)
 for i in range(len(minid[0])):
-    wlon = grid_lon_p[0][minid[1][i]]
-    wlat = grid_lat_p[minid[0][i]][0]
+    wlon = grid_lon_p_sliced[0][minid[1][i]]
+    wlat = grid_lat_p_sliced[minid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
         ax.plot(wlon, wlat, marker='x' , markersize=32, color="red", transform=latlon_proj)
         ax.text(wlon - 0.12, wlat + 0.12, 'L', size=60, color="red", transform=latlon_proj)
-        val = grid_npre[minid[0][i]][minid[1][i]]
+        val = psea_grid[minid[0][i]][minid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
