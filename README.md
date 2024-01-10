@@ -16,6 +16,7 @@
 * アメダスデータ:気象庁HPのJSON（ https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json ）
 * レーダーデータ:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
 * 海上の観測データの代わりに、京都大学生存圏研究所（http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/）から取得したMSM（メソモデル）の予報値を使用しています。
+* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K、コピーしてgit登録済み）を使用しています。
 
 ## special thanks
 * 黒良先生が開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
