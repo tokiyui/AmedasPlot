@@ -37,6 +37,7 @@ from itertools import repeat
 from scipy.interpolate import griddata,RectBivariateSpline
 from scipy.ndimage import gaussian_filter
 from scipy.ndimage import maximum_filter, minimum_filter
+import pygrib
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -171,6 +172,69 @@ def load_jmara_grib2(file):
 
     # convert level to representative
     return level_table[transposed_flipped_data]
+
+#def chikei(lon_msm, lat_msm):
+def chikei():
+    # 地形バイナリデータの読み込み
+    file_path = 'LANDSEA.MSM_5K'  # ファイルのパス（実際のファイルパスに置き換えてください）
+    data = np.fromfile(file_path, dtype=np.dtype('>f4'))  # Big Endianの単精度浮動小数点数として読み込む
+
+    # データサイズに応じてreshape（481x505のグリッドサイズになると仮定）
+    data = data.reshape(505, 481)
+
+    # 先頭の格子点の緯度経度
+    start_lat = 47.6
+    start_lon = 120.0
+
+    # 格子間隔
+    lat_interval = 0.05
+    lon_interval = 0.0625
+
+    # 緯度経度の配列を作成
+    lats = np.linspace(start_lat, start_lat - (lat_interval * (data.shape[0] - 1)), data.shape[0])
+    lons = np.linspace(start_lon, start_lon + (lon_interval * (data.shape[1] - 1)), data.shape[1])
+
+    # メッシュグリッドの作成
+    lon_msm, lat_msm = np.meshgrid(lons, lats)
+    data *= 10000
+    data_flipped = np.flip(data, axis=0)
+    return data_flipped
+    
+def read_msm(time):
+    # 初期値から3時間後に配信される
+    time = time - offsets.Hour(3)
+    # 1つ前の03シリーズ
+    base_time = time.replace(hour=time.hour - (time.hour % 3), minute=0, second=0)  
+    # 対象時刻と初期値の時間差
+    ft = time - base_time 
+
+    # 生存圏研究所ダウンロード元サイト
+    http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original"  
+    # 保存先ディレクトリの指定
+    Opath = "."
+    day_dir = base_time.strftime("%Y/%m/%d")
+    basename = "Z__C_RJTD_{}00_MSM_GPV_Rjp_Lsurf_FH00-15_grib2.bin".format(base_time.strftime("%Y%m%d%H%M"))
+    fname    = "{}/{}".format(Opath, basename)
+    # すでにファイルが存在しなければ、ダウンロードを行う
+    if os.path.exists(fname):
+        print("{} Already exists.".format(basename))
+    else:
+        #os.makedirs("{}/{}".format(Opath, day_dir), exist_ok=True)
+        url      = "{}/{}/{}".format(http,  day_dir, basename)
+        # wgetコマンドでデータのダウンロード
+        subprocess.run("wget {} -P {}/".format(url, Opath), shell=True)
+
+    # 要素 'PRMSL' のメッセージを取得する
+    grbs = pygrib.open(basename)
+    prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=0)[0]
+
+    prmsl, lats, lons = prmsl_fc0.data()
+    prmsl /= 100
+    prmsl_flipped = np.flip(prmsl, axis=0)
+    # ガウシアンフィルタを適用
+    sigma = 2.0  # ガウス分布の標準偏差
+    prmsl_flipped = gaussian_filter(prmsl_flipped, sigma=sigma)
+    return prmsl_flipped
 
 # 地点テーブル
 # 読み込み設定
@@ -309,22 +373,18 @@ def download_time(time):
     Opath = "."
     day_dir = time.strftime("%Y/%m/%d")
     basename = "Z__C_RJTD_{}00_RDR_JMAGPV__grib2.tar".format(time.strftime("%Y%m%d%H%M"))
-    fname    = "{}/{}/{}".format(Opath, day_dir, basename)
+    fname    = "{}/{}".format(Opath, basename)
     # すでにファイルが存在しなければ、ダウンロードを行う
     if os.path.exists(fname):
         print("{} Already exists.".format(basename))
     else:
-        os.makedirs("{}/{}".format(Opath, day_dir), exist_ok=True)
+        #os.makedirs("{}/{}".format(Opath, day_dir), exist_ok=True)
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P {}/{}/".format(url, Opath, day_dir), shell=True)
+        subprocess.run("wget {} -P {}/".format(url, Opath), shell=True)
         # tarコマンドでダウンロードした圧縮ファイルの解凍
-        subprocess.run("tar -xvf {} -C {}/{}/".format(fname, Opath, day_dir), shell=True)   
-    GgisFile = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
-    # wgrib2コマンドでgrib2データをバイナリファイルに変換
-    #outfile  = "{}/{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL.dat".format(Opath, day_dir, time.strftime("%Y%m%d%H%M"))
-    #if not os.path.exists(outfile):
-    #    subprocess.run("wgrib2 {} -d 1 -no_header -bin {}".format(GgisFile, outfile), shell=True)
+        subprocess.run("tar -xvf {} -C {}/".format(fname, Opath), shell=True)   
+    GgisFile = "{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(Opath, time.strftime("%Y%m%d%H%M"))
     return GgisFile
     
 # 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
@@ -332,10 +392,15 @@ def download_time(time):
 time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
 filepath = download_time(utc)
-#rain = mkdata_time(utc)
 
 # データを読む
 rain = load_jmara_grib2(filepath) / 100 
+
+# 地形データ取得
+sealand = chikei()
+
+# MSMデータ取得
+prmsl = read_msm(utc)
         
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
@@ -472,12 +537,14 @@ for stno,val in dat_json.items():
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
 # グリッドを作成
-grid_lon_t, grid_lat_t = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
-grid_lon_p, grid_lat_p = np.meshgrid(np.arange(i_area[0], i_area[1] + 0.05, 0.05), np.arange(i_area[2], i_area[3] + 0.05, 0.05))
+grid_lon_t, grid_lat_t = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
+grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 
 # 線形補間
 grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='linear')
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='linear')
+
+grid_npre[sealand == 0] = prmsl[sealand == 0]
 
 # ガウシアンフィルタを適用
 sigma = 2.0  # ガウス分布の標準偏差
