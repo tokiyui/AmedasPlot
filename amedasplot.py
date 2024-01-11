@@ -379,7 +379,7 @@ else:
     areaname="East"
 
 # 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize=(20,15))
+fig = plt.figure(figsize=(16,12))
 # 余白設定                                                                                
 plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
 # 作図                                                                                    
