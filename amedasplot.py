@@ -184,10 +184,6 @@ def read_msm(time):
     tmp_fc0 = grbs.select(parameterName='Temperature', forecastTime=ft)[0]
     tmp, lats, lons = tmp_fc0.data()
     tmp_flipped = np.flip(tmp - 273.15, axis=0)
-    
-    # ガウシアンフィルタを適用
-    prmsl_flipped = gaussian_filter(prmsl_flipped, sigma=3.0) # sigmaはガウス分布の標準偏差
-    tmp_flipped = gaussian_filter(tmp_flipped, sigma=1.0) # sigmaはガウス分布の標準偏差
     return prmsl_flipped, tmp_flipped
     
 # 緯度経度で指定したポイントの図上の座標などを取得する関数 
@@ -277,8 +273,6 @@ elif len(sys.argv) == 1:
 else:
     print('Usage: python script.py [areacode[0:North][1:East][2:West]] [YYYYMMDDHH(MM)]')
     exit()
-
-print(area)
 
 # 描画開始メッセージ    
 if dt:
@@ -467,7 +461,8 @@ for stno,val in dat_json.items():
     wb_temp = -200.0
     if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
         wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
-    
+        
+    npre_dispflag=True
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
@@ -499,7 +494,7 @@ grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), 
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
 
 # 海上のデータは観測がないためMSMで補正する
-#grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
 grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
 grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
@@ -511,8 +506,8 @@ nan_indices_temp = np.isnan(grid_temp)
 grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
-grid_temp = gaussian_filter(grid_temp, sigma=3.0) # sigmaはガウス分布の標準偏差
-grid_npre = gaussian_filter(grid_npre, sigma=3.0) # sigmaはガウス分布の標準偏差
+grid_temp = gaussian_filter(grid_temp, sigma=4.0) # sigmaはガウス分布の標準偏差
+grid_npre = gaussian_filter(grid_npre, sigma=4.0) # sigmaはガウス分布の標準偏差
 
 # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
 lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
