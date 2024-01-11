@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Selector</title>
+    <title>アメダス・レーダープロット図</title> <!-- タイトルの変更 -->
+    <style>
+        #regionSelect {
+            width: 200px; /* プルダウンの大きさを設定 */
+        }
+
+        #selectLabel {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 
+<label id="selectLabel" for="regionSelect">地域選択：</label>
 <select id="regionSelect" onchange="changeImage()">
   <option value="hokkaido">北海道</option>
   <option value="tohoku">北陸・東北</option>
