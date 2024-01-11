@@ -248,7 +248,7 @@ def download_time(time):
     return GgisFile
 
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
-npre_dispflag=True
+npre_dispflag=False
 temp_dispflag=False
 wbt_dispflag=False
 dp_dispflag=False
