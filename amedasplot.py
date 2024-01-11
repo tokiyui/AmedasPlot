@@ -205,7 +205,8 @@ def read_msm(time):
     # MSMは03シリーズ
     base_time = time.replace(hour=time.hour - (time.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
-    ft = time - base_time 
+    ft = time - base_time
+    print(ft)
 
     # 生存圏研究所ダウンロード元サイト
     http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original"  
