@@ -1,43 +1,27 @@
 #!/usr/bin/env python
 # coding: utf-8
-# 
+
 # AMeDAS 観測データプロット図 （地図領域は、緯度・経度のそれぞれ2度の範囲)
 # 矢羽,気温(左上),湿球温度（右下）,露点温度(左下),海面更正気圧(右上)
 # 黒良先生のプログラムにレーダーGPVを重ね合わせ
-#   
 # アメダス地点テーブルJSON  https://www.jma.go.jp/bosai/amedas/const/amedastable.json
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
 
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as colors
-import matplotlib.ticker as mticker
-import numpy as np
-np.set_printoptions(threshold=np.inf)
+import json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys
 import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-import cartopy.io.shapereader as shapereader
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import metpy.calc as mpcalc
-import json
-import urllib
-import math
-import matplotlib
-import subprocess
-import os, sys, glob
+import numpy as np
 import pandas as pd
 import pandas.tseries.offsets as offsets
-from metpy.units import units
 from datetime import datetime, timedelta
-import pytz
-from cartopy.mpl.ticker import LatitudeFormatter,LongitudeFormatter
-import pybufrkit
-import struct
 from itertools import repeat
-from scipy.interpolate import griddata,RectBivariateSpline
-from scipy.ndimage import gaussian_filter
-from scipy.ndimage import maximum_filter, minimum_filter
-import pygrib
+from metpy.units import units
+from scipy.interpolate import griddata
+from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
+from urllib.request import urlopen
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -163,137 +147,75 @@ def load_jmara_grib2(file):
 
     highest_level = struct.unpack_from('>H', section5, 13)[0]
     level_table = set_table(section5)
-    decoded = np.fromiter(
-        decode_runlength(section7[6:], highest_level), dtype=np.int16
-    ).reshape((3360, 2560))
-    
-    # 転置するとうまくいく
+    decoded = np.fromiter(decode_runlength(section7[6:], highest_level), dtype=np.int16).reshape((3360, 2560))
+
     transposed_flipped_data = np.flip(np.transpose(decoded), axis=1)
-
-    # convert level to representative
-    return level_table[transposed_flipped_data]
-
-def chikei():
-    # 地形バイナリデータの読み込み
-    file_path = 'LANDSEA.MSM_5K'  # ファイルのパス（実際のファイルパスに置き換えてください）
-    data = np.fromfile(file_path, dtype=np.dtype('>f4'))  # Big Endianの単精度浮動小数点数として読み込む
-
-    # データサイズに応じてreshape（481x505のグリッドサイズになると仮定）
-    data = data.reshape(505, 481)
-
-    # 先頭の格子点の緯度経度
-    start_lat = 47.6
-    start_lon = 120.0
-
-    # 格子間隔
-    lat_interval = 0.05
-    lon_interval = 0.0625
-
-    # 緯度経度の配列を作成
-    lats = np.linspace(start_lat, start_lat - (lat_interval * (data.shape[0] - 1)), data.shape[0])
-    lons = np.linspace(start_lon, start_lon + (lon_interval * (data.shape[1] - 1)), data.shape[1])
-
-    # メッシュグリッドの作成
-    lon_msm, lat_msm = np.meshgrid(lons, lats)
-    data *= 10000
-    data_flipped = np.flip(data, axis=0)
-    return data_flipped
+    return level_table[transposed_flipped_data] / 100
     
 def read_msm(time):
     # 初期値から4時間後に配信される
-    time = time - offsets.Hour(4)
+    modeltime = time - offsets.Hour(4)
     # MSMは03シリーズ
-    base_time = time.replace(hour=time.hour - (time.hour % 3), minute=0, second=0)  
+    base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
-    ft = time - base_time
-    print(ft)
-
+    ft = (modeltime - base_time).total_seconds() // 3600
     # 生存圏研究所ダウンロード元サイト
     http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original"  
-    # 保存先ディレクトリの指定
-    Opath = "."
+    # データファイル名の指定
     day_dir = base_time.strftime("%Y/%m/%d")
     basename = "Z__C_RJTD_{}00_MSM_GPV_Rjp_Lsurf_FH00-15_grib2.bin".format(base_time.strftime("%Y%m%d%H%M"))
-    fname    = "{}/{}".format(Opath, basename)
+    fname    = "./{}".format(basename)
     # すでにファイルが存在しなければ、ダウンロードを行う
     if os.path.exists(fname):
         print("{} Already exists.".format(basename))
     else:
-        #os.makedirs("{}/{}".format(Opath, day_dir), exist_ok=True)
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P {}/".format(url, Opath), shell=True)
-
-    # 要素 'PRMSL' のメッセージを取得する
+        subprocess.run("wget {} -P ./".format(url), shell=True)
+        
     grbs = pygrib.open(basename)
+    # 海面気圧のデータを取得する
     prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=ft)[0]
-
     prmsl, lats, lons = prmsl_fc0.data()
-    prmsl /= 100
-    prmsl_flipped = np.flip(prmsl, axis=0)
+    prmsl_flipped = np.flip(prmsl / 100, axis=0)
+    # 気温のデータを取得する
+    tmp_fc0 = grbs.select(parameterName='Temperature', forecastTime=ft)[0]
+    tmp, lats, lons = tmp_fc0.data()
+    tmp_flipped = np.flip(tmp - 273.15, axis=0)
+    
     # ガウシアンフィルタを適用
-    sigma = 2.0  # ガウス分布の標準偏差
-    prmsl_flipped = gaussian_filter(prmsl_flipped, sigma=sigma)
-    return prmsl_flipped
-
-# 地点テーブル
-# 読み込み設定
-n_station_json='./amedastable.json'
-# 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
-npre_dispflag=False
-temp_dispflag=False
-wbt_dispflag=False
-dp_dispflag=False
-
-# マーカーサイズ
-markersize_0 = 2
-# 文字サイズ
-char_size=16
-# 矢羽の長さ
-barb_length=8
-
-# 地図の中心位置を指定
-(lat_center, lon_center) = (36, 138)   # 関東付近
-# 地図の描画範囲指定
-#i_area = [lon_center - 2.0, lon_center + 2.0, lat_center - 2.0, lat_center + 2.0]
-i_area = [lon_center - 3.5, lon_center + 3.5, lat_center - 2.5, lat_center + 2.5]
-# 緯線・経線の指定
-dlon,dlat=1,1   # 1度ごとに
-
-# 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
+    prmsl_flipped = gaussian_filter(prmsl_flipped, sigma=3.0) # sigmaはガウス分布の標準偏差
+    tmp_flipped = gaussian_filter(tmp_flipped, sigma=1.0) # sigmaはガウス分布の標準偏差
+    return prmsl_flipped, tmp_flipped
+    
+# 緯度経度で指定したポイントの図上の座標などを取得する関数 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
-#  　pixel座標: plt.figureで指定した大きさxDPIに合わせ、左下を原点とするpixelで測った座標   
-#  　図の座標: axesで指定した範囲を(0,1)x(0,1)とする座標
-# 3つの座標を出力する
-#    図の座標, Pixel座標, 図法の座標
+# pixel座標: plt.figureで指定した大きさxDPIに合わせ、左下を原点とするpixelで測った座標   
+# 図の座標: axesで指定した範囲を(0,1)x(0,1)とする座標
+# 3つの座標（図の座標, Pixel座標, 図法の座標）を出力する 
+
 def transform_lonlat_to_figure(lonlat, ax, proj):
     # lonlat:経度と緯度  (lon, lat) 
-    # ax: Axes図の座標系    ex. fig.add_subplot()の戻り値
+    # ax: Axes図の座標系    例：fig.add_subplot()の戻り値
     # proj: axで指定した図法 
     #
-    # 例 緯度経度をpointで与え、ステレオ図法る場合
-    #    point = (140.0,35.0)
-    #    proj= ccrs.Stereographic(central_latitude=60, central_longitude=140) 
-    #    fig = plt.figure(figsize=(20,16))
-    #    ax = fig.add_subplot(1, 1, 1, projection=proj)
-    #    ax.set_extent([108, 156, 17, 55], ccrs.PlateCarree())
+    # 例：緯度経度をpointで与え、ステレオ図法にする場合
+    # point = (140.0,35.0)
+    # proj= ccrs.Stereographic(central_latitude=60, central_longitude=140) 
+    # fig = plt.figure(figsize=(20,16))
+    # ax = fig.add_subplot(1, 1, 1, projection=proj)
+    # ax.set_extent([108, 156, 17, 55], ccrs.PlateCarree())
     #
-    # 図法の変換
-    # 参照  https://scitools.org.uk/cartopy/docs/v0.14/crs/index.html                    
+    # 図法の変換：参照  https://scitools.org.uk/cartopy/docs/v0.14/crs/index.html                    
     point_proj = proj.transform_point(*lonlat, ccrs.PlateCarree())
-    #
-    # pixel座標へ変換
-    # 参照　https://matplotlib.org/stable/tutorials/advanced/transforms_tutorial.html
+    # pixel座標へ変換：参照　https://matplotlib.org/stable/tutorials/advanced/transforms_tutorial.html
     point_pix = ax.transData.transform(point_proj)
-    #
     # 図の座標へ変換                                                           
     point_fig = ax.transAxes.inverted().transform(point_pix)
     return point_fig, point_pix, point_proj
 
 # 1地点のアメダスjsonデータから、elem要素で指定した値を返す(ただしFlagが 0以外は Noneとする)
-# 要素:elem = 'temp','humidity','snow1h','snow6h','snow12h','snow24h','sun10m','sun1h',
-#            'precipitation10m','precipitation1h','precipitation3h','precipitation24h'
-#            'wind','windDirection'
+# 要素:elem = 'temp','humidity','snow1h','snow6h','snow12h','snow24h','sun10m','sun1h','precipitation10m','precipitation1h','precipitation3h','precipitation24h','wind','windDirection'
 def get_obs_value(amd_obs,elem):
     try:
         et = amd_obs[elem]
@@ -302,47 +224,56 @@ def get_obs_value(amd_obs,elem):
         return float(et[0])
     except Exception:
         return None
-
-# 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
-def trans_tupleLL(lat_tuple, lon_tuple):
-    lat = lat_tuple[0] + lat_tuple[1]/60.0
-    lon = lon_tuple[0] + lon_tuple[1]/60.0
-    return (lat, lon)
-
-# 16方位風向と風速から、u,v作成   
-def get_uv(ws, wdd16):
-    if ws == None or wdd16 == None:
-        u = None
-        v = None
+    
+# 気象庁全国合成レーダーGPVのダウンロード
+def download_time(time):    
+    # 生存圏研究所ダウンロード元サイト
+    http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original"  
+    # データファイル名の指定
+    day_dir = time.strftime("%Y/%m/%d")
+    basename = "Z__C_RJTD_{}00_RDR_JMAGPV__grib2.tar".format(time.strftime("%Y%m%d%H%M"))
+    fname    = "./{}".format(basename)
+    # すでにファイルが存在しなければ、ダウンロードを行う
+    if os.path.exists(fname):
+        print("{} Already exists.".format(basename))
     else:
-        wd = wdd16 / 8.0 * math.pi  # 1/8 = (360/16) / 360 * 2
-        u = -1.0 * ws * math.sin(wd)
-        v = -1.0 * ws * math.cos(wd)
-    return u,v
+        url      = "{}/{}/{}".format(http,  day_dir, basename)
+        # wgetコマンドでデータのダウンロード
+        subprocess.run("wget {} -P ./".format(url), shell=True)
+        # tarコマンドでダウンロードした圧縮ファイルの解凍
+        subprocess.run("tar -xvf {} -C ./".format(fname), shell=True)   
+    GgisFile = "./Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(time.strftime("%Y%m%d%H%M"))
+    return GgisFile
+
+# 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
+npre_dispflag=False
+temp_dispflag=False
+wbt_dispflag=False
+dp_dispflag=False
+
+markersize_0 = 2 # マーカーサイズ
+char_size=16 # 文字サイズ
+barb_length=8 # 矢羽の長さ
+i_area = [134, 142, 33, 39] # 地図の描画範囲指定
+dlon,dlat=1,1   # 緯線・経線は1度ごと
 
 # 観測データ日時
 if len(sys.argv) == 2:
     arg = sys.argv[1]
     dt = parse_datetime(arg)
-    if dt:
-        year=dt.year
-        month=dt.month
-        day=dt.day
-        hour=dt.hour
-        min=0
-        print("読み込み観測時刻 {:4d}/{:02d}/{:02d} {:02d}:{:02d}".format(year,month,day,hour,min))
-    else:
-        print('Usage: python script.py [YYYYMMDDHH(MM)]')
 elif len(sys.argv) == 1:
     jst = pytz.timezone('Asia/Tokyo')
     dt = datetime.now(jst) - timedelta(minutes=30)
+
+# 描画開始メッセージ    
+if dt:
     year=dt.year
     month=dt.month
     day=dt.day
     hour=dt.hour
     min=0
-    dt = datetime(int(year), int(month), int(day), int(hour), int(min))                
-    print("読み込み観測時刻 {:4d}/{:02d}/{:02d} {:02d}:{:02d}".format(year,month,day,hour,min))        
+    dt = datetime(int(year), int(month), int(day), int(hour), int(min))
+    print("読み込み観測時刻 {:4d}/{:02d}/{:02d} {:02d}:{:02d}".format(year,month,day,hour,min))
 else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     
@@ -350,7 +281,7 @@ else:
 url_data_json= 'https://www.jma.go.jp/bosai/amedas/data/map/{:4d}{:02d}{:02d}{:02d}{:02d}00.json'
 url_data_json=url_data_json.format(year,month,day,hour,min)
 # 気象庁HPからアメダスデータを読み込む
-response = urllib.request.urlopen(url_data_json)
+response = urlopen(url_data_json)
 content = response.read()
 response.close()
 data_json=content.decode()
@@ -359,33 +290,11 @@ dat_json = json.loads(data_json)
 # アメダス地点Tableのurl
 url_station_json="https://www.jma.go.jp/bosai/amedas/const/amedastable.json"
 # アメダス地点Tableを読み込む
-response = urllib.request.urlopen(url_station_json)
+response = urlopen(url_station_json)
 content = response.read()
 response.close()
 station_json=content.decode()
 amd_json = json.loads(station_json)
-
-# 気象庁全国合成レーダーGPVのダウンロード
-def download_time(time):    
-    # 生存圏研究所ダウンロード元サイト
-    http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original"  
-    # 保存先ディレクトリの指定
-    Opath = "."
-    day_dir = time.strftime("%Y/%m/%d")
-    basename = "Z__C_RJTD_{}00_RDR_JMAGPV__grib2.tar".format(time.strftime("%Y%m%d%H%M"))
-    fname    = "{}/{}".format(Opath, basename)
-    # すでにファイルが存在しなければ、ダウンロードを行う
-    if os.path.exists(fname):
-        print("{} Already exists.".format(basename))
-    else:
-        #os.makedirs("{}/{}".format(Opath, day_dir), exist_ok=True)
-        url      = "{}/{}/{}".format(http,  day_dir, basename)
-        # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P {}/".format(url, Opath), shell=True)
-        # tarコマンドでダウンロードした圧縮ファイルの解凍
-        subprocess.run("tar -xvf {} -C {}/".format(fname, Opath), shell=True)   
-    GgisFile = "{}/Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(Opath, time.strftime("%Y%m%d%H%M"))
-    return GgisFile
     
 # 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
 # アメダスデータと同じ時刻のレーダーGPVをダウンロード
@@ -394,14 +303,22 @@ utc = time - offsets.Hour(9)
 filepath = download_time(utc)
 
 # データを読む
-rain = load_jmara_grib2(filepath) / 100 
+rain = load_jmara_grib2(filepath) #レーダーGPV
+prmsl, tmp = read_msm(utc) #MSM海面気圧
 
 # 地形データ取得
-sealand = chikei()
+data = np.fromfile("LANDSEA.MSM_5K", dtype=np.dtype('>f4'))  # 地形バイナリデータをBig Endianの単精度浮動小数点数として読み込む
 
-# MSMデータ取得
-prmsl = read_msm(utc)
-        
+# データサイズに応じてreshape（MSMのグリッドサイズに合わせる）
+data = data.reshape(505, 481)
+
+# メッシュグリッドの作成
+grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
+sealand = np.flip(data*10000, axis=0)
+
+# ガウシアンフィルタを適用
+sealand_filterd = gaussian_filter(sealand, sigma=3) # sigmaはガウス分布の標準偏差
+
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 latlon_proj = ccrs.PlateCarree()
@@ -409,7 +326,7 @@ latlon_proj = ccrs.PlateCarree()
 # 図のSIZE指定inch                                                                        
 fig = plt.figure(figsize=(20,15))
 # 余白設定                                                                                
-plt.subplots_adjust(left=0.04, right=1, bottom=0.06, top=0.98)                  
+plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent(i_area, latlon_proj)
@@ -461,24 +378,32 @@ npre_list = []
 
 # 地点プロット                                                                                                 
 for stno,val in dat_json.items():
-    # データ取得
-    (wlat,wlon) = trans_tupleLL(amd_json[stno]['lat'], amd_json[stno]['lon'])
+    # 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
+    wlat = amd_json[stno]['lat'][0] + amd_json[stno]['lat'][1]/60.0
+    wlon = amd_json[stno]['lon'][0] + amd_json[stno]['lon'][1]/60.0
     walt = amd_json[stno]['alt']
     # 風
     wind_ok = True
     ws = get_obs_value(val,'wind')
     wd = get_obs_value(val,'windDirection')
     if ws is not None and wd is not None:
-        (au,av) = get_uv(ws,wd)
+        # 16方位風向と風速から、u,v作成   
+        if ws == None or wd == None:
+            u = None
+            v = None
+        else:
+            wd = wd / 8.0 * math.pi  # 1/8 = (360/16) / 360 * 2
+            au = -1.0 * ws * math.sin(wd)
+            av = -1.0 * ws * math.cos(wd)
     else:
         wind_ok = False
     # 気温
     temp = get_obs_value(val,'temp')
     if temp is None:
         temp = np.nan
-    elif walt < 1500:
+    elif walt < 800: #標高の高い観測点は無視する
         # 配列に格納
-        tempsl = temp + walt * 0.0065
+        tempsl = temp
         lat_list_t.append(wlat)
         lon_list_t.append(wlon)
         temp_list.append(tempsl)
@@ -498,8 +423,7 @@ for stno,val in dat_json.items():
         # 配列に格納
         lat_list_p.append(wlat)
         lon_list_p.append(wlon)
-        npre_list.append(npre)
-    
+        npre_list.append(npre)   
     # 気圧
     pre = get_obs_value(val,'pressure')
     if pre is None:
@@ -536,54 +460,59 @@ for stno,val in dat_json.items():
                 color_temp = "black"
             ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# グリッドを作成
-grid_lon_t, grid_lat_t = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
-grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
-
 # 線形補間
-grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_t, grid_lat_t), method='linear')
-grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_p, grid_lat_p), method='linear')
+grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), method='linear')
+grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
 
-# 海上のデータは観測がないためMSMで置換する
-grid_npre[sealand == 0] = prmsl[sealand == 0]
+# 海上のデータは観測がないためMSMで補正する
+grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
+grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
+grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
 
 # ガウシアンフィルタを適用
-sigma = 2.0  # ガウス分布の標準偏差
-grid_temp = gaussian_filter(grid_temp, sigma=sigma)
-grid_npre = gaussian_filter(grid_npre, sigma=sigma)
-
-# 等温線をプロット
-#levels = np.arange(-30, 60, 3)
-#cont = plt.contour(grid_lon_t, grid_lat_t, grid_temp, levels=levels, linewidths=2, linestyle='solid', colors='red')
-
-# 等温線のラベルを付ける
-#plt.clabel(cont, fontsize=20)
+grid_temp = gaussian_filter(grid_temp, sigma=3.0) # sigmaはガウス分布の標準偏差
+grid_npre = gaussian_filter(grid_npre, sigma=3.0) # sigmaはガウス分布の標準偏差
 
 # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
-lon_range = np.where((grid_lon_t[0, :] >= i_area[0] - 1.0) & (grid_lon_t[0, :] <= i_area[1] + 1.0))
-lat_range = np.where((grid_lat_t[:, 0] >= i_area[2] - 1.0) & (grid_lat_t[:, 0] <= i_area[3] + 1.0))
+lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
+lat_range = np.where((grid_lat[:, 0] >= i_area[2] - 0.25) & (grid_lat[:, 0] <= i_area[3] + 0.25))
 
 # 切り出したい範囲のインデックスを取得
 lon_indices = lon_range[0]
 lat_indices = lat_range[0]
 
 # 切り出し
-grid_lon_p_sliced = grid_lon_p[lat_indices][:, lon_indices]
-grid_lat_p_sliced = grid_lat_p[lat_indices][:, lon_indices]
+grid_lon_sliced = grid_lon[lat_indices][:, lon_indices]
+grid_lat_sliced = grid_lat[lat_indices][:, lon_indices]
 psea_grid = grid_npre[lat_indices][:, lon_indices]
+temp_grid = grid_temp[lat_indices][:, lon_indices]
+
+# 等温線をプロット
+levels = np.arange(-27, 57, 6)
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
+levels2 = np.arange(-30, 60, 6)
+cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=4, linestyles='solid', colors='red')
+
+# 等温線のラベルを付ける
+plt.clabel(cont, fontsize=20)
+plt.clabel(cont2, fontsize=40)
 
 # 等圧線をプロット
-levels = np.arange(900, 1050, 1)
-cont = plt.contour(grid_lon_p_sliced, grid_lat_p_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
+levels = np.arange(901, 1049, 2)
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
+levels2 = np.arange(900, 1050, 2)
+cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=4, colors='black')
 
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=20)
+plt.clabel(cont2, fontsize=40)
 
 ## H stamp
-maxid = detect_peaks(psea_grid, filter_size=20, dist_cut=5)
+maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
 for i in range(len(maxid[0])):
-    wlon = grid_lon_p_sliced[0][maxid[1][i]]
-    wlat = grid_lat_p_sliced[maxid[0][i]][0]
+    wlon = grid_lon_sliced[0][maxid[1][i]]
+    wlat = grid_lat_sliced[maxid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
@@ -594,10 +523,10 @@ for i in range(len(maxid[0])):
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=48, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
-minid = detect_peaks(psea_grid, filter_size=20, dist_cut=5, flag=1)
+minid = detect_peaks(psea_grid, filter_size=40, dist_cut=10, flag=1)
 for i in range(len(minid[0])):
-    wlon = grid_lon_p_sliced[0][minid[1][i]]
-    wlat = grid_lat_p_sliced[minid[0][i]][0]
+    wlon = grid_lon_sliced[0][minid[1][i]]
+    wlat = grid_lat_sliced[minid[0][i]][0]
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
