@@ -471,7 +471,6 @@ for stno,val in dat_json.items():
     if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
         wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
         
-    npre_dispflag=True
     ## プロット
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
     if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
@@ -515,8 +514,8 @@ nan_indices_temp = np.isnan(grid_temp)
 grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
-grid_npre = gaussian_filter(grid_npre, sigma=4.0)
-grid_temp = gaussian_filter(grid_temp, sigma=8.0) 
+grid_npre = gaussian_filter(grid_npre, sigma=2.0)
+grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
 #grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
 #grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
