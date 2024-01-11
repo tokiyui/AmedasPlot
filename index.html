@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アメダス・レーダープロット図</title> <!-- タイトルの変更 -->
+    <title>アメダス・レーダープロット図</title>
     <style>
         #regionSelect {
             width: 200px; /* プルダウンの大きさを設定 */
+            height: 40px;
         }
 
         #selectLabel {
@@ -17,6 +18,8 @@
     </style>
 </head>
 <body>
+
+<h1 id="pageTitle">アメダス・レーダープロット図</h1>
 
 <label id="selectLabel" for="regionSelect">地域選択：</label>
 <select id="regionSelect" onchange="changeImage()">
