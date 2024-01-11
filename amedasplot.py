@@ -326,8 +326,17 @@ data = data.reshape(505, 481)
 grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 sealand = np.flip(data*10000, axis=0)
 
+#sealand[(grid_lat > 35) & (grid_lon < 129)] = 0
+#sealand[(grid_lat > 34) & (grid_lon < 128)] = 0]
+sealand[(grid_lat > 34.5) & (grid_lon < 130)] = 0
+sealand[(grid_lat > 33) & (grid_lon < 128)] = 0
+sealand[(grid_lat > 45.5)] = 0
+sealand[(grid_lon > 145.5)] = 0
+
+sealand = maximum_filter(sealand, size=(15, 15))
+
 # ガウシアンフィルタを適用
-sealand_filterd = gaussian_filter(sealand, sigma=10.0) # sigmaはガウス分布の標準偏差
+sealand_filterd = gaussian_filter(sealand, sigma=4.0) # sigmaはガウス分布の標準偏差
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
@@ -506,8 +515,10 @@ nan_indices_temp = np.isnan(grid_temp)
 grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
-grid_temp = gaussian_filter(grid_temp, sigma=4.0) # sigmaはガウス分布の標準偏差
-grid_npre = gaussian_filter(grid_npre, sigma=4.0) # sigmaはガウス分布の標準偏差
+grid_npre = gaussian_filter(grid_npre, sigma=4.0)
+grid_temp = gaussian_filter(grid_temp, sigma=8.0) 
+#grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
+#grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
 # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
 lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
