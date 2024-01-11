@@ -33,7 +33,10 @@ jobs:
 
       - name: Plotting
         run: |
-          python amedasplot.py
+          python amedasplot.py 0
+          python amedasplot.py 1
+          python amedasplot.py 2
+          python amedasplot.py 3
 
       - name: Commit and Push Changes
         run: |
