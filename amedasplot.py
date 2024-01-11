@@ -22,6 +22,8 @@ from metpy.units import units
 from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
+#from scipy import interpolate
+from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -153,8 +155,8 @@ def load_jmara_grib2(file):
     return level_table[transposed_flipped_data] / 100
     
 def read_msm(time):
-    # 初期値から4時間後に配信される
-    modeltime = time - offsets.Hour(4)
+    # 初期値から5時間後に配信される
+    modeltime = time - offsets.Hour(5)
     # MSMは03シリーズ
     base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
@@ -246,7 +248,7 @@ def download_time(time):
     return GgisFile
 
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
-npre_dispflag=False
+npre_dispflag=True
 temp_dispflag=False
 wbt_dispflag=False
 dp_dispflag=False
@@ -254,16 +256,29 @@ dp_dispflag=False
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
 barb_length=8 # 矢羽の長さ
-i_area = [134, 142, 33, 39] # 地図の描画範囲指定
 dlon,dlat=1,1   # 緯線・経線は1度ごと
 
-# 観測データ日時
-if len(sys.argv) == 2:
-    arg = sys.argv[1]
+# 描画地域と描画時刻の設定
+if len(sys.argv) == 3 and (sys.argv[1] == '0' or sys.argv[1] == '1' or sys.argv[1] == '2' or sys.argv[1] == '3'): 
+    area = sys.argv[1] #第一引数は描画地域（0:北海道、1:東日本、2:西日本、3:東北）
+    arg = sys.argv[2] #第二引数は描画時刻
     dt = parse_datetime(arg)
-elif len(sys.argv) == 1:
+elif len(sys.argv) == 2 and (sys.argv[1] == '0' or sys.argv[1] == '1' or sys.argv[1] == '2' or sys.argv[1] == '3'):
+    area = sys.argv[1] #第二引数は省略可能で、その場合は30分以上前（データ取得可能時刻）の直近の正時
     jst = pytz.timezone('Asia/Tokyo')
     dt = datetime.now(jst) - timedelta(minutes=30)
+elif len(sys.argv) == 2 and len(sys.argv[1]) >= 8:
+    area = 1 #第一引数を省略する場合は、デフォルトで東日本を描画し、時刻は引数によって定める
+    dt = parse_datetime(arg)
+elif len(sys.argv) == 1:
+    area = 1 #すべての引数を省略することも可能
+    jst = pytz.timezone('Asia/Tokyo')
+    dt = datetime.now(jst) - timedelta(minutes=30)
+else:
+    print('Usage: python script.py [areacode[0:North][1:East][2:West]] [YYYYMMDDHH(MM)]')
+    exit()
+
+print(area)
 
 # 描画開始メッセージ    
 if dt:
@@ -275,7 +290,8 @@ if dt:
     dt = datetime(int(year), int(month), int(day), int(hour), int(min))
     print("読み込み観測時刻 {:4d}/{:02d}/{:02d} {:02d}:{:02d}".format(year,month,day,hour,min))
 else:
-    print('Usage: python script.py [YYYYMMDDHH(MM)]')
+    print('Usage: python script.py [areacode[1:North][2:East][3:West]] [YYYYMMDDHH(MM)]')
+    exit()
     
 # 観測データJSONの url作成
 url_data_json= 'https://www.jma.go.jp/bosai/amedas/data/map/{:4d}{:02d}{:02d}{:02d}{:02d}00.json'
@@ -317,19 +333,11 @@ grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange
 sealand = np.flip(data*10000, axis=0)
 
 # ガウシアンフィルタを適用
-sealand_filterd = gaussian_filter(sealand, sigma=3) # sigmaはガウス分布の標準偏差
+sealand_filterd = gaussian_filter(sealand, sigma=10.0) # sigmaはガウス分布の標準偏差
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 latlon_proj = ccrs.PlateCarree()
-
-# 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize=(20,15))
-# 余白設定                                                                                
-plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
-# 作図                                                                                    
-ax = fig.add_subplot(1, 1, 1, projection=proj)
-ax.set_extent(i_area, latlon_proj)
 
 # カラーバーの設定
 #気象庁RGBカラー
@@ -353,6 +361,32 @@ mlon, mlat = 2560, 3360
 slon, elon, rlon = 118, 150, 1/80
 slat, elat, rlat = 20, 48, 1/120
 
+# 地図の描画範囲指定
+if (area == '0'):
+    i_area = [139, 147, 40, 46]
+    areaname="Hokkaido"
+elif (area == '1'):
+    i_area = [134, 142, 33, 39]
+    areaname="East"
+elif (area == '2'):
+    i_area = [128, 136, 31, 37]
+    areaname="West"
+elif (area == '3'):
+    i_area = [135, 143, 36, 42]
+    areaname="Tohoku"
+else:
+    i_area = [134, 142, 33, 39]
+    areaname="East"
+
+# 図のSIZE指定inch                                                                        
+fig = plt.figure(figsize=(20,15))
+# 余白設定                                                                                
+plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
+# 作図                                                                                    
+ax = fig.add_subplot(1, 1, 1, projection=proj)
+ax.set_extent(i_area, latlon_proj)
+
+# レーダーGPV描画
 lon = np.arange(slon, elon, rlon)
 lat = np.arange(slat, elat, rlat)
 LON, LAT = np.meshgrid(lon, lat)
@@ -465,10 +499,16 @@ grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), 
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
 
 # 海上のデータは観測がないためMSMで補正する
-grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+#grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
 grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
 grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
+
+# データがない格子もMSM予報値をそのまま採用する
+nan_indices_npre = np.isnan(grid_npre)
+grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
+nan_indices_temp = np.isnan(grid_temp)
+grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
 grid_temp = gaussian_filter(grid_temp, sigma=3.0) # sigmaはガウス分布の標準偏差
@@ -543,4 +583,4 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
 plt.title('Valid Time: {}'.format(dt), loc='right',size=20);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest.jpg", format="jpg")
+plt.savefig("latest{}.jpg".format(areaname), format="jpg")
