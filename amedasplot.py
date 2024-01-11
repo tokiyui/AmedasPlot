@@ -507,6 +507,8 @@ grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
 grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
 
+grid_npre=prmsl
+
 # データがない格子もMSM予報値をそのまま採用する
 nan_indices_npre = np.isnan(grid_npre)
 grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
