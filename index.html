@@ -2,10 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AmedasPlot</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Selector</title>
 </head>
 <body>
-    <h1>近畿〜関東甲信のレーダー・アメダスプロット図</h1>
-    <img src="latest.jpg" alt="Generated Image">
+
+<select id="regionSelect" onchange="changeImage()">
+  <option value="hokkaido">北海道</option>
+  <option value="tohoku">北陸・東北</option>
+  <option value="kanto">関東〜近畿</option>
+  <option value="kinki">近畿〜九州</option>
+</select>
+
+<div id="imageContainer">
+  <img id="selectedImage" src="East.jpg" alt="Default Image">
+</div>
+
+<script>
+function changeImage() {
+  var selectBox = document.getElementById("regionSelect");
+  var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+  var imageElement = document.getElementById("selectedImage");
+
+  switch (selectedValue) {
+    case "hokkaido":
+      imageElement.src = "Hokkaido.jpg";
+      break;
+    case "tohoku":
+      imageElement.src = "Tohoku.jpg";
+      break;
+    case "kanto":
+      imageElement.src = "East.jpg";
+      break;
+    case "kinki":
+      imageElement.src = "West.jpg";
+      break;
+    default:
+      imageElement.src = "East.jpg";
+  }
+}
+</script>
+
 </body>
 </html>
