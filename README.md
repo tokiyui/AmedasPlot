@@ -2,57 +2,6 @@
 ![最新](latest.jpg)
 # プルダウンメニューと画像表示の例
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Selector</title>
-</head>
-<body>
-
-<select id="regionSelect" onchange="changeImage()">
-  <option value="hokkaido">北海道</option>
-  <option value="tohoku">北陸・東北</option>
-  <option value="kanto">関東〜近畿</option>
-  <option value="kinki">近畿〜九州</option>
-</select>
-
-<div id="imageContainer">
-  <img id="selectedImage" src="East.jpg" alt="Default Image">
-</div>
-
-<script>
-function changeImage() {
-  var selectBox = document.getElementById("regionSelect");
-  var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-  var imageElement = document.getElementById("selectedImage");
-
-  switch (selectedValue) {
-    case "hokkaido":
-      imageElement.src = "Hokkaido.jpg";
-      break;
-    case "tohoku":
-      imageElement.src = "Tohoku.jpg";
-      break;
-    case "kanto":
-      imageElement.src = "East.jpg";
-      break;
-    case "kinki":
-      imageElement.src = "West.jpg";
-      break;
-    default:
-      imageElement.src = "East.jpg";
-  }
-}
-</script>
-
-</body>
-</html>
-
-
 ## 注意！
 * ここで表示している図は、00から30分頃：一つ前の正時、30分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
 * 各種データは誤差や異常値を含む可能性がありますが、品質チェックをせずに作図しているため、不適切な情報が含まれる可能性があります。
