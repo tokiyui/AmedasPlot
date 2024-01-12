@@ -160,7 +160,7 @@ def read_msm(time):
     # MSMは03シリーズ
     base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
-    ft = (modeltime - base_time).total_seconds() 
+    ft = (modeltime - base_time)
     print(ft)
     print(ft)
     # 生存圏研究所ダウンロード元サイト
