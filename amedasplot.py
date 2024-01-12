@@ -328,7 +328,7 @@ sealand = np.flip(data*10000, axis=0)
 #sealand[(grid_lat > 35) & (grid_lon < 129)] = 0
 #sealand[(grid_lat > 34) & (grid_lon < 128)] = 0]
 sealand[(grid_lat > 34.5) & (grid_lon < 130)] = 0
-sealand[(grid_lat > 33) & (grid_lon < 128)] = 0
+sealand[(grid_lat > 33) & (grid_lon < 128.5)] = 0
 sealand[(grid_lat > 45.5)] = 0
 sealand[(grid_lon > 145.5)] = 0
 
