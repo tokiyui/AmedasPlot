@@ -161,8 +161,6 @@ def read_msm(time):
     base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
     # 対象時刻と初期値の時間差
     ft = (time - base_time).total_seconds() // 3600
-    print(ft)
-    print(ft)
     # 生存圏研究所ダウンロード元サイト
     http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original"  
     # データファイル名の指定
@@ -175,8 +173,7 @@ def read_msm(time):
     else:
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P ./".format(url), shell=True)
-        
+        subprocess.run("wget {} -P ./".format(url), shell=True)       
     grbs = pygrib.open(basename)
     # 海面気圧のデータを取得する
     prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=ft)[0]
@@ -506,8 +503,6 @@ grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), 
 # 海上のデータは観測がないためMSMで補正する
 grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
 grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
-grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
-grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
 
 # データがない格子もMSM予報値をそのまま採用する
 nan_indices_npre = np.isnan(grid_npre)
@@ -520,6 +515,10 @@ grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
 # grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
 # grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
+
+#陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
+grid_npre[sealand_filterd <= 1] = np.nan
+grid_temp[sealand_filterd <= 1] = np.nan
 
 # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
 lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
