@@ -502,12 +502,10 @@ grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), 
 grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
 
 # 海上のデータは観測がないためMSMで補正する
-grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+# grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
 grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
-grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
+# grid_npre[sealand_filterd <= 1] = prmsl[sealand_filterd <= 1] #陸地から十分離れた格子はMSM予報値をそのまま採用する
 grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
-
-grid_npre=prmsl
 
 # データがない格子もMSM予報値をそのまま採用する
 nan_indices_npre = np.isnan(grid_npre)
@@ -515,11 +513,13 @@ grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
 nan_indices_temp = np.isnan(grid_temp)
 grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
+grid_npre = prmsl
+
 # ガウシアンフィルタを適用
 grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
-#grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
-#grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
+# grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
+# grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
 # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
 lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
