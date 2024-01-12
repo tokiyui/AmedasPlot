@@ -508,16 +508,16 @@ grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 grid_temp[sealand_filterd <= 1] = tmp[sealand_filterd <= 1]
 
 # データがない格子もMSM予報値をそのまま採用する
-nan_indices_npre = np.isnan(grid_npre)
-grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
+# nan_indices_npre = np.isnan(grid_npre)
+# grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
 nan_indices_temp = np.isnan(grid_temp)
 grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 grid_npre = prmsl
 
 # ガウシアンフィルタを適用
-grid_npre = gaussian_filter(grid_npre, sigma=2.0)
-grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
+# grid_npre = gaussian_filter(grid_npre, sigma=2.0)
+# grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
 # grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
 # grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
