@@ -249,24 +249,6 @@ temp_dispflag = False
 wbt_dispflag = False
 dp_dispflag = False
 
-# オプションとしてプロット設定を変更
-parser = argparse.ArgumentParser(description='プログラムの説明')
-parser.add_argument('--plot', type=str, help='プロット関連のオプション')
-args = parser.parse_args()
-
-# --plot オプションが指定されている場合
-if args.plot:
-    # 各フラグを指定された文字に基づいて設定
-    for char in args.plot:
-        if char == 'n':
-            npre_dispflag = True
-        elif char == 't':
-            temp_dispflag = True
-        elif char == 'w':
-            wbt_dispflag = True
-        elif char == 'd':
-            dp_dispflag = True
-
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
 barb_length=8 # 矢羽の長さ
@@ -291,6 +273,10 @@ elif len(sys.argv) == 1:
 else:
     print('Usage: python script.py [areacode[0:North][1:East][2:West]] [YYYYMMDDHH(MM)]')
     exit()
+
+# 2024-01-13 15:00~ 関東雪運用：湿球温度をプロット
+if (area == 1):
+    wbt_dispflag = True    
 
 # 描画開始メッセージ    
 if dt:
