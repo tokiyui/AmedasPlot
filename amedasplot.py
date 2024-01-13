@@ -24,6 +24,7 @@ from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
 #from scipy import interpolate
 from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
+import argparse
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -243,10 +244,28 @@ def download_time(time):
     return GgisFile
 
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
-npre_dispflag=False
-temp_dispflag=False
-wbt_dispflag=False
-dp_dispflag=False
+npre_dispflag = False
+temp_dispflag = False
+wbt_dispflag = False
+dp_dispflag = False
+
+# オプションとしてプロット設定を変更
+parser = argparse.ArgumentParser(description='プログラムの説明')
+parser.add_argument('--plot', type=str, help='プロット関連のオプション')
+args = parser.parse_args()
+
+# --plot オプションが指定されている場合
+if args.plot:
+    # 各フラグを指定された文字に基づいて設定
+    for char in args.plot:
+        if char == 'n':
+            npre_dispflag = True
+        elif char == 't':
+            temp_dispflag = True
+        elif char == 'w':
+            wbt_dispflag = True
+        elif char == 'd':
+            dp_dispflag = True
 
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
