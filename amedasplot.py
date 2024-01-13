@@ -275,7 +275,7 @@ else:
     exit()
 
 # 2024-01-13 15:00~ 関東雪運用：湿球温度をプロット
-if (area == 1):
+if (area == '1'):
     wbt_dispflag = True    
 
 # 描画開始メッセージ    
