@@ -274,10 +274,6 @@ else:
     print('Usage: python script.py [areacode[0:North][1:East][2:West]] [YYYYMMDDHH(MM)]')
     exit()
 
-# 2024-01-13 15:00~ 関東雪運用：湿球温度をプロット
-if (area == '1'):
-    wbt_dispflag = True    
-
 # 描画開始メッセージ    
 if dt:
     year=dt.year
@@ -330,10 +326,6 @@ data = data.reshape(505, 481)
 grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 sealand = np.flip(data*10000, axis=0)
 
-#sealand[(grid_lat > 35) & (grid_lon < 129)] = 0
-#sealand[(grid_lat > 34) & (grid_lon < 128)] = 0]
-#sealand[(grid_lat > 34.5) & (grid_lon < 130)] = 0
-#sealand[(grid_lat > 33) & (grid_lon < 128.5)] = 0
 sealand[(grid_lon - grid_lat < 94.5) & (grid_lon < 132)] = 0
 sealand[(grid_lat > 45.5)] = 0
 sealand[(grid_lon > 145.5)] = 0
