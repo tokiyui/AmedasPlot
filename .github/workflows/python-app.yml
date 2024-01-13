@@ -34,7 +34,7 @@ jobs:
       - name: Plotting
         run: |
           python amedasplot.py 0
-          python amedasplot.py 1
+          python amedasplot.py 1 --plot w
           python amedasplot.py 2
           python amedasplot.py 3
 
