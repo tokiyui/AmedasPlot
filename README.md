@@ -4,7 +4,7 @@
 関東〜近畿のレーダー・アメダスプロット図を表示しています。他の地域は https://tokiyui.github.io/AmedasPlot/ からご確認いただけます。
 
 ## 注意！
-* ここで表示している図は、00から30分頃：一つ前の正時、30分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
+* ここで表示している図は、00から40分頃：一つ前の正時、40分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
 * 各種データは誤差や異常値を含む可能性がありますが、品質チェックをせずに作図しているため、不適切な情報が含まれる可能性があります。
 * 等圧線と高・低気圧スタンプを表示していますが、この図は局地的な状況を確認するための資料であり、一般的に公開されている天気図（専門用語でいえば、総観規模の天気図）と矛盾する場合があります。
 
@@ -17,8 +17,8 @@
 ## データ取得元
 * アメダスデータ:気象庁HPのJSON（ https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json ）
 * レーダーデータ:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
-* 海上の観測データの代わりに、京都大学生存圏研究所（http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/）から取得したMSM（メソモデル）の予報値を使用しています。
-* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K、コピーしてgit登録済み）を使用しています。
+* 海上の観測データの代わりに、京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/ ）から取得したMSM（メソモデル）の予報値を使用しています。
+* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K、コピーしてgit登録済み ）を使用しています。
 
 ## special thanks
 * 黒良先生が開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
