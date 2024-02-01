@@ -6,7 +6,7 @@
 ## 注意！
 * ここで表示している図は、00から40分頃：一つ前の正時、40分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
 * 各種データは誤差や異常値を含む可能性がありますが、品質チェックをせずに作図しているため、不適切な情報が含まれる可能性があります。
-* 等圧線と高・低気圧スタンプを表示していますが、この図は局地的な状況を確認するための資料であり、一般的に公開されている天気図（専門用語でいえば、総観規模の天気図）と矛盾する場合があります。
+* 等圧線と高・低気圧スタンプを表示していますが、この図は局地的な状況を確認するための資料であり、一般的に公開されている天気図（総観規模の天気図）と矛盾する場合があります。
 
 ## 説明
 * このプログラムは、アメダスの観測データ（気圧・風）とレーダーGPVを重ね書きするプログラムです。
@@ -18,11 +18,11 @@
 * アメダスデータ:気象庁HPのJSON（ https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json ）
 * レーダーデータ:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
 * 海上の観測データの代わりに、京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/ ）から取得したMSM（メソモデル）の予報値を使用しています。
-* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K、コピーしてgit登録済み ）を使用しています。
+* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K ：コピーしてgit登録済み ）を使用しています。
 
 ## special thanks
-* 黒良先生が開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
-* また、LスタンプとHスタンプの表示も、黒良先生の別のプログラム（上記記事と同じnoteで公開されています）から流用しております。
+* 黒良さんが開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
+* また、LスタンプとHスタンプの表示も、黒良さんの別のプログラム（上記記事と同じnoteで公開されています）から流用しております。
 * レーダーデータのプロットはこちらを参考にしました。https://hineken.com/blog/mete_arti/jmaradar_python/
 * レーダーデータのカラーバーはこちらを参照しました。https://qiita.com/earth06/items/eb579d122bb67d964c40
 * 本プログラムの作成にあたっては、ChatGPT氏に多大なるご助言をいただきました。この場を借りて深く感謝申し上げます。
