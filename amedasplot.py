@@ -534,18 +534,18 @@ temp_grid = grid_temp[lat_indices][:, lon_indices]
 
 # 等温線をプロット
 levels = np.arange(-30, 45, 3)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=4, linestyles='solid', colors='red')
 levels2 = np.arange(-30, 60, 1)
-cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=4, linestyles='solid', colors='red')
+cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=2, linestyles='solid', colors='red')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=30)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 2)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=4, colors='black')
 levels2 = np.arange(900, 1050, 1)
-cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=4, colors='black')
+cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
 
 # 等圧線のラベルを付ける
 plt.clabel(cont, fontsize=30)
