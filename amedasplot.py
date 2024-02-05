@@ -510,7 +510,7 @@ grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
 grid_npre = gaussian_filter(grid_npre, sigma=2.0)
-grid_temp = gaussian_filter(grid_temp, sigma=4.0) 
+grid_temp = gaussian_filter(grid_temp, sigma=1.0) 
 # grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
 # grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
@@ -533,24 +533,22 @@ psea_grid = grid_npre[lat_indices][:, lon_indices]
 temp_grid = grid_temp[lat_indices][:, lon_indices]
 
 # 等温線をプロット
-levels = np.arange(-27, 57, 6)
+levels = np.arange(-30, 45, 3)
 cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
-levels2 = np.arange(-30, 60, 6)
+levels2 = np.arange(-30, 60, 1)
 cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=4, linestyles='solid', colors='red')
 
 # 等温線のラベルを付ける
-plt.clabel(cont, fontsize=20)
-plt.clabel(cont2, fontsize=40)
+plt.clabel(cont, fontsize=30)
 
 # 等圧線をプロット
-levels = np.arange(901, 1049, 2)
+levels = np.arange(900, 1050, 2)
 cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
-levels2 = np.arange(900, 1050, 2)
+levels2 = np.arange(900, 1050, 1)
 cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=4, colors='black')
 
 # 等圧線のラベルを付ける
-plt.clabel(cont, fontsize=20)
-plt.clabel(cont2, fontsize=40)
+plt.clabel(cont, fontsize=30)
 
 ## H stamp
 maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
