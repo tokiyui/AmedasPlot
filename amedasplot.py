@@ -510,7 +510,7 @@ grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
 # ガウシアンフィルタを適用
 grid_npre = gaussian_filter(grid_npre, sigma=2.0)
-grid_temp = gaussian_filter(grid_temp, sigma=1.0) 
+grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
 # grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
 # grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
 
@@ -536,7 +536,7 @@ temp_grid = grid_temp[lat_indices][:, lon_indices]
 levels = np.arange(-30, 45, 3)
 cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=4, linestyles='solid', colors='red')
 levels2 = np.arange(-30, 60, 1)
-cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=2, linestyles='solid', colors='red')
+cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=30)
