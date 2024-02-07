@@ -38,6 +38,15 @@ jobs:
           python amedasplot.py 2
           python amedasplot.py 3
 
+      - name: Check if files exist
+        run: |
+          if [ -n "$(find . -maxdepth 1 -name '*.jpg' -print -quit)" ]; then
+            echo "Files exist, proceed with adding, committing, and pushing changes."
+          else
+            echo "No files found. Skipping git add, commit, and push steps."
+            exit 0
+          fi
+
       - name: Commit and Push Changes
         run: |
           echo ${{ secrets.TOKEN }}
