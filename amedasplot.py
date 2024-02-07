@@ -534,9 +534,9 @@ temp_grid = grid_temp[lat_indices][:, lon_indices]
 
 # 等温線をプロット
 levels = np.arange(-30, 45, 3)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=4, linestyles='solid', colors='red')
-levels2 = np.arange(-30, 60, 1)
-cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=3, linestyles='solid', colors='red')
+# levels2 = np.arange(-30, 60, 1)
+# cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
 
 # 等温線のラベルを付ける
 plt.clabel(cont, fontsize=30)
