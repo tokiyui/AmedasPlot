@@ -37,6 +37,7 @@ jobs:
           python amedasplot.py 1
           python amedasplot.py 2
           python amedasplot.py 3
+          python upperair.py
 
       - name: Check if files exist
         run: |
