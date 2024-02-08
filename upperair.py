@@ -34,10 +34,10 @@ else:
 
 dt = datetime(int(year), int(month), int(day), int(hour), 0)
 
-# 初期値から5時間後に配信される
-init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(5) 
-#init = init.replace(hour=init.hour - (init.hour % 3), minute=0, second=0) 
-init = init - offsets.Hour(init.hour % 3)
+# 初期値から4時間後に配信される
+init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(4) 
+init = init - offsets.Hour(init.hour % 3) 
+ft = init + offsets.Hour(3)
 # MSMは03シリーズ
 base_time =  init - offsets.Hour(9) 
 
@@ -108,6 +108,6 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(init), loc='right',size=15);
+plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_upper.jpg", format="jpg")
