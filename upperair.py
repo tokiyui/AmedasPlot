@@ -87,8 +87,6 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
-
-
 # プロット
 cont = plt.contour(grid_lon, grid_lat, tmp, levels=np.arange(-60, 45, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=30)
@@ -96,11 +94,9 @@ plt.clabel(cont, fontsize=30)
 cont = plt.contour(grid_lon, grid_lat, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=30)
 
-# 等圧線をプロット
-#cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(240, 390, 3), linewidths=2, colors='green')
 plt.contourf(grid_lon, grid_lat, ept, cmap='coolwarm', levels=np.arange(246, 381, 9))
 cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#plt.clabel(cont, fontsize=30)
+cb.ax.tick_params(labelsize=8)
 
 # ベクトルの間引き間隔
 stride = 5
@@ -120,7 +116,7 @@ plt.clabel(cont, fontsize=30)
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
-plt.title('Valid Time: {}'.format(dt), loc='right',size=20);
+plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=10)
+plt.title('Valid Time: {}'.format(dt), loc='right',size=10);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_upper.jpg", format="jpg")
