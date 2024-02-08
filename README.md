@@ -11,14 +11,13 @@
 ## 説明
 * このプログラムは、アメダスの観測データ（気圧・風）とレーダーGPVを重ね書きするプログラムです。
 * 今後の目標としては、過去の事例を解析できるよう、下記の気象庁HPのJSON（10日分くらいしか残らない）以外からデータを取得したいと考えていますが、誰か代わりに改修してください。
-* 細かい点としては、高・低気圧の検出アルゴリズム、スムージングの掛け方、気温の表示（高度補正の有無、等温線など）など検討中です。
 * ご要望がありましたら、Twitterアカウント @cho_tokisen までご連絡いただければ、可能な範囲で対応いたします。
 
 ## データ取得元
 * アメダスデータ:気象庁HPのJSON（ https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json ）
-* レーダーデータ:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
-* 海上の観測データの代わりに、京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/ ）から取得したMSM（メソモデル）の予報値を使用しています。
-* 海陸判定には京都大学生存圏研究所から取得した海陸分布データ（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/etc/LANDSEA.MSM_5K ：コピーしてgit登録済み ）を使用しています。
+* レーダーデータおよび海上の観測データの代わりに用いるMSM（メソモデル）の予報値:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
+* 海陸判定には、京都大学生存圏研究所から取得した海陸分布データをコピーしてgit登録し、使用しています。
+* 上層の総観場の天気図もMSM（メソモデル）の予報値から描画しています。（3時間ごとの値しかないため、直近の初期値のFT=3で実況の代用としています）
 
 ## special thanks
 * 黒良さんが開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
