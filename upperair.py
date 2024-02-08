@@ -70,7 +70,7 @@ ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
 # 日付とファイル名の生成
-day_dir = datetime.datetime.now().strftime("%Y%m/%d")
+day_dir = datetime.now().strftime("%Y%m/%d")
 basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.datetime.now().strftime("%Y%m%d_%H%M"))
 
 # lftpコマンドを実行してFTPサーバーに接続
