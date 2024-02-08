@@ -88,13 +88,13 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon, grid_lat, tmp, levels=np.arange(-60, 45, 3), linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
 cont = plt.contour(grid_lon, grid_lat, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon, grid_lat, ept, cmap='coolwarm', levels=np.arange(246, 381, 9))
+plt.contourf(grid_lon, grid_lat, tmp, cmap='coolwarm', levels=np.arange(-45, 15, 3))
 cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 cb.ax.tick_params(labelsize=8)
 
