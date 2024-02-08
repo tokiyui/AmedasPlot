@@ -89,15 +89,6 @@ data = nc_file.variables['tbb_08'][:]
 # メッシュグリッドを作成
 lon, lat = np.meshgrid(longitude, latitude)
 
-# 描画
-plt.figure(figsize=(10, 8))
-plt.contourf(lon, lat, data.reshape((2601, 2701)), cmap='gray_r', levels=np.arange(180, 331, 10))
-plt.colorbar(label='Brightness Temperature (K)')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.title('Brightness Temperature - Band tbb_08')
-plt.show()
-
 # ファイルを閉じる
 nc_file.close()
 
@@ -123,9 +114,13 @@ plt.clabel(cont, fontsize=15)
 cont = plt.contour(grid_lon, grid_lat, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-cb.ax.tick_params(labelsize=8)
+#plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
+#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
+#cb.ax.tick_params(labelsize=8)
+
+# 描画
+plt.contourf(lon, lat, data.reshape((2601, 2701)), cmap='gray_r', levels=np.arange(180, 331, 10))
+#plt.title('Brightness Temperature - Band tbb_08')
 
 # ベクトルの間引き間隔
 stride = 5
