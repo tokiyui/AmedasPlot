@@ -77,10 +77,9 @@ basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.now().strftime("%
 PTree_ID = os.environ.get('PTree_ID')
 PTree_Pass = os.environ.get('PTree_Pass')
 print(PTree_ID)
-print(PTree_ID)
-print(PTree_ID)
-#lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
-subprocess.run(lftp_command, shell=True)
+
+lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
+#subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
 url = "http://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
