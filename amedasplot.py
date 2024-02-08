@@ -582,7 +582,7 @@ for i in range(len(minid[0])):
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=20)
-plt.title('Valid Time: {}'.format(dt), loc='right',size=20);
+plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=10)
+plt.title('Valid Time: {}'.format(dt), loc='right',size=10);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest{}.jpg".format(areaname), format="jpg")
