@@ -79,7 +79,7 @@ PTree_Pass = os.environ.get('PTree_Pass')
 print(PTree_ID)
 print(PTree_ID)
 
-lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
+lftp_command = "lftp -u {},{} ftp://ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
 #subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
