@@ -42,7 +42,7 @@ else:
 dt = datetime(int(year), int(month), int(day), int(hour), 0)
 
 # 初期値から5時間後に配信される
-modeltime = pd.Timestamp(year,month,day,hour,min) - offsets.Hour(9) - offsets.Hour(5)
+modeltime = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(9) - offsets.Hour(5)
 # MSMは03シリーズ
 base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
 
