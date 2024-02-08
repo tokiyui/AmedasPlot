@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import pygrib, pytz, subprocess, sys
-#import json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -11,9 +10,7 @@ import numpy as np
 import pandas as pd
 import pandas.tseries.offsets as offsets
 from datetime import datetime, timedelta
-#from itertools import repeat
 from metpy.units import units
-#from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
 
 markersize_0 = 2 # マーカーサイズ
@@ -38,9 +35,11 @@ else:
 dt = datetime(int(year), int(month), int(day), int(hour), 0)
 
 # 初期値から5時間後に配信される
-modeltime = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(9) - offsets.Hour(5)
+init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(5) 
+#init = init.replace(hour=init.hour - (init.hour % 3), minute=0, second=0) 
+init = init - offsets.Hour(init.hour % 3)
 # MSMは03シリーズ
-base_time = modeltime.replace(hour=modeltime.hour - (modeltime.hour % 3), minute=0, second=0)  
+base_time =  init - offsets.Hour(9) 
 
 # データファイル名の指定
 day_dir = base_time.strftime("%Y/%m/%d")
