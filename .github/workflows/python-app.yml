@@ -33,6 +33,7 @@ jobs:
 
       - name: Plotting
         run: |
+          echo ${{ secrets.PTree_ID }}
           python amedasplot.py 0
           python amedasplot.py 1
           python amedasplot.py 2
