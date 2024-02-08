@@ -80,7 +80,7 @@ print(PTree_ID)
 print(PTree_ID)
 
 lftp_command = "lftp -u {},{} ftp://ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
-#subprocess.run(lftp_command, shell=True)
+subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
 url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
