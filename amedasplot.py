@@ -200,7 +200,7 @@ def transform_lonlat_to_figure(lonlat, ax, proj):
     # 例：緯度経度をpointで与え、ステレオ図法にする場合
     # point = (140.0,35.0)
     # proj= ccrs.Stereographic(central_latitude=60, central_longitude=140) 
-    # fig = plt.figure(figsize=(20,16))
+    # fig = plt.figure(figsize=(10,8))
     # ax = fig.add_subplot(1, 1, 1, projection=proj)
     # ax.set_extent([108, 156, 17, 55], ccrs.PlateCarree())
     #
