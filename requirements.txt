@@ -6,3 +6,4 @@ pandas
 datetime
 pybufrkit
 pygrib
+netCDF4
