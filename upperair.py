@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from metpy.units import units
 from scipy.ndimage import gaussian_filter
 import netCDF4 as nc
+from ftplib import FTP
 
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
@@ -68,11 +69,20 @@ tmp = gaussian_filter(tmp, sigma=4.0)
 ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
-day_dir = base_time.strftime("%Y%m/%d")
-basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
-lftp -u ${PTree_ID},${PTree_Pass} ftp.ptree.jaxa.jp
+# 日付とファイル名の生成
+day_dir = datetime.now().strftime("%Y%m/%d")
+basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.now().strftime("%Y%m%d_%H%M"))
+
+# lftpコマンドを実行してFTPサーバーに接続
+lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
+subprocess.run(lftp_command, shell=True)
+
+# ダウンロードするファイルのURLを作成
 url = "http://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
-subprocess.run("wget {} -P ./".format(url), shell=True)       
+
+# wgetコマンドを使用してファイルをダウンロード
+wget_command = "wget {} -P ./".format(url)
+subprocess.run(wget_command, shell=True)     
 #wget http://ftp.ptree.jaxa.jp/jma/netcdf/202402/08/NC_H09_20240208_0600_R21_FLDK.02401_02401.nc
 
 # NetCDF ファイルを開く
