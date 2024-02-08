@@ -133,7 +133,7 @@ plt.clabel(cont, fontsize=15)
 #cb.ax.tick_params(labelsize=8)
 
 # 描画
-plt.contourf(lon, lat, data.reshape((2601, 2701)), cmap='gray_r', levels=np.arange(180, 331, 10))
+plt.contourf(lon, lat, data.reshape((2401, 2401)), cmap='gray_r', levels=np.arange(180, 331, 10))
 #plt.title('Brightness Temperature - Band tbb_08')
 
 # ベクトルの間引き間隔
