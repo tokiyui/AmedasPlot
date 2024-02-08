@@ -15,11 +15,6 @@ from datetime import datetime, timedelta
 from metpy.units import units
 #from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
-#from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
-#from urllib.request import urlopen
-#from scipy import interpolate
-#from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
-#import argparse
 
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
