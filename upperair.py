@@ -9,10 +9,10 @@ import matplotlib.ticker as mticker
 import metpy.calc as mpcalc
 import numpy as np
 import pandas as pd
-#import pandas.tseries.offsets as offsets
+import pandas.tseries.offsets as offsets
 from datetime import datetime, timedelta
 #from itertools import repeat
-#from metpy.units import units
+from metpy.units import units
 #from scipy.interpolate import griddata
 #from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 #from urllib.request import urlopen
