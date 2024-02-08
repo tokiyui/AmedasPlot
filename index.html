@@ -6,18 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アメダス・レーダープロット図</title>
     <style>
+        #imageContainer {
+            display: flex; 
+            justify-content: space-between; 
+            width: 100%; 
+        }
+        .image {
+            max-width: 48%; /* 幅を48%に設定する */
+            height: auto; /* 高さを自動調整する */
+        }
         #regionSelect {
             width: 250px;
             font-size: 40px; 
         }
-
         #selectLabel {
             display: inline-block;
             margin-right: 10px;
             font-size: 20px; 
             width: 250px;
-        }
-        
+        }      
         #pageTitle {
             margin-top: 20px;
             font-size: 40px;
@@ -40,10 +47,9 @@
 
 <div id="imageContainer">
   <img id="selectedImage" src="latestEast.jpg" alt="Default Image">
+  <img id="selectedImage" src="latest_upper.jpg">  
 </div>
-
-<img id="selectedImage" src="latest_upper.jpg">  
-
+    
 <script>
 function changeImage() {
   var selectBox = document.getElementById("regionSelect");
