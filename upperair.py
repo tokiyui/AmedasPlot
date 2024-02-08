@@ -108,6 +108,6 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(base_time), loc='right',size=15);
+plt.title('Valid Time: {}'.format(init), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_upper.jpg", format="jpg")
