@@ -83,7 +83,7 @@ lftp_command = "lftp -u {},{} ftp://ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pa
 #subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
-url = "http://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
+url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
 
 # wgetコマンドを使用してファイルをダウンロード
 wget_command = "wget {} -P ./".format(url)
