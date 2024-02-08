@@ -539,7 +539,7 @@ cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, l
 # cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
 
 # 等温線のラベルを付ける
-plt.clabel(cont, fontsize=30)
+plt.clabel(cont, fontsize=15)
 
 # 等圧線をプロット
 levels = np.arange(900, 1050, 2)
@@ -548,7 +548,7 @@ levels2 = np.arange(900, 1050, 1)
 cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
 
 # 等圧線のラベルを付ける
-plt.clabel(cont, fontsize=30)
+plt.clabel(cont, fontsize=15)
 
 ## H stamp
 maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
