@@ -534,7 +534,7 @@ temp_grid = grid_temp[lat_indices][:, lon_indices]
 
 # 等温線をプロット
 levels = np.arange(-30, 45, 3)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=3, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
 # levels2 = np.arange(-30, 60, 1)
 # cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
 
@@ -542,8 +542,8 @@ cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, l
 plt.clabel(cont, fontsize=15)
 
 # 等圧線をプロット
-levels = np.arange(900, 1050, 2)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=4, colors='black')
+#levels = np.arange(900, 1050, 2)
+#cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
 levels2 = np.arange(900, 1050, 1)
 cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
 
