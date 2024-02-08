@@ -37,7 +37,7 @@ dt = datetime(int(year), int(month), int(day), int(hour), 0)
 # 初期値から5時間後に配信される
 init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(5) 
 init = init - offsets.Hour(init.hour % 3) 
-ft = init + offsets.Hour(3)
+ft = init + offsets.Hour(6)
 # MSMは03シリーズ
 base_time =  init - offsets.Hour(9) 
 
@@ -52,19 +52,19 @@ grbs = pygrib.open(basename)
 grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(22.4, 47.6, 0.1))
 
 # データを取得する
-height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=3)[0].data()[0], axis=0)
-tmp = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=3)[0].data()[0] - 273.15, axis=0)
-u = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=3)[0].data()[0], axis=0)
-v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=3)[0].data()[0], axis=0)
+height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
+tmp = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] - 273.15, axis=0)
+u = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
+v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 # 相当温位
-tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=3)[0].data()[0] * units('K'), axis=0)
-rh = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=3)[0].data()[0] / 100, axis=0)
+tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] * units('K'), axis=0)
+rh = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0] / 100, axis=0)
 dewpoint = mpcalc.dewpoint_from_relative_humidity(tmp850, rh)
 ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
 
-height = gaussian_filter(height, sigma=2.0)
-tmp = gaussian_filter(tmp, sigma=2.0)
-ept = gaussian_filter(ept, sigma=2.0)
+height = gaussian_filter(height, sigma=4.0)
+tmp = gaussian_filter(tmp, sigma=4.0)
+ept = gaussian_filter(ept, sigma=4.0)
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
