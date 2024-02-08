@@ -86,7 +86,7 @@ subprocess.run(lftp_command, shell=True)
 url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
 
 # wgetコマンドを使用してファイルをダウンロード
-wget_command = "wget --ftp-user={} --ftp-passwd={} {} -P ./".format(PTree_ID, PTree_Pass, url)
+wget_command = "wget --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pass, url)
 subprocess.run(wget_command, shell=True)
 
 # NetCDF ファイルを開く
