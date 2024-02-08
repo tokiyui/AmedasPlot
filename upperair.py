@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 #from itertools import repeat
 from metpy.units import units
 #from scipy.interpolate import griddata
+from scipy.ndimage import gaussian_filter
 #from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 #from urllib.request import urlopen
 #from scipy import interpolate
