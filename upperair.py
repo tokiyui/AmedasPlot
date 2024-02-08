@@ -98,7 +98,7 @@ nc_file = nc.Dataset(basename, 'r')
 # 緯度、経度、およびデータの取得
 latitude = nc_file.variables['latitude'][:]
 longitude = nc_file.variables['longitude'][:]
-data = nc_file.variables['tbb_07'][:]
+data = nc_file.variables['tbb_13'][:]
 
 # メッシュグリッドを作成
 lon, lat = np.meshgrid(longitude, latitude)
