@@ -32,10 +32,10 @@ jobs:
           git rm ./*.jpg
 
       - name: Plotting
-        run: |
         env:
           PTree_ID: ${{ secrets.PTree_ID }}
           PTree_Pass: ${{ secrets.PTree_Pass }}
+        run: |
           python amedasplot.py 0
           python amedasplot.py 1
           python amedasplot.py 2
