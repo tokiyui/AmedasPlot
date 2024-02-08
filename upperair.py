@@ -12,6 +12,7 @@ import pandas.tseries.offsets as offsets
 from datetime import datetime, timedelta
 from metpy.units import units
 from scipy.ndimage import gaussian_filter
+import netCDF4 as nc
 
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
@@ -65,6 +66,40 @@ ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint
 height = gaussian_filter(height, sigma=4.0)
 tmp = gaussian_filter(tmp, sigma=4.0)
 ept = gaussian_filter(ept, sigma=4.0)
+
+# Himawari-9
+day_dir = base_time.strftime("%Y%m/%d")
+basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
+ftp://${PTree_ID}:${PTree_Pass}@ftp.ptree.jaxa.jp/.
+url = "http://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
+subprocess.run("wget {} -P ./".format(url), shell=True)       
+#wget http://ftp.ptree.jaxa.jp/jma/netcdf/202402/08/NC_H09_20240208_0600_R21_FLDK.02401_02401.nc
+
+# NetCDF ファイルを開く
+nc_file = nc.Dataset('basename', 'r')
+
+# 変数名のリストを表示
+print(nc_file.variables.keys())
+
+# 緯度、経度、およびデータの取得
+latitude = nc_file.variables['latitude'][:]
+longitude = nc_file.variables['longitude'][:]
+data = nc_file.variables['tbb_08'][:]
+
+# メッシュグリッドを作成
+lon, lat = np.meshgrid(longitude, latitude)
+
+# 描画
+plt.figure(figsize=(10, 8))
+plt.contourf(lon, lat, data.reshape((2601, 2701)), cmap='gray_r', levels=np.arange(180, 331, 10))
+plt.colorbar(label='Brightness Temperature (K)')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.title('Brightness Temperature - Band tbb_08')
+plt.show()
+
+# ファイルを閉じる
+nc_file.close()
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
