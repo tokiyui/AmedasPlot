@@ -116,7 +116,7 @@ plt.clabel(cont, fontsize=30)
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=10)
-plt.title('Valid Time: {}'.format(dt), loc='right',size=10);
+plt.title('{}'.format("500hPa Tempuature, Geopotential Height"), loc='left',size=10)
+plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_upper.jpg", format="jpg")
