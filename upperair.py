@@ -113,7 +113,7 @@ ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transfo
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("500hPa Tempuature, Geopotential Height"), loc='left',size=10)
+plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=10)
 plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_upper.jpg", format="jpg")
