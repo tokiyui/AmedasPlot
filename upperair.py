@@ -109,9 +109,6 @@ v_sparse = v[::stride, ::stride]
 
 ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
 
-# 等圧線のラベルを付ける
-plt.clabel(cont, fontsize=30)
-
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
