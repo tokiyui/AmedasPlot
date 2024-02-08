@@ -33,7 +33,9 @@ jobs:
 
       - name: Plotting
         run: |
-          echo ${{ secrets.PTree_ID }}
+        env:
+          PTree_ID: ${{ secrets.PTree_ID }}
+          PTree_Pass: ${{ secrets.PTree_Pass }}
           python amedasplot.py 0
           python amedasplot.py 1
           python amedasplot.py 2
