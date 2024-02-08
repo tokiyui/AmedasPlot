@@ -70,14 +70,14 @@ ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
 # 日付とファイル名の生成
-day_dir = datetime.now().strftime("%Y%m/%d")
-basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.now().strftime("%Y%m%d_%H%M"))
+day_dir = datetime.datetime.now().strftime("%Y%m/%d")
+basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.datetime.now().strftime("%Y%m%d_%H%M"))
 
 # lftpコマンドを実行してFTPサーバーに接続
 PTree_ID = os.environ.get('PTree_ID')
 PTree_Pass = os.environ.get('PTree_Pass')
 print(PTree_ID)
-print(PTree_ID)
+print(PTree_Pass)
 
 lftp_command = "lftp -u {},{} ftp://ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
 subprocess.run(lftp_command, shell=True)
@@ -87,8 +87,7 @@ url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
 
 # wgetコマンドを使用してファイルをダウンロード
 wget_command = "wget {} -P ./".format(url)
-subprocess.run(wget_command, shell=True)     
-#wget http://ftp.ptree.jaxa.jp/jma/netcdf/202402/08/NC_H09_20240208_0600_R21_FLDK.02401_02401.nc
+subprocess.run(wget_command, shell=True)
 
 # NetCDF ファイルを開く
 nc_file = nc.Dataset('basename', 'r')
