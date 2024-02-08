@@ -74,7 +74,7 @@ day_dir = datetime.now().strftime("%Y%m/%d")
 basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(datetime.now().strftime("%Y%m%d_%H%M"))
 
 # lftpコマンドを実行してFTPサーバーに接続
-lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
+lftp_command = "lftp -u {},{} ftp.ptree.jaxa.jp".format(${PTree_ID}, ${PTree_Pass})
 subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
