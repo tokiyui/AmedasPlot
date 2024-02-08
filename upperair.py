@@ -20,11 +20,6 @@ from metpy.units import units
 #from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
 #import argparse
 
-
-def read_msm(time):
-
-    return height, tmp, u, v, ept
-
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
 barb_length=8 # 矢羽の長さ
@@ -71,7 +66,6 @@ tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTim
 rh = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=3)[0].data()[0] / 100, axis=0)
 dewpoint = mpcalc.dewpoint_from_relative_humidity(tmp850, rh)
 ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
-
 
 height = gaussian_filter(height, sigma=2.0)
 tmp = gaussian_filter(tmp, sigma=2.0)
