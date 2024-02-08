@@ -7,8 +7,8 @@ import pytz, sys
 #import matplotlib.pyplot as plt
 #import matplotlib.ticker as mticker
 #import metpy.calc as mpcalc
-#import numpy as np
-#import pandas as pd
+import numpy as np
+import pandas as pd
 #import pandas.tseries.offsets as offsets
 from datetime import datetime, timedelta
 #from itertools import repeat
@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 #from scipy import interpolate
 #from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
 #import argparse
-#import metpy
+
 
 def read_msm(time):
 
@@ -69,8 +69,8 @@ v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecast
 # 相当温位
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=3)[0].data()[0] * units('K'), axis=0)
 rh = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=3)[0].data()[0] / 100, axis=0)
-dewpoint = metpy.calc.dewpoint_from_relative_humidity(tmp850, rh)
-ept = metpy.calc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
+dewpoint = mpcalc.dewpoint_from_relative_humidity(tmp850, rh)
+ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
 
 
 height = gaussian_filter(height, sigma=2.0)
