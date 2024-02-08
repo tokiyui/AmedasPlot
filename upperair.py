@@ -90,7 +90,7 @@ wget_command = "wget --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pa
 subprocess.run(wget_command, shell=True)
 
 # NetCDF ファイルを開く
-nc_file = nc.Dataset('basename', 'r')
+nc_file = nc.Dataset(basename, 'r')
 
 # 変数名のリストを表示
 print(nc_file.variables.keys())
