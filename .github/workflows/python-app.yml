@@ -48,7 +48,6 @@ jobs:
           git diff --quiet || echo "::set-output name=changes::yes"
 
       - name: Commit and Push Changes
-        if: steps.git_changes.outputs.changes == 'yes'
         run: |
           echo ${{ secrets.TOKEN }}
           echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
