@@ -55,7 +55,7 @@ grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(
 
 # データを取得する
 height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
-tmp = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] - 273.15, axis=0)
+tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] - 273.15, axis=0)
 u = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 # 相当温位
@@ -65,7 +65,7 @@ dewpoint = mpcalc.dewpoint_from_relative_humidity(tmp850, rh)
 ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
 
 height = gaussian_filter(height, sigma=4.0)
-tmp = gaussian_filter(tmp, sigma=4.0)
+tmp500 = gaussian_filter(tmp500, sigma=4.0)
 ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
@@ -126,7 +126,9 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+#cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+#plt.clabel(cont, fontsize=15)
+cont = plt.contour(grid_lon, grid_lat, tmp500, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
 cont = plt.contour(grid_lon, grid_lat, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
