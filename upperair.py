@@ -55,7 +55,7 @@ grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(
 
 # データを取得する
 height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
-tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] - 273.15, axis=0)
+tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0], axis=0)
 u = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 # 相当温位
@@ -65,7 +65,8 @@ dewpoint = mpcalc.dewpoint_from_relative_humidity(tmp850, rh)
 ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), tmp850, dewpoint)
 
 height = gaussian_filter(height, sigma=4.0)
-tmp500 = gaussian_filter(tmp500, sigma=4.0)
+tmp500 = gaussian_filter(tmp500 - 273.15, sigma=4.0)
+tmp850 = gaussian_filter(tmp850 - 273.15, sigma=4.0)
 ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
@@ -194,7 +195,8 @@ grid_lat_sparse = grid_lat[::stride, ::stride]
 u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
-ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
+#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
+ax.streamplot(lon2, lat2, u, v, linewidth=1, density=10, color="blue")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
