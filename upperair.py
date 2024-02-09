@@ -47,7 +47,7 @@ base_time =  init - offsets.Hour(9)
 day_dir = base_time.strftime("%Y/%m/%d")
 basename = "Z__C_RJTD_{}00_MSM_GPV_Rjp_L-pall_FH00-15_grib2.bin".format(base_time.strftime("%Y%m%d%H%M"))
 url      = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/{}/{}".format(day_dir, basename)
-subprocess.run("wget {} -P ./".format(url), shell=True)       
+subprocess.run("wget -q {} -P ./".format(url), shell=True)       
 grbs = pygrib.open(basename)
 
 # 配列の宣言
@@ -82,7 +82,7 @@ url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
 
 # wgetコマンドを使用してファイルをダウンロード
 print("ftp_s")
-wget_command = "wget --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pass, url)
+wget_command = "wget -q --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pass, url)
 print("ftp_s")
 subprocess.run(wget_command, shell=True)
 print("ftp_s")
@@ -99,8 +99,8 @@ print("read")
 #data = nc_file.variables['tbb_13'][:]
 
 # メッシュグリッドを作成
-print("grid")
-lon, lat = np.meshgrid(longitude, latitude)
+#print("grid")
+#lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
 nc_file.close()
