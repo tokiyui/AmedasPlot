@@ -70,6 +70,7 @@ ept = gaussian_filter(ept, sigma=4.0)
 
 # Himawari-9
 # 日付とファイル名の生成
+base_time =  ft - offsets.Hour(9) 
 day_dir = base_time.strftime("%Y%m/%d")
 basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
 
@@ -99,7 +100,7 @@ lon, lat = np.meshgrid(longitude, latitude)
 nc_file.close()
 
 # データをサンプリングする
-sample = 5
+sample = 2
 sampled_data = data[::sample, ::sample]  # 2つおきにサンプリング
 
 # サンプリングされたデータに対応する緯度経度を抽出する
@@ -136,7 +137,7 @@ plt.clabel(cont, fontsize=15)
 print(data)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
-plt.contourf(sampled_lon, sampled_lat, sampled_data, cmap='gray_r')
+plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()))
 #plt.title('Brightness Temperature - Band tbb_08')
 
 # ベクトルの間引き間隔
