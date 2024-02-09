@@ -148,7 +148,7 @@ cropped_data = sampled_data[min_lat_index:max_lat_index, min_lon_index:max_lon_i
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 #plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()))
-plt.imshow(cropped_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6)
+plt.imshow(cropped_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6))
 
 # ベクトルの間引き間隔
 stride = 5
