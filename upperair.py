@@ -149,7 +149,7 @@ plt.clabel(cont, fontsize=15)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data)
-plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower')
+plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
 # ベクトルの間引き間隔
 stride = 5
