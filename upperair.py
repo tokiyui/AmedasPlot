@@ -154,7 +154,7 @@ plt.clabel(cont, fontsize=15)
 data = np.flipud(data)
 plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
-plt.tight_layout(rect=[0, 0.1, 1, 0.9])
+plt.tight_layout(rect=[0, 0, 1, 1])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -195,7 +195,7 @@ u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=2, color="blue")
+ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=1, color="blue")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
