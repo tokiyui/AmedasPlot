@@ -115,7 +115,7 @@ proj = ccrs.PlateCarree()
 fig = plt.figure(figsize=(8,6))
 # 余白設定                                                                                
 #plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)   
-plt.subplots_adjust(left=0.04, right=1.0, bottom=0.0, top=1.0) 
+plt.subplots_adjust(left=0.04, right=1.0, bottom=0.0, top=0.98) 
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -155,6 +155,36 @@ data = np.flipud(data)
 plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
 plt.tight_layout()
+
+# 海岸線
+ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
+            
+# 図の説明
+plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
+plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
+plt.savefig("latest_upper.jpg", format="jpg")
+
+
+# 作図                                                                                    
+ax = fig.add_subplot(1, 1, 1, projection=proj)
+ax.set_extent([120, 150, 22.4, 47.6], proj)
+
+# グリッド線を引く                                                               
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
+gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
+gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
+
+# プロット
+cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+#plt.clabel(cont, fontsize=15)
+cont = plt.contour(grid_lon, grid_lat, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
+plt.clabel(cont, fontsize=15)
+
+#plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
+#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
+#cb.ax.tick_params(labelsize=8)
+
 # ベクトルの間引き間隔
 stride = 5
 
@@ -173,4 +203,4 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_upper.jpg", format="jpg")
+plt.savefig("latest_upper2.jpg", format="jpg")
