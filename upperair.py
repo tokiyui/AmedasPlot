@@ -112,9 +112,7 @@ print(lon, lat)
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 # 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize=(8,6))
-# 余白設定                                                                                
-plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)                  
+fig = plt.figure(figsize=(8,6))           
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -150,7 +148,8 @@ plt.clabel(cont, fontsize=15)
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data)
 plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
-
+# 余白設定                                                                                
+plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)       
 # ベクトルの間引き間隔
 stride = 5
 
