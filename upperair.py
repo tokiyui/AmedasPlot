@@ -154,7 +154,7 @@ plt.clabel(cont, fontsize=15)
 data = np.flipud(data)
 plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
-plt.tight_layout(rect=[0.1, 0.1, 0.9, 0.9])
+plt.tight_layout(rect=[0, 0.1, 1, 0.9])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
