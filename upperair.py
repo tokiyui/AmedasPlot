@@ -114,7 +114,8 @@ proj = ccrs.PlateCarree()
 # 図のSIZE指定inch                                                                        
 fig = plt.figure(figsize=(8,6))
 # 余白設定                                                                                
-plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)   
+#plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)   
+plt.subplots_adjust(left=0.04, right=1.0, bottom=0.0, top=1.0) 
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
