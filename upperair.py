@@ -124,8 +124,9 @@ plt.clabel(cont, fontsize=15)
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
+print(data)
 # 描画
-#plt.contourf(lon, lat, data, cmap='gray_r', levels=np.arange(180, 331, 10))
+plt.contourf(lon, lat, data, cmap='gray_r')
 #plt.title('Brightness Temperature - Band tbb_08')
 
 # ベクトルの間引き間隔
