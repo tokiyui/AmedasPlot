@@ -81,22 +81,16 @@ PTree_Pass = os.environ.get('PTree_Pass')
 url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
 
 # wgetコマンドを使用してファイルをダウンロード
-print("ftp_s")
 wget_command = "wget -q --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pass, url)
-print("ftp_s")
 subprocess.run(wget_command, shell=True)
-print("ftp_s")
 
 # NetCDF ファイルを開く
-print("open")
 nc_file = nc.Dataset(basename, 'r')
-print("read")
 
 # 緯度、経度、およびデータの取得
-#print("data")
-#latitude = nc_file.variables['latitude'][:]
-#longitude = nc_file.variables['longitude'][:]
-#data = nc_file.variables['tbb_13'][:]
+latitude = nc_file.variables['latitude'][:]
+longitude = nc_file.variables['longitude'][:]
+data = nc_file.variables['tbb_13'][:]
 
 # メッシュグリッドを作成
 #print("grid")
