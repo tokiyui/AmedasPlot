@@ -48,6 +48,7 @@ jobs:
           git diff --quiet || echo "::set-output name=changes::yes"
 
       - name: Commit and Push Changes
+        if: steps.git_changes.outputs.changes == 'yes'
         run: |
           echo ${{ secrets.TOKEN }}
           echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
@@ -55,5 +56,6 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add ./*.jpg
-          git commit -m "Add Pictures"
-          git push origin main 
+          git diff --cached --quiet || git commit -m "Add Pictures"
+          git push origin main
+
