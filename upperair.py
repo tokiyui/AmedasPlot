@@ -109,8 +109,6 @@ sampled_data = data[::sample, ::sample]  # 2つおきにサンプリング
 sampled_lon = lon[::sample, ::sample]
 sampled_lat = lat[::sample, ::sample]
 
-print(lon, lat)
-
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 # 図のSIZE指定inch                                                                        
@@ -197,7 +195,7 @@ u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(lon2, lat2, u, v, linewidth=1, density=10, color="blue")
+ax.streamplot(lon, lat, u, v, linewidth=1, density=10, color="blue")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
