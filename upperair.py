@@ -144,12 +144,12 @@ plt.clabel(cont, fontsize=15)
 #min_lat_index = int((min_lat - sampled_lat.min()) / (sampled_lat.max() - sampled_lat.min()) * sampled_lat.shape[0])
 #max_lat_index = int((max_lat - sampled_lat.min()) / (sampled_lat.max() - sampled_lat.min()) * sampled_lat.shape[0])
 
-#cropped_data = sampled_data[min_lat_index:max_lat_index, min_lon_index:max_lon_index]
+#cropped_data = data[min_lat_index:max_lat_index, min_lon_index:max_lon_index]
 
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
-print(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max())
-plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()), origin='lower')
+print(lon.min(), lon.max(), lat.min(), lat.max())
+plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower')
 #plt.imshow(sampled_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6), origin='lower')
 
 # ベクトルの間引き間隔
