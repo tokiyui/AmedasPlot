@@ -76,11 +76,6 @@ basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d
 # lftpコマンドを実行してFTPサーバーに接続
 PTree_ID = os.environ.get('PTree_ID')
 PTree_Pass = os.environ.get('PTree_Pass')
-# print(PTree_ID)
-# print(PTree_Pass)
-
-# lftp_command = "lftp -u {},{} ftp://ftp.ptree.jaxa.jp".format(PTree_ID, PTree_Pass)
-# subprocess.run(lftp_command, shell=True)
 
 # ダウンロードするファイルのURLを作成
 url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
@@ -90,17 +85,18 @@ wget_command = "wget --user={} --password={} {} -P ./".format(PTree_ID, PTree_Pa
 subprocess.run(wget_command, shell=True)
 
 # NetCDF ファイルを開く
+print("open")
 nc_file = nc.Dataset(basename, 'r')
-
-# 変数名のリストを表示
-# print(nc_file.variables.keys())
+print("read")
 
 # 緯度、経度、およびデータの取得
+print("data")
 latitude = nc_file.variables['latitude'][:]
 longitude = nc_file.variables['longitude'][:]
 data = nc_file.variables['tbb_13'][:]
 
 # メッシュグリッドを作成
+print("grid")
 lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
