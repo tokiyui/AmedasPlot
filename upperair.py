@@ -37,7 +37,7 @@ else:
 dt = datetime(int(year), int(month), int(day), int(hour), 0)
 
 # 初期値から5時間後に配信される
-init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(5) 
+init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(6) 
 init = init - offsets.Hour(init.hour % 3) 
 ft = init + offsets.Hour(6)
 # MSMは03シリーズ
