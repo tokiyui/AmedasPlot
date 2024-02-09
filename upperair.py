@@ -137,9 +137,8 @@ plt.clabel(cont, fontsize=15)
 print(data)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
-print(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max())
 #plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()))
-plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()))
+plt.imshow(sampled_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6))
 
 # ベクトルの間引き間隔
 stride = 5
