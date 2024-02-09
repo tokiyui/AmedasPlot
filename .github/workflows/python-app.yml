@@ -42,14 +42,10 @@ jobs:
           python amedasplot.py 3
           python upperair.py
 
-      - name: Check if files exist
+      - name: Check for Git changes
+        id: git_changes
         run: |
-          if [ -n "$(find . -maxdepth 1 -name '*.jpg' -print -quit)" ]; then
-            echo "Files exist, proceed with adding, committing, and pushing changes."
-          else
-            echo "No files found. Skipping git add, commit, and push steps."
-            exit 0
-          fi
+          git diff --quiet || echo "::set-output name=changes::yes"
 
       - name: Commit and Push Changes
         run: |
