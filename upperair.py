@@ -134,11 +134,21 @@ plt.clabel(cont, fontsize=15)
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
-print(data)
+# データの緯度経度範囲を取得
+min_lon, max_lon, min_lat, max_lat = 120, 150, 22.4, 47.6
+
+# データから指定範囲を切り出す
+min_lon_index = int((min_lon - sampled_lon.min()) / (sampled_lon.max() - sampled_lon.min()) * sampled_lon.shape[1])
+max_lon_index = int((max_lon - sampled_lon.min()) / (sampled_lon.max() - sampled_lon.min()) * sampled_lon.shape[1])
+min_lat_index = int((min_lat - sampled_lat.min()) / (sampled_lat.max() - sampled_lat.min()) * sampled_lat.shape[0])
+max_lat_index = int((max_lat - sampled_lat.min()) / (sampled_lat.max() - sampled_lat.min()) * sampled_lat.shape[0])
+
+cropped_data = sampled_data[min_lat_index:max_lat_index, min_lon_index:max_lon_index]
+
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 #plt.imshow(sampled_data, cmap='gray_r', extent=(sampled_lon.min(), sampled_lon.max(), sampled_lat.min(), sampled_lat.max()))
-plt.imshow(sampled_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6))
+plt.imshow(cropped_data, cmap='gray_r', extent=(120, 150, 22.4, 47.6)
 
 # ベクトルの間引き間隔
 stride = 5
