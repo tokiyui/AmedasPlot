@@ -135,7 +135,7 @@ plt.clabel(cont, fontsize=15)
 #cb.ax.tick_params(labelsize=8)
 
 # データの緯度経度範囲を取得
-min_lon, max_lon, min_lat, max_lat = 120, 150, 22.4, 47.6
+min_lon, max_lon, min_lat, max_lat = 120, 150, -47.6, -22.4
 
 # データから指定範囲を切り出す
 min_lon_index = int((min_lon - sampled_lon.min()) / (sampled_lon.max() - sampled_lon.min()) * sampled_lon.shape[1])
