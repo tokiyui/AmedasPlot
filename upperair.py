@@ -107,6 +107,7 @@ sampled_data = data[::sample, ::sample]  # 2つおきにサンプリング
 sampled_lon = lon[::sample, ::sample]
 sampled_lat = lat[::sample, ::sample]
 
+print(lon, lat)
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
