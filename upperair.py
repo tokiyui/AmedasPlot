@@ -98,6 +98,15 @@ lon, lat = np.meshgrid(longitude, latitude)
 # ファイルを閉じる
 nc_file.close()
 
+# データをサンプリングする
+sample = 5
+sampled_data = data[::sample, ::sample]  # 2つおきにサンプリング
+
+# サンプリングされたデータに対応する緯度経度を抽出する
+sampled_lon = lon[::sample, ::sample]
+sampled_lat = lat[::sample, ::sample]
+
+
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
 # 図のSIZE指定inch                                                                        
@@ -126,7 +135,8 @@ plt.clabel(cont, fontsize=15)
 
 print(data)
 # 描画
-plt.contourf(lon, lat, data, cmap='gray_r')
+#plt.contourf(lon, lat, data, cmap='gray_r')
+plt.contourf(sampled_lon, sampled_lat, sampled_data, cmap='gray_r')
 #plt.title('Brightness Temperature - Band tbb_08')
 
 # ベクトルの間引き間隔
