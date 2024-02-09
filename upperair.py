@@ -62,8 +62,8 @@ v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecast
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] -273.15, axis=0)
 #tmp = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] * units('K'), axis=0)
 rh = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0] / 100, axis=0)
-dewpoint = mpcalc.dewpoint_from_relative_humidity((tmp+273.15) * units('K'), rh)
-ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp+273.15) * units('K'), dewpoint)
+dewpoint = mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh)
+ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint)
 
 height = gaussian_filter(height, sigma=4.0)
 tmp500 = gaussian_filter(tmp500, sigma=4.0)
