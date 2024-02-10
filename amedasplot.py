@@ -783,6 +783,34 @@ cb.ax.tick_params(labelsize=8)
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
 #ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=1, color="blue")
 
+## H stamp
+maxid = detect_peaks(prmsl, filter_size=40, dist_cut=10)
+for i in range(len(maxid[0])):
+    wlon = grid_lon_s[0][maxid[1][i]]
+    wlat = grid_lat_s[maxid[0][i]][0]
+    # 図の範囲内に座標があるか確認                                                                           
+    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+        ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
+        ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=latlon_proj)
+        val = prmsl[maxid[0][i]][maxid[1][i]]
+        ival = int(val)
+        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+
+## L stamp
+minid = detect_peaks(prmsl, filter_size=40, dist_cut=10, flag=1)
+for i in range(len(minid[0])):
+    wlon = grid_lon_s[0][minid[1][i]]
+    wlat = grid_lat_s[minid[0][i]][0]
+    # 図の範囲内に座標があるか確認                                                                           
+    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+        ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
+        ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=latlon_proj)
+        val = prmsl[minid[0][i]][minid[1][i]]
+        ival = int(val)
+        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
