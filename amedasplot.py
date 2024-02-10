@@ -798,7 +798,7 @@ for i in range(len(maxid[0])):
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
-minid = detect_peaks(prmsl, filter_size=40, dist_cut=30, flag=1)
+minid = detect_peaks(prmsl, filter_size=80, dist_cut=30, flag=1)
 for i in range(len(minid[0])):
     wlon = grid_lon_s[0][minid[1][i]]
     wlat = grid_lat_s[minid[0][i]][0]
