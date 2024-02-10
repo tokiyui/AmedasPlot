@@ -37,7 +37,6 @@ jobs:
           PTree_Pass: ${{ secrets.PTree_Pass }}
         run: |
           python amedasplot.py 
-          python upperair.py
 
       - name: Check for Git changes
         id: git_changes
