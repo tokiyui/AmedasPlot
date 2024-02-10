@@ -688,9 +688,9 @@ plt.clabel(cont, fontsize=15)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data_wv)
-plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
+plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), transform=proj)
 
-plt.tight_layout(rect=[0, 0.05, 1, 1])
+plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -744,7 +744,7 @@ plt.savefig("latest_850.jpg", format="jpg")
 plt.clf()
 
 # 作図                                                             
-plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)  
+plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=0.96)  
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
 
