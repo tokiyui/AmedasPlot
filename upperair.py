@@ -133,7 +133,7 @@ plt.clabel(cont, fontsize=15)
 
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
-data = np.flipud(data)
+data = np.flipud(data_wv)
 plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
 plt.tight_layout(rect=[0, 0, 0.95, 1])
