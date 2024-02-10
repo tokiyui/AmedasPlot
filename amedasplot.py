@@ -498,6 +498,7 @@ for area in [0, 1, 2, 3]:
     grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
+    prmsl = gaussian_filter(prmsl, sigma=2.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
     grid_npre[sealand_filterd <= 1] = np.nan
@@ -766,7 +767,7 @@ plt.clabel(cont, fontsize=15)
 # ベクトルの間引き間隔
 #stride = 5
 
-#data = np.flipud(data_ir)
+data = np.flipud(data_ir)
 plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), transform=proj)
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
