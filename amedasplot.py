@@ -255,24 +255,11 @@ barb_length=8 # 矢羽の長さ
 dlon,dlat=1,1   # 緯線・経線は1度ごと
 
 # 描画地域と描画時刻の設定
-if len(sys.argv) == 3 and (sys.argv[1] == '0' or sys.argv[1] == '1' or sys.argv[1] == '2' or sys.argv[1] == '3'): 
-    area = sys.argv[1] #第一引数は描画地域（0:北海道、1:東日本、2:西日本、3:東北）
-    arg = sys.argv[2] #第二引数は描画時刻
+if len(sys.argv) == 2:
     dt = parse_datetime(arg)
-elif len(sys.argv) == 2 and (sys.argv[1] == '0' or sys.argv[1] == '1' or sys.argv[1] == '2' or sys.argv[1] == '3'):
-    area = sys.argv[1] #第二引数は省略可能で、その場合は30分以上前（データ取得可能時刻）の直近の正時
-    jst = pytz.timezone('Asia/Tokyo')
-    dt = datetime.now(jst) - timedelta(minutes=30)
-elif len(sys.argv) == 2 and len(sys.argv[1]) >= 8:
-    area = 1 #第一引数を省略する場合は、デフォルトで東日本を描画し、時刻は引数によって定める
-    dt = parse_datetime(arg)
-elif len(sys.argv) == 1:
-    area = 1 #すべての引数を省略することも可能
-    jst = pytz.timezone('Asia/Tokyo')
-    dt = datetime.now(jst) - timedelta(minutes=30)
 else:
-    print('Usage: python script.py [areacode[0:North][1:East][2:West]] [YYYYMMDDHH(MM)]')
-    exit()
+    jst = pytz.timezone('Asia/Tokyo')
+    dt = datetime.now(jst) - timedelta(minutes=30)
 
 # 描画開始メッセージ    
 if dt:
@@ -284,7 +271,7 @@ if dt:
     dt = datetime(int(year), int(month), int(day), int(hour), int(min))
     print("読み込み観測時刻 {:4d}/{:02d}/{:02d} {:02d}:{:02d}".format(year,month,day,hour,min))
 else:
-    print('Usage: python script.py [areacode[1:North][2:East][3:West]] [YYYYMMDDHH(MM)]')
+    print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
     
 # 観測データJSONの url作成
@@ -361,228 +348,224 @@ mlon, mlat = 2560, 3360
 slon, elon, rlon = 118, 150, 1/80
 slat, elat, rlat = 20, 48, 1/120
 
-# 地図の描画範囲指定
-if (area == '0'):
-    i_area = [139, 147, 40, 46]
-    areaname="Hokkaido"
-elif (area == '1'):
-    i_area = [134, 142, 33, 39]
-    areaname="East"
-elif (area == '2'):
-    i_area = [128, 136, 31, 37]
-    areaname="West"
-elif (area == '3'):
-    i_area = [135, 143, 36, 42]
-    areaname="Tohoku"
-else:
-    i_area = [134, 142, 33, 39]
-    areaname="East"
+for area in [0, 1, 2, 3]:
+    # 地図の描画範囲指定
+    if (area == '0'):
+        i_area = [139, 147, 40, 46]
+        areaname="Hokkaido"
+    elif (area == '1'):
+        i_area = [134, 142, 33, 39]
+        areaname="East"
+    elif (area == '2'):
+        i_area = [128, 136, 31, 37]
+        areaname="West"
+    elif (area == '3'):
+        i_area = [135, 143, 36, 42]
+        areaname="Tohoku"
+    else:
+        i_area = [134, 142, 33, 39]
+        areaname="East"
 
-# 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize=(8,6))
-# 余白設定                                                                                
-plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
-# 作図                                                                                    
-ax = fig.add_subplot(1, 1, 1, projection=proj)
-ax.set_extent(i_area, latlon_proj)
+    # 図のSIZE指定inch                                                                        
+    fig = plt.figure(figsize=(8,6))
+    # 余白設定                                                                                
+    plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
+    # 作図                                                                                    
+    ax = fig.add_subplot(1, 1, 1, projection=proj)
+    ax.set_extent(i_area, latlon_proj)
 
-# レーダーGPV描画
-lon = np.arange(slon, elon, rlon)
-lat = np.arange(slat, elat, rlat)
-LON, LAT = np.meshgrid(lon, lat)
-LON, LAT = LON.T, LAT.T
-cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
-cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
-cb.ax.tick_params(labelsize=8)
+    # レーダーGPV描画
+    lon = np.arange(slon, elon, rlon)
+    lat = np.arange(slat, elat, rlat)
+    LON, LAT = np.meshgrid(lon, lat)
+    LON, LAT = LON.T, LAT.T
+    cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+    cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
+    cb.ax.tick_params(labelsize=8)
 
-# グリッド線を引く                                                               
-xticks=np.arange(-180,180,dlon)
-yticks=np.arange(-90,90.1,dlat)
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-gl.xlocator = mticker.FixedLocator(xticks)
-gl.ylocator = mticker.FixedLocator(yticks)
+    # グリッド線を引く                                                               
+    xticks=np.arange(-180,180,dlon)
+    yticks=np.arange(-90,90.1,dlat)
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
+    gl.xlocator = mticker.FixedLocator(xticks)
+    gl.ylocator = mticker.FixedLocator(yticks)
 
-# 配列の宣言
-lat_list_t = []
-lon_list_t = []
-temp_list = []
-lat_list_p = []
-lon_list_p = []
-npre_list = []
+    # 配列の宣言
+    lat_list_t = []
+    lon_list_t = []
+    temp_list = []
+    lat_list_p = []
+    lon_list_p = []
+    npre_list = []
 
-# 地点プロット                                                                                                 
-for stno,val in dat_json.items():
-    # 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
-    wlat = amd_json[stno]['lat'][0] + amd_json[stno]['lat'][1]/60.0
-    wlon = amd_json[stno]['lon'][0] + amd_json[stno]['lon'][1]/60.0
-    walt = amd_json[stno]['alt']
-    # 風
-    wind_ok = True
-    ws = get_obs_value(val,'wind')
-    wd = get_obs_value(val,'windDirection')
-    if ws is not None and wd is not None:
-        # 16方位風向と風速から、u,v作成   
-        if ws == None or wd == None:
-            u = None
-            v = None
+    # 地点プロット                                                                                                 
+    for stno,val in dat_json.items():
+        # 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
+        wlat = amd_json[stno]['lat'][0] + amd_json[stno]['lat'][1]/60.0
+        wlon = amd_json[stno]['lon'][0] + amd_json[stno]['lon'][1]/60.0
+        walt = amd_json[stno]['alt']
+        # 風
+        wind_ok = True
+        ws = get_obs_value(val,'wind')
+        wd = get_obs_value(val,'windDirection')
+        if ws is not None and wd is not None:
+            # 16方位風向と風速から、u,v作成   
+            if ws == None or wd == None:
+                u = None
+                v = None
+            else:
+                wd = wd / 8.0 * math.pi  # 1/8 = (360/16) / 360 * 2
+                au = -1.0 * ws * math.sin(wd)
+                av = -1.0 * ws * math.cos(wd)
         else:
-            wd = wd / 8.0 * math.pi  # 1/8 = (360/16) / 360 * 2
-            au = -1.0 * ws * math.sin(wd)
-            av = -1.0 * ws * math.cos(wd)
-    else:
-        wind_ok = False
-    # 気温
-    temp = get_obs_value(val,'temp')
-    if temp is None:
-        temp = np.nan
-    elif walt < 800: #標高の高い観測点は無視する
-        # 配列に格納
-        tempsl = temp
-        lat_list_t.append(wlat)
-        lon_list_t.append(wlon)
-        temp_list.append(tempsl)
-    # 湿度
-    hu = get_obs_value(val,'humidity')
-    if hu is None:
-        hu = -1.0
-    # 露点温度
-    dp_temp = -200.0
-    if hu >= 0.0 and temp > -200.0:
-        dp_temp = mpcalc.dewpoint_from_relative_humidity(temp * units.degC,hu/100.0).m
-    # 更正気圧
-    npre = get_obs_value(val,'normalPressure')
-    if npre is None:
-        npre = np.nan
-    else:
-        # 配列に格納
-        lat_list_p.append(wlat)
-        lon_list_p.append(wlon)
-        npre_list.append(npre)   
-    # 気圧
-    pre = get_obs_value(val,'pressure')
-    if pre is None:
-        pre = -1.0
+            wind_ok = False
+        # 気温
+        temp = get_obs_value(val,'temp')
+        if temp is None:
+            temp = np.nan
+        elif walt < 800: #標高の高い観測点は無視する
+            # 配列に格納
+            tempsl = temp
+            lat_list_t.append(wlat)
+            lon_list_t.append(wlon)
+            temp_list.append(tempsl)
+        # 湿度
+        hu = get_obs_value(val,'humidity')
+        if hu is None:
+            hu = -1.0
+        # 露点温度
+        dp_temp = -200.0
+        if hu >= 0.0 and temp > -200.0:
+            dp_temp = mpcalc.dewpoint_from_relative_humidity(temp * units.degC,hu/100.0).m
+        # 更正気圧
+        npre = get_obs_value(val,'normalPressure')
+        if npre is None:
+            npre = np.nan
+        else:
+            # 配列に格納
+            lat_list_p.append(wlat)
+            lon_list_p.append(wlon)
+            npre_list.append(npre)   
+        # 気圧
+        pre = get_obs_value(val,'pressure')
+        if pre is None:
+            pre = -1.0
 
-    # 湿球温度
-    wb_temp = -200.0
-    if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
-        wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
+        # 湿球温度
+        wb_temp = -200.0
+        if dp_temp > -200.0 and temp > -200.0 and pre > 0.0:
+            wb_temp = mpcalc.wet_bulb_temperature(pre * units.hPa, temp * units.degC, dp_temp * units.degC).m
         
-    ## プロット
-    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
-    if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
-        ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
-        if wind_ok and au*au+av*av>4.0: # 矢羽プロット
-            ax.barbs(wlon, wlat, 
-                     (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m,
-                     length=barb_length, transform=latlon_proj)
-        if npre_dispflag and pre >= 0.0: # 気圧プロット
-            ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
-        if temp_dispflag and temp > -200.0: # 気温プロット
-            color_temp = "red"
-            ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
-        if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
-            if dp_temp < 0:
-                color_temp = "purple"
-            else:
-                color_temp = "black"
-            ax.text(fig_z[0]+0.025, fig_z[1]-0.003,'{:5.1f}'.format(wb_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
-        if dp_dispflag and dp_temp > -200.0: # 露点温度プロット
-            if dp_temp < 0:
-                color_temp = "purple"
-            else:
-                color_temp = "black"
-            ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
+        ## プロット
+        fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
+        if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
+            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
+            if wind_ok and au*au+av*av>4.0: # 矢羽プロット
+                ax.barbs(wlon, wlat, 
+                          (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=latlon_proj)
+            if npre_dispflag and pre >= 0.0: # 気圧プロット
+                ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+            if temp_dispflag and temp > -200.0: # 気温プロット
+                color_temp = "red"
+                ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+            if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
+                 if dp_temp < 0:
+                    color_temp = "purple"
+                else:
+                    color_temp = "black"
+                ax.text(fig_z[0]+0.025, fig_z[1]-0.003,'{:5.1f}'.format(wb_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+            if dp_dispflag and dp_temp > -200.0: # 露点温度プロット
+                if dp_temp < 0:
+                    color_temp = "purple"
+                else:
+                    color_temp = "black"
+                ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
-# 線形補間
-grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), method='linear')
-grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
+    # 線形補間
+    grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), method='linear')
+    grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
 
-# 海上のデータは観測がないためMSMで補正する
-grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
-grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
+    # 海上のデータは観測がないためMSMで補正する
+    grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+    grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 
-# データがない格子もMSM予報値をそのまま採用する
-nan_indices_npre = np.isnan(grid_npre)
-grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
-nan_indices_temp = np.isnan(grid_temp)
-grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
+    # データがない格子もMSM予報値をそのまま採用する
+    nan_indices_npre = np.isnan(grid_npre)
+    grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
+    nan_indices_temp = np.isnan(grid_temp)
+    grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
 
-# ガウシアンフィルタを適用
-grid_npre = gaussian_filter(grid_npre, sigma=2.0)
-grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
-# grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=4.0), grid_npre)
-# grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=8.0), grid_temp)
+    # ガウシアンフィルタを適用
+    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
+    grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
+    grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
+    grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
 
-#陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-grid_npre[sealand_filterd <= 1] = np.nan
-grid_temp[sealand_filterd <= 1] = np.nan
+    #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
+    grid_npre[sealand_filterd <= 1] = np.nan
+    grid_temp[sealand_filterd <= 1] = np.nan
 
-# 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
-lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
-lat_range = np.where((grid_lat[:, 0] >= i_area[2] - 0.25) & (grid_lat[:, 0] <= i_area[3] + 0.25))
+    # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
+    lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
+    lat_range = np.where((grid_lat[:, 0] >= i_area[2] - 0.25) & (grid_lat[:, 0] <= i_area[3] + 0.25))
 
-# 切り出したい範囲のインデックスを取得
-lon_indices = lon_range[0]
-lat_indices = lat_range[0]
+    # 切り出したい範囲のインデックスを取得
+    lon_indices = lon_range[0]
+    lat_indices = lat_range[0]
 
-# 切り出し
-grid_lon_sliced = grid_lon[lat_indices][:, lon_indices]
-grid_lat_sliced = grid_lat[lat_indices][:, lon_indices]
-psea_grid = grid_npre[lat_indices][:, lon_indices]
-temp_grid = grid_temp[lat_indices][:, lon_indices]
+    # 切り出し
+    grid_lon_sliced = grid_lon[lat_indices][:, lon_indices]
+    grid_lat_sliced = grid_lat[lat_indices][:, lon_indices]
+    psea_grid = grid_npre[lat_indices][:, lon_indices]
+    temp_grid = grid_temp[lat_indices][:, lon_indices]
 
-# 等温線をプロット
-levels = np.arange(-30, 45, 3)
-cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
-# levels2 = np.arange(-30, 60, 1)
-# cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels2, linewidths=1, linestyles='solid', colors='red')
+    # 等温線をプロット
+    levels = np.arange(-30, 45, 3)
+    cont = plt.contour(grid_lon_sliced, grid_lat_sliced, temp_grid, levels=levels, linewidths=2, linestyles='solid', colors='red')
 
-# 等温線のラベルを付ける
-plt.clabel(cont, fontsize=15)
+    # 等温線のラベルを付ける
+    plt.clabel(cont, fontsize=15)
 
-# 等圧線をプロット
-#levels = np.arange(900, 1050, 2)
-#cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
-levels2 = np.arange(900, 1050, 1)
-cont2 = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
+    # 等圧線をプロット
+    levels = np.arange(900, 1050, 1)
+    cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
 
-# 等圧線のラベルを付ける
-plt.clabel(cont, fontsize=15)
+    # 等圧線のラベルを付ける
+    plt.clabel(cont, fontsize=15)
 
-## H stamp
-maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
-for i in range(len(maxid[0])):
-    wlon = grid_lon_sliced[0][maxid[1][i]]
-    wlat = grid_lat_sliced[maxid[0][i]][0]
-    # 図の範囲内に座標があるか確認                                                                           
-    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
-        ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=latlon_proj)
-        val = psea_grid[maxid[0][i]][maxid[1][i]]
-        ival = int(val)
-        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+    ## H stamp
+    maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
+    for i in range(len(maxid[0])):
+        wlon = grid_lon_sliced[0][maxid[1][i]]
+        wlat = grid_lat_sliced[maxid[0][i]][0]
+        # 図の範囲内に座標があるか確認                                                                           
+        fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+        if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+            ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
+            ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=latlon_proj)
+            val = psea_grid[maxid[0][i]][maxid[1][i]]
+            ival = int(val)
+            ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-## L stamp
-minid = detect_peaks(psea_grid, filter_size=40, dist_cut=10, flag=1)
-for i in range(len(minid[0])):
-    wlon = grid_lon_sliced[0][minid[1][i]]
-    wlat = grid_lat_sliced[minid[0][i]][0]
-    # 図の範囲内に座標があるか確認                                                                           
-    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
-        ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=latlon_proj)
-        val = psea_grid[minid[0][i]][minid[1][i]]
-        ival = int(val)
-        ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+    ## L stamp
+    minid = detect_peaks(psea_grid, filter_size=40, dist_cut=10, flag=1)
+    for i in range(len(minid[0])):
+        wlon = grid_lon_sliced[0][minid[1][i]]
+        wlat = grid_lat_sliced[minid[0][i]][0]
+        # 図の範囲内に座標があるか確認                                                                           
+        fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+        if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+            ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
+            ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=latlon_proj)
+            val = psea_grid[minid[0][i]][minid[1][i]]
+            ival = int(val)
+            ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-# 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
+    # 海岸線
+    ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
-# 図の説明
-plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest{}.jpg".format(areaname), format="jpg")
+    # 図の説明
+    plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=15)
+    plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
+    #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
+    plt.savefig("latest{}.jpg".format(areaname), format="jpg")
