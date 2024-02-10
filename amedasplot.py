@@ -765,6 +765,12 @@ plt.clabel(cont, fontsize=15)
 # ベクトルの間引き間隔
 #stride = 5
 
+data = np.flipud(data_ir)
+plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
+cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
+cb.ax.tick_params(labelsize=8)
+
 # データを間引く
 #grid_lon_sparse = grid_lon_p[::stride, ::stride]
 #grid_lat_sparse = grid_lat_p[::stride, ::stride]
