@@ -36,10 +36,7 @@ jobs:
           PTree_ID: ${{ secrets.PTree_ID }}
           PTree_Pass: ${{ secrets.PTree_Pass }}
         run: |
-          python amedasplot.py 0
-          python amedasplot.py 1
-          python amedasplot.py 2
-          python amedasplot.py 3
+          python amedasplot.py 
           python upperair.py
 
       - name: Check for Git changes
