@@ -311,12 +311,12 @@ data = np.fromfile("LANDSEA.MSM_5K", dtype=np.dtype('>f4'))  # 地形バイナ�
 data = data.reshape(505, 481)
 
 # メッシュグリッドの作成
-grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
+grid_lon_s, grid_lat_s = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 sealand = np.flip(data*10000, axis=0)
 
-sealand[(grid_lon - grid_lat < 94.5) & (grid_lon < 132)] = 0
-sealand[(grid_lat > 45.5)] = 0
-sealand[(grid_lon > 145.5)] = 0
+sealand[(grid_lon_s - grid_lat_s < 94.5) & (grid_lon_s < 132)] = 0
+sealand[(grid_lat_s > 45.5)] = 0
+sealand[(grid_lon_s > 145.5)] = 0
 
 sealand = maximum_filter(sealand, size=(15, 15))
 
@@ -480,8 +480,8 @@ for area in [0, 1, 2, 3]:
                 ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
     # 線形補間
-    grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon, grid_lat), method='linear')
-    grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon, grid_lat), method='linear')
+    grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
+    grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
 
     # 海上のデータは観測がないためMSMで補正する
     grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
@@ -504,16 +504,16 @@ for area in [0, 1, 2, 3]:
     grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
-    lon_range = np.where((grid_lon[0, :] >= i_area[0] - 0.25) & (grid_lon[0, :] <= i_area[1] + 0.25))
-    lat_range = np.where((grid_lat[:, 0] >= i_area[2] - 0.25) & (grid_lat[:, 0] <= i_area[3] + 0.25))
+    lon_range = np.where((grid_lon_s[0, :] >= i_area[0] - 0.25) & (grid_lon_s[0, :] <= i_area[1] + 0.25))
+    lat_range = np.where((grid_lat_s[:, 0] >= i_area[2] - 0.25) & (grid_lat_s[:, 0] <= i_area[3] + 0.25))
 
     # 切り出したい範囲のインデックスを取得
     lon_indices = lon_range[0]
     lat_indices = lat_range[0]
 
     # 切り出し
-    grid_lon_sliced = grid_lon[lat_indices][:, lon_indices]
-    grid_lat_sliced = grid_lat[lat_indices][:, lon_indices]
+    grid_lon_sliced = grid_lon_s[lat_indices][:, lon_indices]
+    grid_lat_sliced = grid_lat_s[lat_indices][:, lon_indices]
     psea_grid = grid_npre[lat_indices][:, lon_indices]
     temp_grid = grid_temp[lat_indices][:, lon_indices]
 
@@ -605,7 +605,7 @@ subprocess.run("wget {} -P ./ > /dev/null 2>&1".format(url), shell=True)
 grbs = pygrib.open(basename)
 
 # 配列の宣言
-grid_lon, grid_lat = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(22.4, 47.6, 0.1))
+grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(22.4, 47.6, 0.1))
 
 # データを取得する
 height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
@@ -673,15 +673,15 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-#cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+#cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
 #plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon, grid_lat, tmp500, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_p, grid_lat_p, tmp500, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
-cont = plt.contour(grid_lon, grid_lat, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
+cont = plt.contour(grid_lon_p, grid_lat_p, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-#plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
+#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
@@ -712,12 +712,12 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon, grid_lat, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
-#plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
+#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
@@ -725,13 +725,13 @@ plt.clabel(cont, fontsize=15)
 stride = 5
 
 # データを間引く
-grid_lon_sparse = grid_lon[::stride, ::stride]
-grid_lat_sparse = grid_lat[::stride, ::stride]
+grid_lon_sparse = grid_lon_p[::stride, ::stride]
+grid_lat_sparse = grid_lat_p[::stride, ::stride]
 u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
-#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=1, color="blue")
+ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
+#ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=1, color="blue")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -753,26 +753,26 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon, grid_lat, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid')
 plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon, grid_lat, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-plt.clabel(cont, fontsize=15)
+#cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
+#plt.clabel(cont, fontsize=15)
 
-#plt.contourf(grid_lon, grid_lat, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
+#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
 # ベクトルの間引き間隔
-stride = 5
+#stride = 5
 
 # データを間引く
-grid_lon_sparse = grid_lon[::stride, ::stride]
-grid_lat_sparse = grid_lat[::stride, ::stride]
-u_sparse = u[::stride, ::stride]
-v_sparse = v[::stride, ::stride]
+#grid_lon_sparse = grid_lon_p[::stride, ::stride]
+#grid_lat_sparse = grid_lat_p[::stride, ::stride]
+#u_sparse = u[::stride, ::stride]
+#v_sparse = v[::stride, ::stride]
 
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=1, color="blue")
+#ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=1, color="blue")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -781,4 +781,4 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_850.jpg", format="jpg")
+plt.savefig("latest.jpg", format="jpg")
