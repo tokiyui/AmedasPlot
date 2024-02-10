@@ -567,7 +567,7 @@ for area in [0, 1, 2, 3]:
     plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
     #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
     plt.savefig("latest{}.jpg".format(areaname), format="jpg")
-
+    plt.clf()
 
 markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
@@ -700,7 +700,7 @@ plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_500.jpg", format="jpg")
-
+plt.clf()
 
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
@@ -741,7 +741,7 @@ plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_850.jpg", format="jpg")
-
+plt.clf()
 
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
@@ -788,3 +788,4 @@ plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest.jpg", format="jpg")
+plt.clf()
