@@ -784,7 +784,7 @@ cb.ax.tick_params(labelsize=8)
 #ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=1, color="blue")
 
 ## H stamp
-maxid = detect_peaks(prmsl, filter_size=40, dist_cut=30)
+maxid = detect_peaks(prmsl, filter_size=80, dist_cut=30)
 for i in range(len(maxid[0])):
     wlon = grid_lon_s[0][maxid[1][i]]
     wlat = grid_lat_s[maxid[0][i]][0]
