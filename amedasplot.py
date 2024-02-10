@@ -690,7 +690,7 @@ plt.clabel(cont, fontsize=15)
 data = np.flipud(data_wv)
 plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
-plt.tight_layout(rect=[0, 0, 0.95, 1])
+plt.tight_layout(rect=[0, 0.05, 1, 1])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -766,7 +766,7 @@ plt.clabel(cont, fontsize=15)
 # ベクトルの間引き間隔
 #stride = 5
 
-data = np.flipud(data_ir)
+#data = np.flipud(data_ir)
 plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
