@@ -18,6 +18,7 @@
 * レーダーデータおよび海上の観測データの代わりに用いるMSM（メソモデル）の予報値:京都大学生存圏研究所（ http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original ）
 * 海陸判定には、京都大学生存圏研究所から取得した海陸分布データをコピーしてgit登録し、使用しています。
 * 上層の総観場の天気図もMSM（メソモデル）の予報値から描画しています。（3時間ごとの値しかないため、直近の初期値のFT=3で実況の代用としています）
+* 水蒸気画像・赤外画像:JAXAひまわりモニタ（ https://www.eorc.jaxa.jp/ptree/userguide_j.html 、データ取得は要ユーザー登録）のデータから描画
 
 ## special thanks
 * 黒良さんが開発・公開されているアメダスプロットコードをもとに改変しました。https://note.com/rkurora/n/n47e2099f74b0
