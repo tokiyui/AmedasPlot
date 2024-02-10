@@ -251,7 +251,7 @@ dp_dispflag = False
 
 markersize_0 = 1 # マーカーサイズ
 char_size=8 # 文字サイズ
-barb_length=8 # 矢羽の長さ
+barb_length=6 # 矢羽の長さ
 dlon,dlat=1,1   # 緯線・経線は1度ごと
 
 # 描画地域と描画時刻の設定
@@ -528,7 +528,7 @@ for area in [0, 1, 2, 3]:
 
     # 等圧線をプロット
     levels = np.arange(900, 1050, 1)
-    cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels2, linewidths=2, colors='black')
+    cont = plt.contour(grid_lon_sliced, grid_lat_sliced, psea_grid, levels=levels, linewidths=2, colors='black')
 
     # 等圧線のラベルを付ける
     plt.clabel(cont, fontsize=15)
