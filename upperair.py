@@ -93,21 +93,14 @@ nc_file = nc.Dataset(basename, 'r')
 # 緯度、経度、およびデータの取得
 latitude = nc_file.variables['latitude'][:]
 longitude = nc_file.variables['longitude'][:]
-data = nc_file.variables['tbb_08'][:].reshape(2401, 2401)
+data_wv = nc_file.variables['tbb_08'][:].reshape(2401, 2401)
+data_ir = nc_file.variables['tbb_13'][:].reshape(2401, 2401)
 
 # メッシュグリッドを作成
 lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
 nc_file.close()
-
-# データをサンプリングする
-sample = 2
-sampled_data = data[::sample, ::sample]  # 2つおきにサンプリング
-
-# サンプリングされたデータに対応する緯度経度を抽出する
-sampled_lon = lon[::sample, ::sample]
-sampled_lat = lat[::sample, ::sample]
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
@@ -152,7 +145,7 @@ plt.clabel(cont, fontsize=15)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data)
-plt.imshow(data, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
+plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
 
 plt.tight_layout(rect=[0, 0, 1, 1])
 
@@ -163,7 +156,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_upper.jpg", format="jpg")
+plt.savefig("latest_500.jpg", format="jpg")
 
 
 # 作図                                                                                    
@@ -204,4 +197,4 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_upper2.jpg", format="jpg")
+plt.savefig("latest_upper850.jpg", format="jpg")
