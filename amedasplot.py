@@ -498,7 +498,7 @@ for area in [0, 1, 2, 3]:
     grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
-    prmsl = gaussian_filter(prmsl, sigma=2.0) 
+    prmsl = gaussian_filter(prmsl, sigma=4.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
     grid_npre[sealand_filterd <= 1] = np.nan
@@ -784,7 +784,7 @@ cb.ax.tick_params(labelsize=8)
 #ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=1, color="blue")
 
 ## H stamp
-maxid = detect_peaks(prmsl, filter_size=40, dist_cut=10)
+maxid = detect_peaks(prmsl, filter_size=40, dist_cut=20)
 for i in range(len(maxid[0])):
     wlon = grid_lon_s[0][maxid[1][i]]
     wlat = grid_lat_s[maxid[0][i]][0]
@@ -798,7 +798,7 @@ for i in range(len(maxid[0])):
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
-minid = detect_peaks(prmsl, filter_size=40, dist_cut=10, flag=1)
+minid = detect_peaks(prmsl, filter_size=40, dist_cut=20, flag=1)
 for i in range(len(minid[0])):
     wlon = grid_lon_s[0][minid[1][i]]
     wlat = grid_lat_s[minid[0][i]][0]
