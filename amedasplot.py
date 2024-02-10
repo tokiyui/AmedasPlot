@@ -688,7 +688,7 @@ plt.clabel(cont, fontsize=15)
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data_wv)
-plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
+plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 
 plt.tight_layout(rect=[0, 0.05, 1, 1])
 
@@ -767,7 +767,7 @@ plt.clabel(cont, fontsize=15)
 #stride = 5
 
 #data = np.flipud(data_ir)
-plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.min(), lat.max()), origin='lower', transform=proj)
+plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), transform=proj)
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
 cb.ax.tick_params(labelsize=8)
