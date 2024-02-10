@@ -469,7 +469,7 @@ for area in [0, 1, 2, 3]:
                 color_temp = "red"
                 ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
             if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
-                 if dp_temp < 0:
+                if dp_temp < 0:
                     color_temp = "purple"
                 else:
                     color_temp = "black"
