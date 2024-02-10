@@ -498,7 +498,7 @@ for area in [0, 1, 2, 3]:
     grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
-    prmsl = gaussian_filter(prmsl, sigma=8.0) 
+    prmsl = gaussian_filter(prmsl, sigma=6.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
     grid_npre[sealand_filterd <= 1] = np.nan
@@ -792,7 +792,7 @@ for i in range(len(maxid[0])):
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
         ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
-        ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=latlon_proj)
+        ax.text(wlon - 0.5, wlat + 0.5, 'H', size=30, color="blue", transform=latlon_proj)
         val = prmsl[maxid[0][i]][maxid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
@@ -806,7 +806,7 @@ for i in range(len(minid[0])):
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
         ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
-        ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=latlon_proj)
+        ax.text(wlon - 0.3, wlat + 0.3, 'L', size=30, color="red", transform=latlon_proj)
         val = prmsl[minid[0][i]][minid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
