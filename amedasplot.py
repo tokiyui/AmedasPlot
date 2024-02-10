@@ -657,7 +657,7 @@ lon, lat = np.meshgrid(longitude, latitude)
 nc_file.close()
 
 # 図法指定                                                                             
-proj = ccrs.PlateCarree()
+proj = ccrs.PlateCarree()                                                      
 # 図のSIZE指定inch                                                                        
 fig = plt.figure(figsize=(8,6))
 # 余白設定                                                                                
@@ -696,7 +696,7 @@ plt.tight_layout(rect=[0, 0, 0.95, 1])
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
+plt.title('{}'.format("Z500, T500, WV Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_500.jpg", format="jpg")
@@ -737,13 +737,14 @@ ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transfo
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
+plt.title('{}'.format("T850, EPT850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_850.jpg", format="jpg")
 plt.clf()
 
-# 作図                                                                                    
+# 作図                                                             
+plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)  
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
 
@@ -784,7 +785,7 @@ cb.ax.tick_params(labelsize=8)
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Z500, T500, EPT850, UV850"), loc='left',size=15)
+plt.title('{}'.format("Psea, Rader and IR Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest.jpg", format="jpg")
