@@ -351,21 +351,18 @@ slat, elat, rlat = 20, 48, 1/120
 
 for area in [0, 1, 2, 3]:
     # 地図の描画範囲指定
-    if (area == '0'):
+    if (area == 0):
         i_area = [139, 147, 40, 46]
         areaname="Hokkaido"
-    elif (area == '1'):
+    elif (area == 1):
         i_area = [134, 142, 33, 39]
         areaname="East"
-    elif (area == '2'):
+    elif (area == 2):
         i_area = [128, 136, 31, 37]
         areaname="West"
-    elif (area == '3'):
+    elif (area == 3):
         i_area = [135, 143, 36, 42]
         areaname="Tohoku"
-    else:
-        i_area = [134, 142, 33, 39]
-        areaname="East"
 
     # 図のSIZE指定inch                                                                        
     fig = plt.figure(figsize=(8,6))
