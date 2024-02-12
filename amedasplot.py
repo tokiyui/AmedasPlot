@@ -688,7 +688,7 @@ plt.clabel(cont, fontsize=15)
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
-ax.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="purple")
+ax.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
@@ -736,7 +736,7 @@ u_sparse = u850[::stride, ::stride]
 v_sparse = v850[::stride, ::stride]
 
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
+ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=1, color="purple")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
