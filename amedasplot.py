@@ -676,7 +676,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 # プロット
 #cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
 #plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon_p, grid_lat_p, tmp500, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_p, grid_lat_p, tmp500, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
 cont = plt.contour(grid_lon_p, grid_lat_p, height, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
@@ -713,9 +713,9 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='orange')
 plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
+cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
 #plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
@@ -755,7 +755,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid')
+cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='yellow')
 plt.clabel(cont, fontsize=15)
 #cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 #plt.clabel(cont, fontsize=15)
