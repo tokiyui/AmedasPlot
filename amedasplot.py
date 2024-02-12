@@ -611,8 +611,10 @@ grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.ara
 # データを取得する
 height = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
 tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] -273.15, axis=0)
-u = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
-v = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
+u500 = np.flip(grbs.select(parameterName='u-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
+v500 = np.flip(grbs.select(parameterName='v-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
+u850 = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
+v850 = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 # 相当温位
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] -273.15, axis=0)
 #tmp = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] * units('K'), axis=0)
@@ -686,6 +688,8 @@ plt.clabel(cont, fontsize=15)
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
 
+ax.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="purple")
+
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data_wv)
@@ -728,11 +732,11 @@ stride = 5
 # データを間引く
 grid_lon_sparse = grid_lon_p[::stride, ::stride]
 grid_lat_sparse = grid_lat_p[::stride, ::stride]
-u_sparse = u[::stride, ::stride]
-v_sparse = v[::stride, ::stride]
+u_sparse = u850[::stride, ::stride]
+v_sparse = v850[::stride, ::stride]
 
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=3, density=0.5, color="purple")
+ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
