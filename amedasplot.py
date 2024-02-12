@@ -713,9 +713,9 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='orange')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='darkorange')
 plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='pink')
+cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
 #plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
