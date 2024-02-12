@@ -732,7 +732,7 @@ u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
 ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-#ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=1, color="blue")
+ax.streamplot(grid_lon, grid_lat, u, v, linewidth=1, density=0.5, color="purple")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -755,7 +755,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='yellow')
+cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 #cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 #plt.clabel(cont, fontsize=15)
