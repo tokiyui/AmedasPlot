@@ -732,7 +732,7 @@ u_sparse = u[::stride, ::stride]
 v_sparse = v[::stride, ::stride]
 
 ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=0.5, color="purple")
+ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=3, density=0.5, color="purple")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
