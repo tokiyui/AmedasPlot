@@ -705,9 +705,11 @@ surt = np.sqrt(wind_speed_squared)
 # 流線を描画
 plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
-'''
+
 lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
+
+'''
 ds = xr.Dataset(
    {
        # "Geopotential_height": (["lats", "lons"], valHt),                                                                        
