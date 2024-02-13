@@ -674,6 +674,8 @@ fig = plt.figure(figsize=(8,6))
 # 余白設定                                                                                
 #plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)   
 plt.subplots_adjust(left=0.14, right=0.9, bottom=0.0, top=0.9) 
+
+### 300hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -692,19 +694,12 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, height300, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#cb.ax.tick_params(labelsize=8)
-
-#ax.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
-
 # 風速の計算
 wind_speed_squared = u500 * u500 + v500 * v500
 surt = np.sqrt(wind_speed_squared)
 
 # 流線を描画
 plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
-
 
 lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
@@ -744,7 +739,6 @@ ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'])
 
 
 # 描画
-#plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data_wv)
 plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 
@@ -760,6 +754,7 @@ plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 plt.savefig("latest_300.jpg", format="jpg")
 plt.clf()
 
+### 850hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -770,14 +765,8 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='darkorange')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
-#cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-#plt.clabel(cont, fontsize=15)
-
-#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#cb.ax.tick_params(labelsize=8)
 
 # ベクトルの間引き間隔
 stride = 5
@@ -788,8 +777,8 @@ grid_lat_sparse = grid_lat_p[::stride, ::stride]
 u_sparse = u850[::stride, ::stride]
 v_sparse = v850[::stride, ::stride]
 
-ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-#ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=1, color="purple")
+#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
+ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -801,8 +790,7 @@ plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 plt.savefig("latest_850.jpg", format="jpg")
 plt.clf()
 
-
-
+### 500hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -844,14 +832,7 @@ plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 plt.savefig("latest_500.jpg", format="jpg")
 plt.clf()
 
-
-
-
-
-
-
-
-
+### 700hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent([120, 150, 22.4, 47.6], proj)
@@ -863,11 +844,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
 cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-#plt.clabel(cont, fontsize=15)
-
-#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#cb.ax.tick_params(labelsize=8)
+plt.clabel(cont, fontsize=15)
 
 # ベクトルの間引き間隔
 #stride = 5
@@ -893,20 +870,7 @@ plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 plt.savefig("latest_700.jpg", format="jpg")
 plt.clf()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Surface ###
 # 作図                                                             
 plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=0.96)  
 ax = fig.add_subplot(1, 1, 1, projection=proj)
@@ -918,17 +882,8 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='gray')
 plt.clabel(cont, fontsize=15)
-#cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-#plt.clabel(cont, fontsize=15)
-
-#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#cb.ax.tick_params(labelsize=8)
-
-# ベクトルの間引き間隔
-#stride = 5
 
 data = np.flipud(data_ir)
 plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
@@ -936,15 +891,6 @@ plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
 cb.ax.tick_params(labelsize=8)
-
-# データを間引く
-#grid_lon_sparse = grid_lon_p[::stride, ::stride]
-#grid_lat_sparse = grid_lat_p[::stride, ::stride]
-#u_sparse = u[::stride, ::stride]
-#v_sparse = v[::stride, ::stride]
-
-#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-#ax.streamplot(grid_lon_p, grid_lat_p, u, v, linewidth=1, density=1, color="blue")
 
 ## H stamp
 maxid = detect_peaks(prmsl, filter_size=80, dist_cut=30)
