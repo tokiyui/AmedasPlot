@@ -709,8 +709,8 @@ ds = xr.Dataset(
    },
    coords={
        # "lat": latHt[:,0],
-       "lat": lat
-       "lon": lon
+       "lat": lat,
+       "lon": lon,
    },
 )
 
