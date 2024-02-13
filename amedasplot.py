@@ -704,6 +704,37 @@ mask = surt > threshold
 plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue", mask=mask)
 
 
+ds = xr.Dataset(
+   {
+       # "Geopotential_height": (["lat", "lon"], valHt),                                                                        
+       "u_wind": (["grid_lat_p", "grid_lon_p"], u500),
+       "v_wind": (["grid_lat_p", "grid_lon_p"], v500),
+   },
+   coords={
+       # "lat": latHt[:,0],
+       "lat": grid_lat_p
+       "lon": grid_lon_p
+   },
+)
+
+ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 描画
 #plt.contourf(lon, lat, data, cmap='gray_r')
 data = np.flipud(data_wv)
