@@ -881,15 +881,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3),
 #ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=1, color="purple")
 
-print("ttd.shape:", ttd.shape)
-print("lons.shape", lons.shape)
-print("lats.shape", lats.shape)
-
-where=(ttd <= 3)
-print(where.shape)
-
-plt.fill_between(lons, lats, where=(ttd <= 3).flatten(), color='lightgreen', alpha=0.3)
-plt.fill_between(lons, lats, where=(ttd >= 15), color='yellow', alpha=0.3)
+plt.contourf(lons, lats, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'yellow'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
