@@ -691,7 +691,7 @@ plt.clabel(cont, fontsize=15)
 #ax.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 # 風速の計算
-wind_speed_squared = U500 * u500 + v500 * v500
+wind_speed_squared = u500 * u500 + v500 * v500
 surt = np.sqrt(wind_speed_squared)
 
 # 閾値
