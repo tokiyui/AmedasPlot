@@ -26,6 +26,7 @@ from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpol
 import argparse
 import netCDF4 as nc
 from ftplib import FTP
+import xarray as xr
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
