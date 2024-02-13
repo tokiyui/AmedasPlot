@@ -707,8 +707,8 @@ ds = xr.Dataset(
    },
    coords={
        # "lat": latHt[:,0],
-       "lat": grid_lat_p,
-       "lon": grid_lon_p,
+       "lat": np.arange(22.4, 47.6, 0.1),
+       "lon": np.arange(120, 150 + 0.0625, 0.125),
    },
 )
 
