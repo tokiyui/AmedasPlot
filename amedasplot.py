@@ -699,18 +699,22 @@ surt = np.sqrt(wind_speed_squared)
 plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 
+lat = np.arange(22.4, 47.6, 0.1)
+lon = np.arange(120, 150 + 0.0625, 0.125)
 ds = xr.Dataset(
    {
        # "Geopotential_height": (["lat", "lon"], valHt),                                                                        
-       "u_wind": (u500),
-       "v_wind": (v500),
+       "u_wind": (['lat', 'lon'], u500),
+       "v_wind": (['lat', 'lon'], v500),
    },
    coords={
        # "lat": latHt[:,0],
-       "lat": np.arange(22.4, 47.6, 0.1),
-       "lon": np.arange(120, 150 + 0.0625, 0.125),
+       "lat": lat
+       "lon": lon
    },
 )
+
+print(ds)
 
 ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'])
 
