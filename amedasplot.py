@@ -694,14 +694,8 @@ plt.clabel(cont, fontsize=15)
 wind_speed_squared = u500 * u500 + v500 * v500
 surt = np.sqrt(wind_speed_squared)
 
-# 閾値
-threshold = 40
-
-# 風速が閾値より大きい領域にのみ流線を描画
-mask = surt > threshold
-
 # 流線を描画
-plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue", mask=mask)
+plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 
 ds = xr.Dataset(
