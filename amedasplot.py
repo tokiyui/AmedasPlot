@@ -706,18 +706,18 @@ surt = np.sqrt(wind_speed_squared)
 plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 
-lat = np.arange(22.4, 47.6, 0.1)
-lon = np.arange(120, 150 + 0.0625, 0.125)
+lats = np.arange(22.4, 47.6, 0.1)
+lons = np.arange(120, 150 + 0.0625, 0.125)
 ds = xr.Dataset(
    {
-       # "Geopotential_height": (["lat", "lon"], valHt),                                                                        
-       "u_wind": (['lat', 'lon'], u500 * units('m/s')),
-       "v_wind": (['lat', 'lon'], v500 * units('m/s')),
+       # "Geopotential_height": (["lats", "lons"], valHt),                                                                        
+       "u_wind": (['lats', 'lons'], u500 * units('m/s')),
+       "v_wind": (['lats', 'lons'], v500 * units('m/s')),
    },
    coords={
        # "lat": latHt[:,0],
-       "lat": lat,
-       "lon": lon,
+       "lat": lats,
+       "lon": lons,
    },
 )
 
