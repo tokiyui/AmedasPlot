@@ -704,8 +704,8 @@ lon = np.arange(120, 150 + 0.0625, 0.125)
 ds = xr.Dataset(
    {
        # "Geopotential_height": (["lat", "lon"], valHt),                                                                        
-       "u_wind": (['lat', 'lon'], u500),
-       "v_wind": (['lat', 'lon'], v500),
+       "u_wind": (['lat', 'lon'], u500 * units('m/s')),
+       "v_wind": (['lat', 'lon'], v500 * units('m/s')),
    },
    coords={
        # "lat": latHt[:,0],
