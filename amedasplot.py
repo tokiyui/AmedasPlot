@@ -712,7 +712,7 @@ ds = xr.Dataset(
    },
 )
 
-ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'])
+ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'],ds['lat'],ds['lon'])
 
 
 
