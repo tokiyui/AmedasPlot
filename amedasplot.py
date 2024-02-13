@@ -888,7 +888,7 @@ print("lats.shape", lats.shape)
 where=(ttd <= 3)
 print(where.shape)
 
-plt.fill_between(lons, lats, where=(ttd <= 3), color='lightgreen', alpha=0.3)
+plt.fill_between(lons, lats, where=(ttd <= 3).flatten(), color='lightgreen', alpha=0.3)
 plt.fill_between(lons, lats, where=(ttd >= 15), color='yellow', alpha=0.3)
 
 # 海岸線
