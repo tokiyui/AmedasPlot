@@ -662,7 +662,7 @@ data_wv = nc_file.variables['tbb_08'][:].reshape(2401, 2401)
 data_ir = nc_file.variables['tbb_13'][:].reshape(2401, 2401)
 
 # メッシュグリッドを作成
-#lon, lat = np.meshgrid(longitude, latitude)
+lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
 nc_file.close()
@@ -695,8 +695,8 @@ cont = plt.contour(grid_lon_p, grid_lat_p, height300, levels=np.arange(5100, 600
 plt.clabel(cont, fontsize=15)
 
 # 風速の計算
-wind_speed_squared = u500 * u500 + v500 * v500
-surt = np.sqrt(wind_speed_squared)
+wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
+plt.contourf(wind_speed, levels=[0, 80, 120, np.inf], colors=['white', 'blue', 'purple'], alpha=0.8)
 
 # 流線を描画
 # plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
@@ -791,7 +791,7 @@ plt.clabel(cont, fontsize=15)
 stride = 10
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 
-plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
+plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'], alpha=0.8)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
