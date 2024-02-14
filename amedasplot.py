@@ -622,18 +622,18 @@ v850 = np.flip(grbs.select(parameterName='v-component of wind', level=850, forec
 # 相当温位
 tmp700 = np.flip(grbs.select(parameterName='Temperature', level=700, forecastTime=6)[0].data()[0] -273.15, axis=0)
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] -273.15, axis=0)
-#tmp = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] * units('K'), axis=0)
 rh700 = np.flip(grbs.select(parameterName='Relative humidity', level=700, forecastTime=6)[0].data()[0], axis=0)
 rh850 = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0], axis=0)
-dewpoint = mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)
+dewpoint700 = mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100)
+dewpoint850 = mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)
 ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint)
-ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
+ttd = (tmp700 - dewpoint700.magnitude)
 
 height300 = gaussian_filter(height300, sigma=4.0)
 height500 = gaussian_filter(height500, sigma=4.0)
 tmp500 = gaussian_filter(tmp500, sigma=4.0)
 tmp850 = gaussian_filter(tmp850, sigma=4.0)
-ept = gaussian_filter(ept, sigma=4.0)
+ept = gaussian_filter(ept, sigma=8.0)
 
 # Himawari-9
 # 日付とファイル名の生成
@@ -662,7 +662,7 @@ data_wv = nc_file.variables['tbb_08'][:].reshape(2401, 2401)
 data_ir = nc_file.variables['tbb_13'][:].reshape(2401, 2401)
 
 # メッシュグリッドを作成
-lon, lat = np.meshgrid(longitude, latitude)
+#lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
 nc_file.close()
@@ -738,22 +738,6 @@ ds = xr.Dataset(
 print(ds)
 
 ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### 500hPa ###
 # 作図                                                                                    
@@ -858,7 +842,7 @@ plt.clabel(cont, fontsize=15)
 #u_sparse = u850[::stride, ::stride]
 #v_sparse = v850[::stride, ::stride]
 
-ax.barbs(grid_lon_p, grid_lat_p, u, v, length=4, transform=proj, stride=5)
+ax.barbs(grid_lon_p, grid_lat_p, u850, v850, length=4, transform=proj, stride=5)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
 # 海岸線
