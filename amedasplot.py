@@ -610,7 +610,7 @@ grbs = pygrib.open(basename)
 grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(22.4, 47.6, 0.1))
 
 # データを取得する
-height300 = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
+height300 = np.flip(grbs.select(parameterName='Geopotential height', level=300, forecastTime=6)[0].data()[0], axis=0)
 height500 = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
 tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] -273.15, axis=0)
 u300 = np.flip(grbs.select(parameterName='u-component of wind', level=300, forecastTime=6)[0].data()[0], axis=0)
@@ -712,7 +712,7 @@ plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], co
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Z500, T500, WV Image"), loc='left',size=15)
+plt.title('{}'.format("Z300, Wind Speed, WV Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_300.jpg", format="jpg")
@@ -756,6 +756,9 @@ plt.clabel(cont, fontsize=15)
 cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
+print(ds['vorticity']*1000000) 
+#plt.contourf(grid_lon_p, grid_lat_p, ds['vorticity'], levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
+
 #plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
 #cb.ax.tick_params(labelsize=8)
@@ -768,7 +771,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u500[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("T850, EPT850, Wind850"), loc='left',size=15)
+plt.title('{}'.format("Z500, T500, Vor500"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_500.jpg", format="jpg")
@@ -798,7 +801,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("T850, EPT850, Wind850"), loc='left',size=15)
+plt.title('{}'.format("TTd700, T850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_700.jpg", format="jpg")
@@ -828,7 +831,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("T850, EPT850, Wind850"), loc='left',size=15)
+plt.title('{}'.format("EPT850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_850.jpg", format="jpg")
