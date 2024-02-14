@@ -735,7 +735,7 @@ ds = xr.Dataset(
    },
 )
 
-ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy)
+ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy) * 1000000
 
 ### 500hPa ###
 # 作図                                                                                    
