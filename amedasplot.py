@@ -735,7 +735,7 @@ ds = xr.Dataset(
    },
 )
 
-ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy) * 1000000
+vor = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy) * 1000000
 
 ### 500hPa ###
 # 作図                                                                                    
@@ -753,8 +753,8 @@ plt.clabel(cont, fontsize=15)
 cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-ds['vorticity'] = gaussian_filter(ds['vorticity'], sigma=4.0)
-plt.contourf(grid_lon_p, grid_lat_p, ds['vorticity'], levels=[-float('inf'), 0, 40, float('inf')], colors=['none', 'darkorange', 'brown'])
+vor = gaussian_filter(vor, sigma=4.0)
+plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 40, float('inf')], colors=['none', 'darkorange', 'brown'])
 
 #plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
