@@ -858,7 +858,7 @@ plt.clabel(cont, fontsize=15)
 #u_sparse = u850[::stride, ::stride]
 #v_sparse = v850[::stride, ::stride]
 
-ax.barbs(grid_lon, grid_lat, u, v, length=4, transform=proj, stride=5)
+ax.barbs(grid_lon_p, grid_lat_p, u, v, length=4, transform=proj, stride=5)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
 # 海岸線
