@@ -696,7 +696,7 @@ plt.clabel(cont, fontsize=15)
 
 # 風速の計算
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-plt.contourf(wind_speed, levels=[0, 80, 120, np.inf], colors=['white', 'blue', 'purple'], alpha=0.8)
+plt.contourf(wind_speed, levels=[0, 80, 120, np.inf], colors=['white', 'blue', 'purple'])
 
 # 流線を描画
 # plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
@@ -787,11 +787,11 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
+plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
+
 # ベクトルの間引き間隔
 stride = 10
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
-
-plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'], alpha=0.8)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
