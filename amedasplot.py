@@ -706,7 +706,7 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 # 風速の計算
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s'))
 print(wind_speed)
-plt.contourf(wind_speed, levels=[0, 30, 40, np.inf], colors=['none', 'blue', 'purple'])
+plt.contourf(wind_speed, levels=[0, 20, 30, np.inf], colors=['none', 'blue', 'purple'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
