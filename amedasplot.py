@@ -705,7 +705,6 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-print(wind_speed)
 plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'])
 
 # 海岸線
@@ -736,8 +735,6 @@ ds = xr.Dataset(
    },
 )
 
-print(ds)
-
 ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy)
 
 ### 500hPa ###
@@ -757,7 +754,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 600
 plt.clabel(cont, fontsize=15)
 
 print(ds['vorticity']*1000000) 
-#plt.contourf(grid_lon_p, grid_lat_p, ds['vorticity'], levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
+plt.contourf(grid_lon_p, grid_lat_p, ds['vorticity'], levels=[-float('inf'), 40, float('inf')], colors=['none', 'brown'])
 
 #plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
 #cb = plt.colorbar(orientation="vertical", shrink=0.6)    
