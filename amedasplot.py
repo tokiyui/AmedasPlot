@@ -694,10 +694,6 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, height300, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-# 風速の計算
-wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-plt.contourf(wind_speed, levels=[0, 80, 120, np.inf], colors=['white', 'blue', 'purple'])
-
 # 流線を描画
 # plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
@@ -706,6 +702,11 @@ data = np.flipud(data_wv)
 plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 
 plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+# 風速の計算
+wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
+print(wind_speed)
+plt.contourf(wind_speed, levels=[0, 80, 120, np.inf], colors=['white', 'blue', 'purple'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
