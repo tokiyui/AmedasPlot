@@ -626,7 +626,7 @@ rh700 = np.flip(grbs.select(parameterName='Relative humidity', level=700, foreca
 rh850 = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0], axis=0)
 dewpoint700 = mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100)
 dewpoint850 = mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)
-ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint)
+ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint850)
 ttd = (tmp700 - dewpoint700.magnitude)
 
 height300 = gaussian_filter(height300, sigma=4.0)
