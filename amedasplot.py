@@ -704,15 +704,12 @@ plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, col
 lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
 
-'''
 ds = xr.Dataset(
-   {
-       # "Geopotential_height": (["lats", "lons"], valHt),                                                                        
-       "u_wind": (['lats', 'lons'], u500 * units('m/s')),
-       "v_wind": (['lats', 'lons'], v500 * units('m/s')),
+   {                                                               
+       "u_wind": (['lat', 'lon'], u500 * units('m/s')),
+       "v_wind": (['lat', 'lon'], v500 * units('m/s')),
    },
    coords={
-       # "lat": latHt[:,0],
        "lat": lats,
        "lon": lons,
    },
@@ -720,9 +717,7 @@ ds = xr.Dataset(
 
 print(ds)
 
-ds['vorticity'] = mpcalc.vorticity(ds['u_wind'],ds['v_wind'])
-'''
-
+ds['vorticity'] = mpcalc.vorticity(ds['u_wind'].metpy.unit_array, ds['v_wind'].metpy.unit_array)
 
 
 
