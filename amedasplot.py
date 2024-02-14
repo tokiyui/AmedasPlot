@@ -699,13 +699,30 @@ wind_speed_squared = u500 * u500 + v500 * v500
 surt = np.sqrt(wind_speed_squared)
 
 # 流線を描画
-plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
+# plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
+
+# 描画
+data = np.flipud(data_wv)
+plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
+
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+# 海岸線
+ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
+            
+# 図の説明
+plt.title('{}'.format("Z500, T500, WV Image"), loc='left',size=15)
+plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
+plt.savefig("latest_300.jpg", format="jpg")
+plt.clf()
 
 lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
 
-dx = np.mean(np.diff(lons)) * units('degrees')
-dy = np.mean(np.diff(lats)) * units('degrees')
+#dx = np.mean(np.diff(lons)) * units('degrees')
+#dy = np.mean(np.diff(lats)) * units('degrees')
+dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
 
 ds = xr.Dataset(
    {                                                               
@@ -736,21 +753,7 @@ ds['vorticity'] = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy)
 
 
 
-# 描画
-data = np.flipud(data_wv)
-plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-
-# 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
-            
-# 図の説明
-plt.title('{}'.format("Z500, T500, WV Image"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_300.jpg", format="jpg")
-plt.clf()
 
 ### 500hPa ###
 # 作図                                                                                    
