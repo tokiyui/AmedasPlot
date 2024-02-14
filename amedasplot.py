@@ -176,7 +176,7 @@ def read_msm(time):
     else:
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P ./".format(url), shell=True)       
+        subprocess.run("wget {} -P ./ > /dev/null 2>&1".format(url), shell=True)       
     grbs = pygrib.open(basename)
     # 海面気圧のデータを取得する
     prmsl_fc0 = grbs.select(parameterName='Pressure reduced to MSL', forecastTime=ft)[0]
@@ -239,7 +239,7 @@ def download_time(time):
     else:
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
-        subprocess.run("wget {} -P ./".format(url), shell=True)
+        subprocess.run("wget {} -P ./ > /dev/null 2>&1".format(url), shell=True)
         # tarコマンドでダウンロードした圧縮ファイルの解凍
         subprocess.run("tar -xvf {} -C ./".format(fname), shell=True)   
     GgisFile = "./Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(time.strftime("%Y%m%d%H%M"))
@@ -704,9 +704,9 @@ plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
-wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s'))
+wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
 print(wind_speed)
-plt.contourf(wind_speed, levels=[0, 20, 30, np.inf], colors=['none', 'blue', 'purple'])
+plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
