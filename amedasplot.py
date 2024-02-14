@@ -760,16 +760,8 @@ plt.clabel(cont, fontsize=15)
 #cb.ax.tick_params(labelsize=8)
 
 # ベクトルの間引き間隔
-#stride = 5
-
-# データを間引く
-#grid_lon_sparse = grid_lon_p[::stride, ::stride]
-#grid_lat_sparse = grid_lat_p[::stride, ::stride]
-#u_sparse = u850[::stride, ::stride]
-#v_sparse = v850[::stride, ::stride]
-
-#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-#ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=1, color="purple")
+stride = 10
+ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u500[::stride, ::stride], v500[::stride, ::stride], length=4, transform=proj)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -796,16 +788,8 @@ cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3),
 plt.clabel(cont, fontsize=15)
 
 # ベクトルの間引き間隔
-#stride = 5
-
-# データを間引く
-#grid_lon_sparse = grid_lon_p[::stride, ::stride]
-#grid_lat_sparse = grid_lat_p[::stride, ::stride]
-#u_sparse = u850[::stride, ::stride]
-#v_sparse = v850[::stride, ::stride]
-
-#ax.barbs(grid_lon_sparse, grid_lat_sparse, u_sparse, v_sparse, length=4, transform=proj)
-#ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=1, color="purple")
+stride = 10
+ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 
 plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
 
@@ -834,15 +818,9 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 3), l
 plt.clabel(cont, fontsize=15)
 
 # ベクトルの間引き間隔
-#stride = 5
+stride = 5
 
-# データを間引く
-#grid_lon_sparse = grid_lon_p[::stride, ::stride]
-#grid_lat_sparse = grid_lat_p[::stride, ::stride]
-#u_sparse = u850[::stride, ::stride]
-#v_sparse = v850[::stride, ::stride]
-
-ax.barbs(grid_lon_p, grid_lat_p, u850, v850, length=4, transform=proj, stride=5)
+ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
 # 海岸線
