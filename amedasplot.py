@@ -619,21 +619,28 @@ u500 = np.flip(grbs.select(parameterName='u-component of wind', level=500, forec
 v500 = np.flip(grbs.select(parameterName='v-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
 u850 = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 v850 = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
+u925 = np.flip(grbs.select(parameterName='u-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0)
+v925 = np.flip(grbs.select(parameterName='v-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0)
 # 相当温位
 tmp700 = np.flip(grbs.select(parameterName='Temperature', level=700, forecastTime=6)[0].data()[0] -273.15, axis=0)
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] -273.15, axis=0)
+tmp925 = np.flip(grbs.select(parameterName='Temperature', level=925, forecastTime=6)[0].data()[0] -273.15, axis=0)
 rh700 = np.flip(grbs.select(parameterName='Relative humidity', level=700, forecastTime=6)[0].data()[0], axis=0)
 rh850 = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0], axis=0)
+rh925 = np.flip(grbs.select(parameterName='Relative humidity', level=925, forecastTime=6)[0].data()[0], axis=0)
 dewpoint700 = mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100)
 dewpoint850 = mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)
-ept = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint850)
+dewpoint925 = mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100)
+ept850 = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), dewpoint850)
+ept925 = mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), dewpoint925)
 ttd = (tmp700 - dewpoint700.magnitude)
 
 height300 = gaussian_filter(height300, sigma=4.0)
 height500 = gaussian_filter(height500, sigma=4.0)
 tmp500 = gaussian_filter(tmp500, sigma=4.0)
 tmp850 = gaussian_filter(tmp850, sigma=4.0)
-ept = gaussian_filter(ept, sigma=4.0)
+ept850 = gaussian_filter(ept850, sigma=4.0)
+ept925 = gaussian_filter(ept925, sigma=4.0)
 
 # Himawari-9
 # 日付とファイル名の生成
@@ -686,7 +693,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-#cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
+#cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
 #plt.clabel(cont, fontsize=15)
 #cont = plt.contour(grid_lon_p, grid_lat_p, tmp300, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='pink')
 #plt.clabel(cont, fontsize=15)
@@ -705,7 +712,7 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'])
+plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.5)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -814,8 +821,11 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
+fg = frontogenesis(ept925, u925, v925)
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[0, np.inf], colors=['none', 'orange'])
+
 # プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
 # ベクトルの間引き間隔
