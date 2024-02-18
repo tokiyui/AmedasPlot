@@ -718,23 +718,7 @@ plt.clf()
 lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
 
-#dx = np.mean(np.diff(lons)) * units('degrees')
-#dy = np.mean(np.diff(lats)) * units('degrees')
 dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
-
-'''
-ds = xr.Dataset(
-   {                                                               
-       "u_wind": (['lat', 'lon'], u500 * units('m/s')),
-       "v_wind": (['lat', 'lon'], v500 * units('m/s')),
-   },
-   coords={
-       "lat": lats,
-       "lon": lons,
-   },
-)
-'''
-
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 
 ### 500hPa ###
