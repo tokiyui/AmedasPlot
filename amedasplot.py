@@ -687,8 +687,8 @@ lats = np.arange(22.4, 47.6, 0.1)
 lons = np.arange(120, 150 + 0.0625, 0.125)
 
 dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
-ug300, vg300 = mpcalc.geostrophic_wind(height300, dx=dx, dy=dy)
-ug500, vg500 = mpcalc.geostrophic_wind(height500, dx=dx, dy=dy)
+ug300, vg300 = mpcalc.geostrophic_wind(height300 * units('m'), dx=dx, dy=dy)
+ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy)
 vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
 
 ### 300hPa ###
