@@ -682,6 +682,15 @@ fig = plt.figure(figsize=(8,6))
 #plt.subplots_adjust(left=0.04, right=1.05, bottom=0.0, top=1.0)   
 plt.subplots_adjust(left=0.14, right=0.9, bottom=0.0, top=0.9) 
 
+### 計算 ###
+lats = np.arange(22.4, 47.6, 0.1)
+lons = np.arange(120, 150 + 0.0625, 0.125)
+
+dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
+ug300, vg300 = mpcalc.geostrophic_wind(height300, dx=dx, dy=dy)
+ug500, vg500 = mpcalc.geostrophic_wind(height500, dx=dx, dy=dy)
+vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
+
 ### 300hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
@@ -702,7 +711,7 @@ plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
-wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
+wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
 plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
 
 # 海岸線
@@ -714,12 +723,6 @@ plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
 plt.savefig("latest_300.jpg", format="jpg")
 plt.clf()
-
-lats = np.arange(22.4, 47.6, 0.1)
-lons = np.arange(120, 150 + 0.0625, 0.125)
-
-dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
-vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 
 ### 500hPa ###
 # 作図                                                                                    
