@@ -693,21 +693,12 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-#cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 9), linewidths=2, linestyles='solid', colors='green')
-#plt.clabel(cont, fontsize=15)
-#cont = plt.contour(grid_lon_p, grid_lat_p, tmp300, levels=np.arange(-60, 30, 3), linewidths=2, linestyles='solid', colors='pink')
-#plt.clabel(cont, fontsize=15)
-
 cont = plt.contour(grid_lon_p, grid_lat_p, height300, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
-
-# 流線を描画
-# plt.streamplot(grid_lon_p, grid_lat_p, u500, v500, linewidth=2, density=0.5, color="skyblue")
 
 # 描画
 data = np.flipud(data_wv)
 plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
-
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
@@ -731,6 +722,7 @@ lons = np.arange(120, 150 + 0.0625, 0.125)
 #dy = np.mean(np.diff(lats)) * units('degrees')
 dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
 
+'''
 ds = xr.Dataset(
    {                                                               
        "u_wind": (['lat', 'lon'], u500 * units('m/s')),
@@ -741,8 +733,9 @@ ds = xr.Dataset(
        "lon": lons,
    },
 )
+'''
 
-vor = mpcalc.vorticity(ds['u_wind'], ds['v_wind'], dx=dx, dy=dy) * 1000000
+vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 
 ### 500hPa ###
 # 作図                                                                                    
@@ -762,10 +755,6 @@ plt.clabel(cont, fontsize=15)
 
 vor = gaussian_filter(vor, sigma=4.0)
 plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 40, float('inf')], colors=['none', 'darkorange', 'brown'])
-
-#plt.contourf(grid_lon_p, grid_lat_p, tmp, cmap='turbo', levels=np.arange(-48, 3, 3))
-#cb = plt.colorbar(orientation="vertical", shrink=0.6)    
-#cb.ax.tick_params(labelsize=8)
 
 # ベクトルの間引き間隔
 stride = 10
