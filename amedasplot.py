@@ -356,7 +356,6 @@ sealand_filterd = gaussian_filter(sealand, sigma=4.0) # sigmaはガウス分布�
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
-latlon_proj = ccrs.PlateCarree()
 
 # カラーバーの設定
 #気象庁RGBカラー
@@ -401,7 +400,7 @@ for area in [0, 1, 2, 3]:
     plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=1.0)                  
     # 作図                                                                                    
     ax = fig.add_subplot(1, 1, 1, projection=proj)
-    ax.set_extent(i_area, latlon_proj)
+    ax.set_extent(i_area, proj)
 
     # レーダーGPV描画
     lon = np.arange(slon, elon, rlon)
@@ -488,10 +487,10 @@ for area in [0, 1, 2, 3]:
         ## プロット
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
         if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
-            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=latlon_proj)
+            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=proj)
             if wind_ok and au*au+av*av>4.0: # 矢羽プロット
                 ax.barbs(wlon, wlat, 
-                          (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=latlon_proj)
+                          (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=proj)
             if npre_dispflag and pre >= 0.0: # 気圧プロット
                 ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
             if temp_dispflag and temp > -200.0: # 気温プロット
@@ -571,8 +570,8 @@ for area in [0, 1, 2, 3]:
         # 図の範囲内に座標があるか確認                                                                           
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-            ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
-            ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=latlon_proj)
+            ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=proj)
+            ax.text(wlon - 0.12, wlat + 0.12, 'H', size=30, color="blue", transform=proj)
             val = psea_grid[maxid[0][i]][maxid[1][i]]
             ival = int(val)
             ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
@@ -585,8 +584,8 @@ for area in [0, 1, 2, 3]:
         # 図の範囲内に座標があるか確認                                                                           
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-            ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
-            ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=latlon_proj)
+            ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=proj)
+            ax.text(wlon - 0.12, wlat + 0.12, 'L', size=30, color="red", transform=proj)
             val = psea_grid[minid[0][i]][minid[1][i]]
             ival = int(val)
             ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
@@ -706,8 +705,8 @@ lon, lat = np.meshgrid(longitude, latitude)
 nc_file.close()
 '''
 
-lon, lat, data_wv = read_hima(ft, 08)
-lon, lat, data_ir = read_hima(ft, 13)
+data_wv, lon, lat = read_hima(ft, 08)
+data_ir, lon, lat = read_hima(ft, 13)
 
 
 
@@ -895,8 +894,8 @@ for i in range(len(maxid[0])):
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=latlon_proj)
-        ax.text(wlon - 0.6, wlat + 0.6, 'H', size=30, color="blue", transform=latlon_proj)
+        ax.plot(wlon, wlat, marker='x' , markersize=16, color="blue", transform=proj)
+        ax.text(wlon - 0.6, wlat + 0.6, 'H', size=30, color="blue", transform=proj)
         val = prmsl[maxid[0][i]][maxid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
@@ -909,8 +908,8 @@ for i in range(len(minid[0])):
     # 図の範囲内に座標があるか確認                                                                           
     fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
     if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-        ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=latlon_proj)
-        ax.text(wlon - 0.6, wlat + 0.6, 'L', size=30, color="red", transform=latlon_proj)
+        ax.plot(wlon, wlat, marker='x' , markersize=16, color="red", transform=proj)
+        ax.text(wlon - 0.6, wlat + 0.6, 'L', size=30, color="red", transform=proj)
         val = prmsl[minid[0][i]][minid[1][i]]
         ival = int(val)
         ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
