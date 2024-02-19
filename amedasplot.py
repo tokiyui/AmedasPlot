@@ -804,8 +804,8 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
-#fg = mpcalc.frontogenesis(ept925, u925, v925)
-#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[0, np.inf], colors=['none', 'orange'])
+fg = mpcalc.frontogenesis(ept925, u925, v925) * 10000000000
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[1, np.inf], colors=['none', 'orange'])
 
 # プロット
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
@@ -817,7 +817,7 @@ stride = 5
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 2, float('inf')], colors=['none', 'yellow'])
+#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 2, float('inf')], colors=['none', 'yellow'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
