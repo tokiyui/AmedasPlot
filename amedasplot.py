@@ -275,6 +275,36 @@ if dt:
 else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
+
+def read_hima(time, band)
+  # Himawari-9
+  # 日付とファイル名の生成
+  day_dir = time.strftime("%Y%m/%d")
+  basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
+
+  # lftpコマンドを実行してFTPサーバーに接続
+  PTree_ID = os.environ.get('PTree_ID')
+  PTree_Pass = os.environ.get('PTree_Pass')
+
+  # ダウンロードするファイルのURLを作成
+  url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
+
+  # wgetコマンドを使用してファイルをダウンロード
+  wget_command = "wget --user={} --password={} {} -P ./ > /dev/null 2>&1".format(PTree_ID, PTree_Pass, url)
+  subprocess.run(wget_command, shell=True)
+
+  # NetCDF ファイルを開く
+  nc_file = nc.Dataset(basename, 'r')
+
+  # 緯度、経度、およびデータの取得
+  latitude = nc_file.variables['latitude'][:]
+  longitude = nc_file.variables['longitude'][:]
+  data = nc_file.variables[f"tbb_{band}"][:].reshape(2401, 2401)
+
+  # メッシュグリッドを作成
+  lon, lat = np.meshgrid(longitude, latitude)
+
+  return data, lon, lat
     
 # 観測データJSONの url作成
 url_data_json= 'https://www.jma.go.jp/bosai/amedas/data/map/{:4d}{:02d}{:02d}{:02d}{:02d}00.json'
@@ -613,8 +643,8 @@ grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.ara
 height300 = np.flip(grbs.select(parameterName='Geopotential height', level=300, forecastTime=6)[0].data()[0], axis=0)
 height500 = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
 tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] -273.15, axis=0)
-u300 = np.flip(grbs.select(parameterName='u-component of wind', level=300, forecastTime=6)[0].data()[0], axis=0)
-v300 = np.flip(grbs.select(parameterName='v-component of wind', level=300, forecastTime=6)[0].data()[0], axis=0)
+#u300 = np.flip(grbs.select(parameterName='u-component of wind', level=300, forecastTime=6)[0].data()[0], axis=0)
+#v300 = np.flip(grbs.select(parameterName='v-component of wind', level=300, forecastTime=6)[0].data()[0], axis=0)
 u500 = np.flip(grbs.select(parameterName='u-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
 v500 = np.flip(grbs.select(parameterName='v-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
 u850 = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
@@ -642,6 +672,7 @@ tmp850 = gaussian_filter(tmp850, sigma=4.0)
 ept850 = gaussian_filter(ept850, sigma=4.0)
 ept925 = gaussian_filter(ept925, sigma=4.0)
 
+'''
 # Himawari-9
 # 日付とファイル名の生成
 base_time =  ft - offsets.Hour(9) 
@@ -673,6 +704,12 @@ lon, lat = np.meshgrid(longitude, latitude)
 
 # ファイルを閉じる
 nc_file.close()
+'''
+
+lon, lat, data_wv = read_hima(ft, 08)
+lon, lat, data_ir = read_hima(ft, 13)
+
+
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()                                                      
