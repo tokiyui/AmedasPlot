@@ -696,7 +696,7 @@ ug500 = gaussian_filter(ug500, sigma=4.0)
 vg500 = gaussian_filter(vg500, sigma=4.0)
 
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
-fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy)
+fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 1000000000000
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -804,7 +804,6 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
-fg = mpcalc.frontogenesis(ept925, u925, v925) * 10000000000
 plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[1, np.inf], colors=['none', 'orange'])
 
 # プロット
