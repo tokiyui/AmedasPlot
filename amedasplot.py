@@ -701,7 +701,7 @@ print("dxの形状:", dx.shape)
 print("dyの形状:", dy.shape)
 
 # latitudeの形状を確認する
-print("latitudeの形状:", latitude.shape)
+print("latitudeの形状:", lats.shape)
 
 
 
