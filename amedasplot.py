@@ -695,7 +695,7 @@ vg300 = gaussian_filter(vg300, sigma=4.0)
 ug500 = gaussian_filter(ug500, sigma=4.0)
 vg500 = gaussian_filter(vg500, sigma=4.0)
 
-vor = mpcalc.vorticity(ug500, vg500, dx=dx, dy=dy) * 1000000
+vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy)
 
 ### 300hPa ###
@@ -718,7 +718,7 @@ plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
-wind_speed = mpcalc.wind_speed(ug300, vg300).to(units.knots)
+wind_speed = mpcalc.wind_speed(ug300* units('m/s'), vg300* units('m/s')).to(units.knots)
 plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
 
 # 海岸線
