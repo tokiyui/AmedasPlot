@@ -279,6 +279,7 @@ else:
 def read_hima(time, band):
   # Himawari-9
   # 日付とファイル名の生成
+  time = time - offsets.Hour(9)
   day_dir = time.strftime("%Y%m/%d")
   print(day_dir)
   basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
