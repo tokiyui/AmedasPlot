@@ -667,6 +667,9 @@ tmp500 = gaussian_filter(tmp500, sigma=4.0)
 tmp850 = gaussian_filter(tmp850, sigma=4.0)
 ept850 = gaussian_filter(ept850, sigma=4.0)
 ept925 = gaussian_filter(ept925, sigma=4.0)
+u925 = gaussian_filter(u925, sigma=4.0)
+v925 = gaussian_filter(v925, sigma=4.0)
+
 
 '''
 # Himawari-9
@@ -730,6 +733,7 @@ vg500 = gaussian_filter(vg500, sigma=4.0)
 
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 1000000000000
+fg = gaussian_filter(fg, sigma=4.0)
 
 ### 300hPa ###
 # 作図                                                                                    
