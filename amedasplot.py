@@ -119,10 +119,7 @@ def parse_datetime(arg):
 
 def set_table(section5):
     max_level = struct.unpack_from('>H', section5, 15)[0]
-    table = (
-        -10, # define representative of level 0 (Missing Value)
-        *struct.unpack_from('>'+str(max_level)+'H', section5, 18)
-    )
+    table = (-10, # define representative of level 0 (Missing Value)*struct.unpack_from('>'+str(max_level)+'H', section5, 18))
     return np.array(table, dtype=np.int16)
 
 def decode_runlength(code, hi_level):
@@ -705,8 +702,8 @@ lon, lat = np.meshgrid(longitude, latitude)
 nc_file.close()
 '''
 
-data_wv, lon, lat = read_hima(ft, 08)
-data_ir, lon, lat = read_hima(ft, 13)
+data_wv, lon, lat = read_hima(ft, '08')
+data_ir, lon, lat = read_hima(ft, '13')
 
 
 
