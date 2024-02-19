@@ -689,6 +689,23 @@ lons = np.arange(120, 150 + 0.0625, 0.125)
 dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
 # ug300, vg300 = mpcalc.geostrophic_wind(height300 * units('m'), dx=dx, dy=dy, latitude=lats, longitude=lons)
 # ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy)
+
+
+# height500の形状を確認する
+print("height500の形状:", height500.shape)
+
+# dxの形状を確認する
+print("dxの形状:", dx.shape)
+
+# dyの形状を確認する
+print("dyの形状:", dy.shape)
+
+# latitudeの形状を確認する
+print("latitudeの形状:", latitude.shape)
+
+
+
+
 ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=lats)
 vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925, u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy)
