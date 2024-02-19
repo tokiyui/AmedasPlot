@@ -276,7 +276,7 @@ else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
 
-def read_hima(time, band)
+def read_hima(time, band):
   # Himawari-9
   # 日付とファイル名の生成
   day_dir = time.strftime("%Y%m/%d")
