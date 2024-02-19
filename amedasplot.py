@@ -690,8 +690,6 @@ dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
 ug300, vg300 = mpcalc.geostrophic_wind(height300 * units('m'), dx=dx, dy=dy, latitude=grid_lat_p * units('degree'))
 ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=grid_lat_p * units('degree'))
 
-# ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=lats)
-
 vor = mpcalc.vorticity(ug500, vg500, dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy)
 
@@ -749,7 +747,7 @@ plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 40, float('i
 
 # ベクトルの間引き間隔
 stride = 10
-ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], ug500[::stride, ::stride], vg500[::stride, ::stride], length=4, transform=proj)
+ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u500[::stride, ::stride], v500[::stride, ::stride], length=4, transform=proj)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
