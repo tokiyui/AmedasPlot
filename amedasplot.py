@@ -706,8 +706,8 @@ print("latitudeの形状:", lats.shape)
 
 
 
-ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=lats)
-vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
+# ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=lats)
+# vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925, u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy)
 
 ### 300hPa ###
