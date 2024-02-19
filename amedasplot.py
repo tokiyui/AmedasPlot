@@ -804,7 +804,7 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[1, np.inf], colors=['none', 'orange'])
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 1, np.inf], colors=['none', 'orange'])
 
 # プロット
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
