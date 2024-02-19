@@ -731,7 +731,7 @@ plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
-wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
+wind_speed = mpcalc.wind_speed(ug300, vg300).to(units.knots)
 plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 80, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
 
 # 海岸線
