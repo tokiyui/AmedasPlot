@@ -696,9 +696,10 @@ ug500 = gaussian_filter(ug500, sigma=4.0)
 vg500 = gaussian_filter(vg500, sigma=4.0)
 
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
+vor = gaussian_filter(ug300, sigma=4.0)
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
-fg = gaussian_filter(fg, sigma=16.0)
+fg = gaussian_filter(fg, sigma=8.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -721,6 +722,7 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
 wind_speed = mpcalc.wind_speed(ug300* units('m/s'), vg300* units('m/s')).to(units.knots)
+wind_speed = gaussian_filter(wind_speed, sigma=4.0)
 plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
 
 # 海岸線
@@ -749,7 +751,6 @@ plt.clabel(cont, fontsize=15)
 cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-vor = gaussian_filter(vor, sigma=4.0)
 plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 40, float('inf')], colors=['none', 'darkorange', 'brown'])
 
 # ベクトルの間引き間隔
