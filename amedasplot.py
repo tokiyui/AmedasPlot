@@ -282,6 +282,7 @@ def read_hima(time, band):
   time = time - offsets.Hour(9)
   day_dir = time.strftime("%Y%m/%d")
   basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
+  print(time,day_dir,basename)
 
   # lftpコマンドを実行してFTPサーバーに接続
   PTree_ID = os.environ.get('PTree_ID')
