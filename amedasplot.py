@@ -694,7 +694,7 @@ ug500 = gaussian_filter(ug500, sigma=4.0)
 vg500 = gaussian_filter(vg500, sigma=4.0)
 
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
-fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 100000000
+fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
 fg = gaussian_filter(fg, sigma=4.0)
 
@@ -804,11 +804,11 @@ gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=
 gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 100, np.inf], colors=['none', 'orange'])
-
 # プロット
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
+
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 1, np.inf], colors=['none', 'orange'])
 
 # ベクトルの間引き間隔
 stride = 5
