@@ -281,7 +281,6 @@ def read_hima(time, band):
   # 日付とファイル名の生成
   time = time - offsets.Hour(9)
   day_dir = time.strftime("%Y%m/%d")
-  print(day_dir)
   basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
 
   # lftpコマンドを実行してFTPサーバーに接続
@@ -670,45 +669,8 @@ ept925 = gaussian_filter(ept925, sigma=4.0)
 u925 = gaussian_filter(u925, sigma=4.0)
 v925 = gaussian_filter(v925, sigma=4.0)
 
-
-'''
-# Himawari-9
-# 日付とファイル名の生成
-base_time =  ft - offsets.Hour(9) 
-day_dir = base_time.strftime("%Y%m/%d")
-basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(base_time.strftime("%Y%m%d_%H%M"))
-
-# lftpコマンドを実行してFTPサーバーに接続
-PTree_ID = os.environ.get('PTree_ID')
-PTree_Pass = os.environ.get('PTree_Pass')
-
-# ダウンロードするファイルのURLを作成
-url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
-
-# wgetコマンドを使用してファイルをダウンロード
-wget_command = "wget --user={} --password={} {} -P ./ > /dev/null 2>&1".format(PTree_ID, PTree_Pass, url)
-subprocess.run(wget_command, shell=True)
-
-# NetCDF ファイルを開く
-nc_file = nc.Dataset(basename, 'r')
-
-# 緯度、経度、およびデータの取得
-latitude = nc_file.variables['latitude'][:]
-longitude = nc_file.variables['longitude'][:]
-data_wv = nc_file.variables['tbb_08'][:].reshape(2401, 2401)
-data_ir = nc_file.variables['tbb_13'][:].reshape(2401, 2401)
-
-# メッシュグリッドを作成
-lon, lat = np.meshgrid(longitude, latitude)
-
-# ファイルを閉じる
-nc_file.close()
-'''
-
 data_wv, lon, lat = read_hima(ft, '08')
 data_ir, lon, lat = read_hima(ft, '13')
-
-
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()                                                      
@@ -732,7 +694,7 @@ ug500 = gaussian_filter(ug500, sigma=4.0)
 vg500 = gaussian_filter(vg500, sigma=4.0)
 
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
-fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 1000000
+fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 100000000
 max_value = np.max(fg)
 fg = gaussian_filter(fg, sigma=4.0)
 
