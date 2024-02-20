@@ -810,7 +810,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 1, np.inf], colors=['none', 'orange'])
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 2, np.inf], colors=['none', 'orange'])
 
 # ベクトルの間引き間隔
 stride = 5
@@ -818,7 +818,7 @@ stride = 5
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 #ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
 
-#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 2, float('inf')], colors=['none', 'yellow'])
+#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, float('inf')], colors=['none', 'yellow'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
