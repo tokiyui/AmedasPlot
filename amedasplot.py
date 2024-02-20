@@ -811,7 +811,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 8, np.inf], colors=['none', 'orange'])
+plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, np.inf], colors=['none', 'orange'])
 
 # ベクトルの間引き間隔
 stride = 5
