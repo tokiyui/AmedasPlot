@@ -698,7 +698,8 @@ vg500 = gaussian_filter(vg500, sigma=4.0)
 vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
-fg = gaussian_filter(fg, sigma=4.0)
+fg = gaussian_filter(fg, sigma=8.0)
+print(units(fg))
 
 ### 300hPa ###
 # 作図                                                                                    
