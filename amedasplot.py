@@ -626,6 +626,7 @@ dt = datetime(int(year), int(month), int(day), int(hour), 0)
 init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(6) 
 init = init - offsets.Hour(init.hour % 3) 
 ft = init + offsets.Hour(6)
+print(ft)
 # MSMは03シリーズ
 base_time =  init - offsets.Hour(9) 
 
