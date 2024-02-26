@@ -671,8 +671,8 @@ ept925 = gaussian_filter(ept925, sigma=4.0)
 u925 = gaussian_filter(u925, sigma=4.0)
 v925 = gaussian_filter(v925, sigma=4.0)
 
-data_wv, lon, lat = read_hima(ft, '08')
-data_ir, lon, lat = read_hima(ft, '13')
+#data_wv, lon, lat = read_hima(ft, '08')
+#data_ir, lon, lat = read_hima(ft, '13')
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()                                                      
@@ -716,8 +716,8 @@ cont = plt.contour(grid_lon_p, grid_lat_p, height300, levels=np.arange(5100, 600
 plt.clabel(cont, fontsize=15)
 
 # 描画
-data = np.flipud(data_wv)
-plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
+#data = np.flipud(data_wv)
+#plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
@@ -846,8 +846,8 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='gray')
 plt.clabel(cont, fontsize=15)
 
-data = np.flipud(data_ir)
-plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
+#data = np.flipud(data_ir)
+#plt.imshow(data_ir, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.min()), origin='lower', transform=proj)
 
 cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
 cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
