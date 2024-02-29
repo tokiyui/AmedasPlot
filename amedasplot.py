@@ -672,8 +672,9 @@ ept925 = gaussian_filter(ept925, sigma=4.0)
 u925 = gaussian_filter(u925, sigma=4.0)
 v925 = gaussian_filter(v925, sigma=4.0)
 
+print(ft,utc)
 data_wv, lon, lat = read_hima(ft, '08')
-data_ir, lon, lat = read_hima(ft, '13')
+data_ir, lon, lat = read_hima(utc, '13')
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()                                                      
