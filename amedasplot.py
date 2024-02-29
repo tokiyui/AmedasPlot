@@ -231,7 +231,7 @@ def download_time(time):
     http  = "http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original"  
     # データファイル名の指定
     day_dir = time.strftime("%Y/%m/%d")
-    basename = "Z__C_RJTD_{}00_RDR_JMAGPV__grib2.tar".format(time.strftime("%Y%m%d%H%M"))
+    basename = "Z__C_RJTD_{}00_RDR_GPV_Ggis0p25km_Pri60lv_Aper5min_ANAL_grib2.bin.gz".format(time.strftime("%Y%m%d%H%M"))
     fname    = "./{}".format(basename)
     # すでにファイルが存在しなければ、ダウンロードを行う
     if os.path.exists(fname):
@@ -240,9 +240,9 @@ def download_time(time):
         url      = "{}/{}/{}".format(http,  day_dir, basename)
         # wgetコマンドでデータのダウンロード
         subprocess.run("wget {} -P ./ > /dev/null 2>&1".format(url), shell=True)
-        # tarコマンドでダウンロードした圧縮ファイルの解凍
-        subprocess.run("tar -xvf {} -C ./".format(fname), shell=True)   
-    GgisFile = "./Z__C_RJTD_{}00_RDR_JMAGPV_Ggis1km_Prr10lv_ANAL_grib2.bin".format(time.strftime("%Y%m%d%H%M"))
+        # ダウンロードした圧縮ファイルの解凍
+        subprocess.run("gunzip -xvf {} -C ./".format(fname), shell=True)   
+    GgisFile = "./Z__C_RJTD_{}00_RDR_GPV_Ggis0p25km_Pri60lv_Aper5min_ANAL_grib2.bin".format(time.strftime("%Y%m%d%H%M"))
     return GgisFile
 
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
