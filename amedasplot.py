@@ -599,8 +599,8 @@ for area in [0, 1, 2, 3]:
     # 図の説明
     plt.title('{}'.format("AMeDAS and RadarGPV"), loc='left',size=15)
     plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
-    #plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-    plt.savefig("latest{}.jpg".format(areaname), format="jpg")
+    #plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+    plt.savefig("latest{}.avif".format(areaname), format="avif")
     plt.clf()
 
 markersize_0 = 2 # マーカーサイズ
@@ -732,8 +732,8 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 # 図の説明
 plt.title('{}'.format("Wind Speed, WV Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_300.jpg", format="jpg")
+#plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+plt.savefig("latest_300.avif", format="avif")
 plt.clf()
 
 ### 500hPa ###
@@ -764,8 +764,8 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 # 図の説明
 plt.title('{}'.format("Z500, T500, Vor500"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_500.jpg", format="jpg")
+#plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+plt.savefig("latest_500.avif", format="avif")
 plt.clf()
 
 ### 700hPa ###
@@ -794,8 +794,8 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 # 図の説明
 plt.title('{}'.format("TTd700, T850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_700.jpg", format="jpg")
+#plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+plt.savefig("latest_700.avif", format="avif")
 plt.clf()
 
 ### 850hPa ###
@@ -828,8 +828,8 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 # 図の説明
 plt.title('{}'.format("EPT850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest_850.jpg", format="jpg")
+#plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+plt.savefig("latest_850.avif", format="avif")
 plt.clf()
 
 ### Surface ###
@@ -888,6 +888,6 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
 # 図の説明
 plt.title('{}'.format("Psea, Rader and IR Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
-#plt.savefig("{}.jpg".format(time.strftime("%Y%m%d%H%M")), format="jpg")
-plt.savefig("latest.jpg", format="jpg")
+#plt.savefig("{}.avif".format(time.strftime("%Y%m%d%H%M")), format="avif")
+plt.savefig("latest.avif", format="avif")
 plt.clf()
