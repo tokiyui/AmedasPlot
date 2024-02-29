@@ -29,7 +29,7 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
-          git rm ./*.jpg
+          git rm ./*.avif
 
       - name: Plotting
         env:
@@ -50,7 +50,7 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git add ./*.jpg
+          git add ./*.avif
           git diff --cached --quiet || git commit -m "Add Pictures"
           git push origin main
 
