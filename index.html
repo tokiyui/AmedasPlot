@@ -46,12 +46,12 @@
 </label>
 
 <div id="imageContainer">
-  <img id="selectedImage" src="latestEast.avif" alt="Default Image">
-  <img id="selectedImage" src="latest.avif">
-  <img id="selectedImage" src="latest_300.avif">  
-  <img id="selectedImage" src="latest_500.avif">  
-  <img id="selectedImage" src="latest_700.avif">  
-  <img id="selectedImage" src="latest_850.avif">  
+  <img id="selectedImage" src="latestEast.png" alt="Default Image">
+  <img id="selectedImage" src="latest.png">
+  <img id="selectedImage" src="latest_300.png">  
+  <img id="selectedImage" src="latest_500.png">  
+  <img id="selectedImage" src="latest_700.png">  
+  <img id="selectedImage" src="latest_850.png">  
 </div>
     
 <script>
@@ -62,19 +62,19 @@ function changeImage() {
 
   switch (selectedValue) {
     case "hokkaido":
-      imageElement.src = "latestHokkaido.avif";
+      imageElement.src = "latestHokkaido.png";
       break;
     case "tohoku":
-      imageElement.src = "latestTohoku.avif";
+      imageElement.src = "latestTohoku.png";
       break;
     case "kanto":
-      imageElement.src = "latestEast.avif";
+      imageElement.src = "latestEast.png";
       break;
     case "kinki":
-      imageElement.src = "latestWest.avif";
+      imageElement.src = "latestWest.png";
       break;
     default:
-      imageElement.src = "latestEast.avif";
+      imageElement.src = "latestEast.png";
   }
 }
 </script>
