@@ -6,29 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実況監視ページ</title>
     <style>
-        #imageContainer {
-            display: flex; 
-            justify-content: space-between; 
-            flex-wrap: wrap;
-        }
-        .image {
-            max-width: 48%;
-            height: auto;
-        }
         #regionSelect {
-            width: 120px;
-            font-size: 20px; 
+            width: 250px;
+            font-size: 40px; 
         }
+
         #selectLabel {
             display: inline-block;
             margin-right: 10px;
-            font-size: 20px; 
-            width: 400px;
-        }      
+            font-size: 40px; 
+        }
+        
         #pageTitle {
             margin-top: 20px;
-            font-size: 40px;
-            width: 600px;
+            font-size: 80px;
         }
     </style>
 </head>
@@ -43,16 +34,24 @@
   <option value="kinki">近畿〜九州</option>
 </select>
 </label>
+<label id="selectLabel" for="regionSelect">地域選択：</label>
+<select id="regionSelect" onchange="changeImage()">
+  <option value="hokkaido">北海道</option>
+  <option value="tohoku">北陸・東北</option>
+  <option value="kanto" selected>関東〜近畿</option>
+  <option value="kinki">近畿〜九州</option>
+</select>
+</label>
 
 <div id="imageContainer">
-    <img class="selectedImage" src="latestEast.png" alt="Default Image">
-    <img class="selectedImage" src="latest.png">
-    <img class="selectedImage" src="latest_300.png">  
-    <img class="selectedImage" src="latest_500.png"> 
-    <img class="selectedImage" src="latest_700.png">  
-    <img class="selectedImage" src="latest_850.png">  
+  <img id="selectedImage" src="latestEast.png" alt="Default Image">
+  <img id="selectedImage" src="latest.png">
+  <img id="selectedImage" src="latest_300.png">  
+  <img id="selectedImage" src="latest_500.png">  
+  <img id="selectedImage" src="latest_700.png">  
+  <img id="selectedImage" src="latest_850.png">  
 </div>
-    
+
 <script>
 function changeImage() {
   var selectBox = document.getElementById("regionSelect");
