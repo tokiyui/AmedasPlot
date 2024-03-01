@@ -643,15 +643,15 @@ grbs = pygrib.open(basename)
 grid_lon_p, grid_lat_p = np.meshgrid(np.arange(120, 150 + 0.0625, 0.125), np.arange(22.4, 47.6, 0.1))
 
 # データを取得する
-height300 = np.flip(grbs.select(parameterName='Geopotential height', level=300, forecastTime=6)[0].data()[0], axis=0)
-height500 = np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0)
+height300 = gaussian_filter(np.flip(grbs.select(parameterName='Geopotential height', level=300, forecastTime=6)[0].data()[0], axis=0), sigma=4.0)
+height500 = gaussian_filter(np.flip(grbs.select(parameterName='Geopotential height', level=500, forecastTime=6)[0].data()[0], axis=0), sigma=4.0)
 tmp500 = np.flip(grbs.select(parameterName='Temperature', level=500, forecastTime=6)[0].data()[0] -273.15, axis=0)
 u500 = np.flip(grbs.select(parameterName='u-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
 v500 = np.flip(grbs.select(parameterName='v-component of wind', level=500, forecastTime=6)[0].data()[0], axis=0)
 u850 = np.flip(grbs.select(parameterName='u-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
 v850 = np.flip(grbs.select(parameterName='v-component of wind', level=850, forecastTime=6)[0].data()[0], axis=0)
-u925 = np.flip(grbs.select(parameterName='u-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0)
-v925 = np.flip(grbs.select(parameterName='v-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0)
+u925 = gaussian_filter(np.flip(grbs.select(parameterName='u-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0), sigma=4.0)
+v925 = gaussian_filter(np.flip(grbs.select(parameterName='v-component of wind', level=925, forecastTime=6)[0].data()[0], axis=0), sigma=4.0)
 # 相当温位
 tmp700 = np.flip(grbs.select(parameterName='Temperature', level=700, forecastTime=6)[0].data()[0] -273.15, axis=0)
 tmp850 = np.flip(grbs.select(parameterName='Temperature', level=850, forecastTime=6)[0].data()[0] -273.15, axis=0)
@@ -659,20 +659,13 @@ tmp925 = np.flip(grbs.select(parameterName='Temperature', level=925, forecastTim
 rh700 = np.flip(grbs.select(parameterName='Relative humidity', level=700, forecastTime=6)[0].data()[0], axis=0)
 rh850 = np.flip(grbs.select(parameterName='Relative humidity', level=850, forecastTime=6)[0].data()[0], axis=0)
 rh925 = np.flip(grbs.select(parameterName='Relative humidity', level=925, forecastTime=6)[0].data()[0], axis=0)
-ept850 = mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100))
-ept925 = mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100))
+ept850 = gaussian_filter(mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)), sigma=4.0)
+ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
 
-height300 = gaussian_filter(height300, sigma=4.0)
-height500 = gaussian_filter(height500, sigma=4.0)
 tmp500 = gaussian_filter(tmp500, sigma=4.0)
 tmp850 = gaussian_filter(tmp850, sigma=4.0)
-ept850 = gaussian_filter(ept850, sigma=4.0)
-ept925 = gaussian_filter(ept925, sigma=4.0)
-u925 = gaussian_filter(u925, sigma=4.0)
-v925 = gaussian_filter(v925, sigma=4.0)
 
-print(ft,time)
 data_wv, lon, lat = read_hima(ft, '08')
 data_ir, lon, lat = read_hima(time, '13')
 
@@ -730,7 +723,7 @@ plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], co
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Wind Speed, WV Image"), loc='left',size=15)
+plt.title('{}'.format("WindSpeed300, WV Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_300.png", format="png")
@@ -826,7 +819,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("EPT850, Wind850"), loc='left',size=15)
+plt.title('{}'.format("EPT850, Wind850, FG925"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_850.png", format="png")
