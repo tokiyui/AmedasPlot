@@ -887,7 +887,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Psea, Rader and IR Image"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+plt.title('Valid Time: {}'.format(time), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest.png", format="png")
 plt.clf()
