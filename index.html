@@ -23,7 +23,7 @@
             display: inline-block;
             margin-right: 10px;
             font-size: 20px; 
-            width: 250px;
+            width: 400px;
         }      
         #pageTitle {
             margin-top: 20px;
@@ -35,7 +35,7 @@
 <body>
 
 <h1 id="pageTitle">実況監視ページ</h1>
-
+<p>地上</p>
 <label id="selectLabel" for="regionSelect">局地図地域選択：
 <select id="regionSelect" onchange="changeImage()">
   <option value="hokkaido">北海道</option>
@@ -48,8 +48,10 @@
 <div id="imageContainer">
   <img id="selectedImage" src="latestEast.png" alt="Default Image">
   <img id="selectedImage" src="latest.png">
+  <p>上層</p>
   <img id="selectedImage" src="latest_300.png">  
   <img id="selectedImage" src="latest_500.png">  
+  <p>下層</p>
   <img id="selectedImage" src="latest_700.png">  
   <img id="selectedImage" src="latest_850.png">  
 </div>
