@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アメダス・レーダープロット図</title>
+    <title>実況監視ページ</title>
     <style>
         #imageContainer {
             display: flex; 
@@ -12,8 +12,8 @@
             flex-wrap: wrap;
         }
         .image {
-            max-width: 48%; /* 幅を48%に設定する */
-            height: auto; /* 高さを自動調整する */
+            max-width: 48%;
+            height: auto;
         }
         #regionSelect {
             width: 120px;
@@ -34,9 +34,9 @@
 </head>
 <body>
 
-<h1 id="pageTitle">アメダス・レーダープロット図</h1>
+<h1 id="pageTitle">実況監視ページ</h1>
 
-<label id="selectLabel" for="regionSelect">地域選択：
+<label id="selectLabel" for="regionSelect">局地図地域選択：
 <select id="regionSelect" onchange="changeImage()">
   <option value="hokkaido">北海道</option>
   <option value="tohoku">北陸・東北</option>
