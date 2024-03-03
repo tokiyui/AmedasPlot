@@ -5,21 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実況監視ページ</title>
-    <style>
-        #regionSelect {
-            width: 250px;
-            font-size: 40px; 
+     <style>
+        #imageContainer {
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap;
         }
-
+        .image {
+            max-width: 48%; /* 幅を48%に設定する */
+            height: auto; /* 高さを自動調整する */
+        }
+        #regionSelect {
+            width: 120px;
+            font-size: 20px; 
+        }
         #selectLabel {
             display: inline-block;
             margin-right: 10px;
-            font-size: 40px; 
-        }
-        
+            font-size: 20px; 
+            width: 250px;
+        }      
         #pageTitle {
             margin-top: 20px;
-            font-size: 80px;
+            font-size: 40px;
+            width: 600px;
         }
     </style>
 </head>
