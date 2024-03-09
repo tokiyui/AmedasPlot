@@ -8,28 +8,27 @@
     <style>
         #regionSelect {
             width: 250px;
-            font-size: 40px; 
+            font-size: 20px; 
         }
 
         #selectLabel {
             display: inline-block;
             margin-right: 10px;
             width: 500px;
-            font-size: 40px; 
+            font-size: 20px; 
         }
         
         #pageTitle {
             margin-top: 20px;
             width: 500px;
-            font-size: 80px;
+            font-size: 40px;
         }
     </style>
 </head>
 <body>
 
 <h1 id="pageTitle">実況監視ページ</h1>
-<label id="selectLabel" for="regionSelect">局地図地域選択：
-<select id="regionSelect" onchange="changeImage()">
+<label id="selectLabel" for="regionSelect">局地図地域選択：<select id="regionSelect" onchange="changeImage()">
   <option value="hokkaido">北海道</option>
   <option value="tohoku">北陸・東北</option>
   <option value="kanto" selected>関東〜近畿</option>
