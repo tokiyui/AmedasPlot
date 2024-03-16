@@ -7,4 +7,3 @@ datetime
 pybufrkit
 pygrib
 netCDF4
-cv2
