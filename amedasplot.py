@@ -252,7 +252,7 @@ temp_dispflag = False
 wbt_dispflag = False
 dp_dispflag = False
 
-markersize_0 = 1 # マーカーサイズ
+markersize_0 = 4 # マーカーサイズ
 char_size=8 # 文字サイズ
 barb_length=6 # 矢羽の長さ
 dlon,dlat=1,1   # 緯線・経線は1度ごと
@@ -435,6 +435,8 @@ for area in [0, 1, 2, 3]:
         wlat = amd_json[stno]['lat'][0] + amd_json[stno]['lat'][1]/60.0
         wlon = amd_json[stno]['lon'][0] + amd_json[stno]['lon'][1]/60.0
         walt = amd_json[stno]['alt']
+        # 天気
+        weather = get_obs_value(val,'weather')
         # 風
         wind_ok = True
         ws = get_obs_value(val,'wind')
@@ -490,7 +492,17 @@ for area in [0, 1, 2, 3]:
         ## プロット
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
         if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
-            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color="brown", transform=proj)
+            if weather = 1:
+                color="orange"
+            elif weather = 2:
+                color="gray"
+            elif weather = 7:
+                color="green"
+            elif weather = 10:
+                color="blue"
+            else:
+                color="white"
+            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color=color, transform=proj)
             if wind_ok and au*au+av*av>4.0: # 矢羽プロット
                 ax.barbs(wlon, wlat, 
                           (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=proj)
@@ -603,7 +615,6 @@ for area in [0, 1, 2, 3]:
     plt.savefig("latest{}.png".format(areaname), format="png")
     plt.clf()
 
-markersize_0 = 2 # マーカーサイズ
 char_size=16 # 文字サイズ
 barb_length=8 # 矢羽の長さ
 dlon,dlat=5,5   # 緯線・経線は1度ごと
