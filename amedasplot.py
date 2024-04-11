@@ -492,9 +492,9 @@ for area in [0, 1, 2, 3]:
         ## プロット
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj) 
         if ( fig_z[0] > 0.01 and fig_z[0] < 0.99  and fig_z[1] > 0.01 and fig_z[1] < 0.99):
-            if weather == 1:
+            if weather == 0:
                 color="orange"
-            elif weather == 2:
+            elif weather == 1:
                 color="gray"
             elif weather == 7:
                 color="green"
