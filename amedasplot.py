@@ -824,7 +824,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 plt.clabel(cont, fontsize=15)
 
 #plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, np.inf], colors=['none', 'orange'])
-plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, np.inf], colors=['none', 'yellow', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 40, np.inf], colors=['none', 'yellow', 'orange', 'red'])
 
 # ベクトルの間引き間隔
 stride = 5
