@@ -675,6 +675,7 @@ rh925 = np.flip(grbs.select(parameterName='Relative humidity', level=925, foreca
 ept850 = gaussian_filter(mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
+kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
 
 tmp500 = gaussian_filter(tmp500, sigma=4.0)
 tmp850 = gaussian_filter(tmp850, sigma=4.0)
@@ -708,6 +709,8 @@ vor = gaussian_filter(vor, sigma=2.0)
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
 fg = gaussian_filter(fg, sigma=2.0)
+
+
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -820,7 +823,8 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, np.inf], colors=['none', 'orange'])
+#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, np.inf], colors=['none', 'orange'])
+plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, np.inf], colors=['none', 'yellow', 'red'])
 
 # ベクトルの間引き間隔
 stride = 5
