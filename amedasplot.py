@@ -502,7 +502,7 @@ for area in [0, 1, 2, 3]:
                 color="blue"
             else:
                 color="none"
-            ax.plot(wlon, wlat, marker='s' , markersize=markersize_0, color=color, transform=proj)
+            ax.plot(wlon, wlat, marker='o', markersize=markersize_0, color=color, transform=proj)
             if wind_ok and au*au+av*av>4.0: # 矢羽プロット
                 ax.barbs(wlon, wlat, 
                           (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=proj)
