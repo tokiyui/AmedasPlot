@@ -701,11 +701,11 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 #vg500 = gaussian_filter(vg500, sigma=4.0)
 
 #vor = mpcalc.vorticity(ug500* units('m/s'), vg500* units('m/s'), dx=dx, dy=dy) * 1000000
-vor = mpcalc.vorticity(u500* units('m/s'), v500* units('m/s'), dx=dx, dy=dy) * 1000000
-vor = gaussian_filter(vor, sigma=4.0)
+vor = mpcalc.vorticity(u500, v500, dx=dx, dy=dy) * 1000000
+vor = gaussian_filter(vor, sigma=2.0)
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
-fg = gaussian_filter(fg, sigma=4.0)
+fg = gaussian_filter(fg, sigma=2.0)
 
 ### 300hPa ###
 # 作図                                                                                    
