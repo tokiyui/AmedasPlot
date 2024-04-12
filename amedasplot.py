@@ -252,7 +252,7 @@ temp_dispflag = False
 wbt_dispflag = False
 dp_dispflag = False
 
-markersize_0 = 4 # マーカーサイズ
+markersize_0 = 8 # マーカーサイズ
 char_size=8 # 文字サイズ
 barb_length=6 # 矢羽の長さ
 dlon,dlat=1,1   # 緯線・経線は1度ごと
