@@ -75,7 +75,7 @@ async function displayWeatherData() {
     for (const point of points) {
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
         console.log(weatherdata);
-        const tenkiNum = typeof weatherData.weather !== 'undefined' ? weatherData.weather[0] : "100";
+        const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
 
         if (tenkiNum === 0) {
             tenki = "晴れ";
