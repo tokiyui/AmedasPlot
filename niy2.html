@@ -76,17 +76,15 @@ async function displayWeatherData() {
         const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
 
         if (tenkiNum === 0) {
-            tenki = "晴れ";
+            tenki = "<td bgcolor="orange">晴れ";
         } else if (tenkiNum === 1) {
-            tenki = "曇り";
+            tenki = "<td bgcolor="gray">曇り";
         } else if (tenkiNum === 7) {
-            tenki = "雨";
+            tenki = "<td bgcolor="lightblue">雨";
         } else if (tenkiNum === 10) {
-            tenki = "雪";
-        } else if (tenkiNum === 100) {
-            tenki = "";
+            tenki = "<td bgcolor="blue">雪";
         } else {
-            tenki = "その他";
+            tenki = "";
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
 
@@ -94,13 +92,13 @@ async function displayWeatherData() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
-            <td>${tenki}</td>
+            ${tenki}</td>
             <td>${weatherData.temp[0]}</td>
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td><span style="color:red">${weatherData.maxTemp[0]}</span><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
-            <td><span style="color:blue">${weatherData.minTemp[0]}</span><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
+            <td><span style="color:red">${weatherData.maxTemp[0]}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
+            <td><span style="color:blue">${weatherData.minTemp[0]}</span><br><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
         `;
         weatherDataElement.appendChild(row);
     }
