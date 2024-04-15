@@ -76,15 +76,15 @@ async function displayWeatherData() {
         const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
 
         if (tenkiNum === 0) {
-            tenki = "<td bgcolor="orange">晴れ";
+            tenki = '<td bgcolor="orange">晴れ';
         } else if (tenkiNum === 1) {
-            tenki = "<td bgcolor="gray">曇り";
+            tenki = '<td bgcolor="gray">曇り';
         } else if (tenkiNum === 7) {
-            tenki = "<td bgcolor="lightblue">雨";
+            tenki = '<td bgcolor="lightblue">雨';
         } else if (tenkiNum === 10) {
-            tenki = "<td bgcolor="blue">雪";
+            tenki = '<td bgcolor="blue">雪';
         } else {
-            tenki = "";
+            tenki = '';
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
 
