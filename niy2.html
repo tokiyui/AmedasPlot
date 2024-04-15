@@ -50,7 +50,7 @@ console.log(roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, ''));
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
 
     try {
-        const response = await fetch(url, { mode: 'no-cors' });
+        const response = await fetch(url);
         const data = await response.json();
         const dataTime = dateTime.toISOString().slice(0, 16).replace(/[-:]/g, '');
         return data[dataTime];
