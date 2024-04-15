@@ -6,21 +6,22 @@
     <title>Weather Data</title>
 </head>
 <body>
-    <h1>Weather Data for Selected Points</h1>
+    <h1>石川・福井のアメダス実況監視</h1>
+    // 降水および風
     <table border="1">
         <thead>
             <tr>
-                <th>Point</th>
-                <th>Date/Time</th>
-                <th>Temperature (°C)</th>
-                <th>Humidity (%)</th>
-                <th>Weather</th>
-                <th>Wind Direction</th>
-                <th>Wind Speed (m/s)</th>
-                <th>Max Temp Time</th>
-                <th>Max Temp (°C)</th>
-                <th>Min Temp Time</th>
-                <th>Min Temp (°C)</th>
+                <th>地点</th>
+                <th>日時</th>
+                <th>気温</th>
+                <th>湿度</th>
+                <th>天気</th>
+                <th>風向</th>
+                <th>風速</th>
+                <th>最高気温時刻</th>
+                <th>最高気温</th>
+                <th>最低気温時刻</th>
+                <th>最低気温</th>
             </tr>
         </thead>
         <tbody id="weatherData">
@@ -42,7 +43,7 @@ async function fetchWeatherData(pointNumber, dateTime) {
     const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
     
     // Format the date/time for the filename
-    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/[T]/g, '_');
+    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
 console.log(roundedDateTime.toISOString().slice(0, 13));
 console.log(roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, ''));
     // Construct the URL for the JSON file
