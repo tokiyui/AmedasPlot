@@ -7,7 +7,6 @@
 </head>
 <body>
     <h1>石川・福井のアメダス実況監視</h1>
-    // 降水および風
     <table border="1">
         <thead>
             <tr>
@@ -44,10 +43,10 @@ async function fetchWeatherData(pointNumber, dateTime) {
     
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-console.log(roundedDateTime.toISOString().slice(0, 13));
-console.log(roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, ''));
+    
     // Construct the URL for the JSON file
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+    console.log(url);
 
     try {
         const response = await fetch(url);
