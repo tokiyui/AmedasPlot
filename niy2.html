@@ -78,7 +78,7 @@ async function displayWeatherData() {
             <td>${point.name}</td>
             <td>${latestDataTime}</td>
             <td>${weatherData.temp[0]}</td>
-            <td>${weatherData.humidity[0]}</td>
+            <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
             <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
