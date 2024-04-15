@@ -58,10 +58,10 @@ async function fetchWindData(pointnumbers, dateTime) {
     let ySum = 0;
     let uMax = 0;
     
-    for (const pointnumber of pointnumbers) {
+    for (const pointNumber of pointnumbers) {
         const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
         const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-        const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointnumber}/${formattedDateTime}.json`;
+        const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
         
         try {
             const response = await fetch(url);
