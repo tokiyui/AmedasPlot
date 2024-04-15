@@ -55,26 +55,22 @@ async function fetchWeatherData(pointNumber, dateTime) {
 }
 
 // Function to fetch wind data for a specific point and date/time
-async function fetchWindData(pointNumbers, dateTime) {
-    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
-    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-    
-    const windData = [];
-    for (const pointNumber of pointNumbers) {
-        const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            const direction = data[formattedDateTime].windDirection[0];
-            const speed = data[formattedDateTime].wind[0];
-            console.log(`Point Number: ${pointNumber}, Direction: ${direction}, Speed: ${speed}`);
-            windData.push({ pointNumber, direction, speed });
-        } catch (error) {
-            console.error(`Error fetching wind data for point number ${pointNumber}:`, error);
-            windData.push({ pointNumber, direction: null, speed: null, error });
-        }
+async function fetchWindData(pointNumber, formattedDateTime) {
+    const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const direction = data[formattedDateTime].windDirection[0];
+        const speed = data[formattedDateTime].wind[0];
+        console.log(direction, speed);
+        return {
+            direction,
+            speed
+        };
+    } catch (error) {
+        console.error('Error fetching wind data:', error);
+        return null;
     }
-    return windData;
 }
 
 // Function to calculate vector average of wind direction
