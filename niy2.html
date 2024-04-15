@@ -124,7 +124,7 @@ async function displayWeatherData() {
         if (windData[2] == 0) {
             rainbool = '<td>なし';
         } else {
-            rainbool = '<td><span style="color:lightblue">あり</span>'
+            rainbool = '<td bgcolor="lightblue">あり'
         }
         const row = document.createElement('tr');
         row.innerHTML = `
