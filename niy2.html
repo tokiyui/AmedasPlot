@@ -16,10 +16,8 @@
                 <th>湿度</th>
                 <th>風向</th>
                 <th>風速</th>
-                <th>最高気温時刻</th>
-                <th>最高気温</th>
-                <th>最低気温時刻</th>
-                <th>最低気温</th>
+                <th>最高気温(時刻)</th>
+                <th>最低気温(時刻)</th>
             </tr>
         </thead>
         <tbody id="weatherData">
@@ -101,8 +99,8 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td><span style="color:red">${weatherData.maxTemp[0]}</span><span style="color:black">${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)}</span></td>
-            <td><span style="color:blue">${weatherData.minTemp[0]}</span><span style="color:black">${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)}</span></td>
+            <td><span style="color:red">${weatherData.maxTemp[0]}</span><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
+            <td><span style="color:blue">${weatherData.minTemp[0]}</span><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
         `;
         weatherDataElement.appendChild(row);
     }
