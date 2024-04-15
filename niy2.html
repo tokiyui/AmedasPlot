@@ -37,6 +37,7 @@
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
+    console.log(fetchLatestDataTime())
     const roundedDateTime = new Date(Math.floor((dateTime.getTime() + (9 * 60 * 60 * 1000)) / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
     
     // Format the date/time for the filename
