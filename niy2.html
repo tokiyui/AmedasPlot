@@ -37,7 +37,8 @@
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
-    const roundedDateTime = new Date(Math.floor((dateTime.getTime() + (9 * 60 * 60 * 1000)) / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
+    const jstDateTime = new Date(dateTime.getTime() + (9 * 60 * 60 * 1000));
+    const roundedDateTime = new Date(Math.floor(jstdateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
     
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
@@ -47,7 +48,7 @@ async function fetchWeatherData(pointNumber, dateTime) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');;
+        const dataTime = jstDateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');;
         console.log(dataTime);
         return data[dataTime];    
     } catch (error) {
