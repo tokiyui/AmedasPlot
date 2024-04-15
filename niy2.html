@@ -94,7 +94,7 @@ async function displayWeatherData() {
         { number: 57248, name: '嶺南(敦賀)', numbers: [57248, 57286, 57317] },
         { number: 57121, name: '[奥越(大野)]', numbers: [57082, 57121] }
     ];
-
+    const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
     const latestDataTime = await fetchLatestDataTime();
     const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
     const weatherDateTime = new Date(Math.floor(jstDateTime.getTime() / (1 * 60 * 60 * 1000)) * (1 * 60 * 60 * 1000));
@@ -118,6 +118,7 @@ async function displayWeatherData() {
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
         const windData = await fetchWindData(point.numbers, jstDateTime);
+        const windDirection = Math.round(windData[0] / 45);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
@@ -126,7 +127,7 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${windData[0].toFixed(0)}</td>
+            <td>${windDirections[windDirection]}</td>
             <td>${windData[1].toFixed(1)}</td>
             <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
             <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
