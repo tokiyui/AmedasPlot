@@ -52,41 +52,37 @@ async function fetchWeatherData(pointNumber, dateTime) {
     }
 }
 
-// Function to fetch wind data for a specific point and date/time
-async function fetchWindData(pointNumber, dateTime) {
-    const results = [];
-    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
-    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-    const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+// Function to calculate vector average of wind direction
+async function fetchWindData(pointnumbers, dateTime) {
+    let xSum = 0;
+    let ySum = 0;
+    let uMax = 0;
+    
+    for (const pointnumber of pointnumbers) {
+        const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
+        const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
+        const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointnumber}/${formattedDateTime}.json`;
+        
         try {
             const response = await fetch(url);
             const data = await response.json();
             const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');
             const direction = data[dataTime].windDirection[0];
             const speed = data[dataTime].wind[0];
+            const radian = direction * (Math.PI / 180); // Convert to radians
+            xSum += Math.cos(radian);
+            ySum += Math.sin(radian);
+            if (uMax < speed) uMax = speed;
             console.log(direction, speed);
-            results.push({
-                direction,
-                speed
-            });
         } catch (error) {
             console.error('Error fetching wind data for point', pointnumber, ':', error);
-            results.push(null);
         }
-}
-
-// Function to calculate vector average of wind direction
-function calculateWindDirectionAverage(directions) {
-    let xSum = 0;
-    let ySum = 0;
-    directions.forEach(direction => {
-        const radian = direction * (Math.PI / 180); // Convert to radians
-        xSum += Math.cos(radian);
-        ySum += Math.sin(radian);
-    });
+        
+    }
     const averageRadian = Math.atan2(ySum, xSum);
     let averageDegree = averageRadian * (180 / Math.PI); // Convert back to degrees
     if (averageDegree < 0) averageDegree += 360; // Ensure degree is within [0, 360)
+    console.log(averageRadian, uMax);
     return averageDegree;
 }
 
