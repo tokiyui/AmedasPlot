@@ -37,8 +37,7 @@
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
-    const jstDateTime = new Date(dateTime.getTime() + (9 * 60 * 60 * 1000));
-    const roundedDateTime = new Date(Math.floor(jstDateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
+    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
     
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
@@ -48,7 +47,7 @@ async function fetchWeatherData(pointNumber, dateTime) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        const dataTime = jstDateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');;
+        const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');;
         console.log(dataTime);
         return data[dataTime];    
     } catch (error) {
@@ -68,11 +67,15 @@ async function displayWeatherData() {
     ];
 
     const latestDataTime = await fetchLatestDataTime();
+    const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
+    const weatherDateTime = new Date(Math.floor(jstDateTime.getTime() / (1 * 60 * 60 * 1000)) * (1 * 60 * 60 * 1000));
 
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
-        const weatherData = await fetchWeatherData(point.number, latestDataTime);
-        
+        const weatherData = await fetchWeatherData(point.number, weatherDateTime);
+        const tenki = weatherData.weather[0];
+        const weatherData = await fetchWeatherData(point.number, jstDateTime);
+               
         // UTCからJSTに変換する
         const maxTempTimeUTC = new Date(weatherData.maxTempTime);
         const maxTempTimeJST = new Date(maxTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
@@ -88,6 +91,7 @@ async function displayWeatherData() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
+            <td>${tenki}</td>
             <td>${weatherData.temp[0]}</td>
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
