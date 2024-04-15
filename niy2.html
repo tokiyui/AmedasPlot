@@ -53,8 +53,8 @@ async function fetchWeatherData(pointNumber, dateTime) {
         const data = await response.json();
         console.log(data);
         const dataTime = dateTime.toISOString().slice(0, 16).replace(/[-:]/g, '');
-        return data[dataTime];
-        console.log(data);
+        console.log(dataTime);
+        return data[dataTime];        
     } catch (error) {
         console.error('Error fetching weather data:', error);
         console.log('error');
