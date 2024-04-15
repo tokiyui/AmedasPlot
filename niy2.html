@@ -121,7 +121,7 @@ async function displayWeatherData() {
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
         const windData = await fetchWindData(point.numbers, jstDateTime);
         const windDirection = Math.round(windData[0] / 45);
-        if (windData[0] == 0) {
+        if (windData[2] == 0) {
             rainbool = '<td>なし';
         } else {
             rainbool = '<td><span style="color:lightblue">あり</span>'
