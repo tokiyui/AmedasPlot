@@ -11,7 +11,6 @@
         <thead>
             <tr>
                 <th>地点</th>
-                <th>日時</th>
                 <th>気温</th>
                 <th>湿度</th>
                 <th>風向</th>
@@ -76,7 +75,6 @@ async function displayWeatherData() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
-            <td>${latestDataTime}</td>
             <td>${weatherData.temp[0]}</td>
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
