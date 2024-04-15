@@ -75,13 +75,14 @@ async function displayWeatherData() {
     for (const point of points) {
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
         console.log(weatherdata);
-        if (weatherdata.weather[0] === 0) {
+        const tenkiNum = weatherData.weather[0] !== undefined ? weatherData.weather[0] : "100";
+        if (tenkiNum === 0) {
             tenki = "晴れ";
-        } else if (weatherdata.weather[0] === 1) {
+        } else if (tenkiNum === 1) {
             tenki = "曇り";
-        } else if (weatherdata.weather[0] === 7) {
+        } else if (tenkiNum === 7) {
             tenki = "雨";
-        } else if (weatherdata.weather[0] === 10) {
+        } else if (tenkiNum === 10) {
             tenki = "雪";
         } else {
             tenki = "その他";
@@ -101,7 +102,7 @@ async function displayWeatherData() {
         // const minTempHour = minTempTimeJST.getHours();
         // const minTempMinute = minTempTimeJST.getMinutes();
 // console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
-        
+        console.log(weatherData.maxTempTime.Hour,weatherData.maxTempTime.Hour+9);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
