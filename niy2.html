@@ -14,8 +14,8 @@
                 <th>天気</th>
                 <th>気温</th>
                 <th>湿度</th>
-                <th>風向</th>
-                <th>風速</th>
+                <th>平均風向</th>
+                <th>最大風速</th>
                 <th>最高気温(時刻)</th>
                 <th>最低気温(時刻)</th>
             </tr>
@@ -125,8 +125,6 @@ async function displayWeatherData() {
             ${tenki}</td>
             <td>${weatherData.temp[0]}</td>
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
-            <td>${weatherData.windDirection[0]}</td>
-            <td>${weatherData.wind[0]}</td>
             <td>${windDirections[windDirection]}</td>
             <td>${windData[1].toFixed(1)}</td>
             <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
