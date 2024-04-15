@@ -36,8 +36,7 @@ async function fetchLatestDataTime() {
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
-    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
-    
+    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));    
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
     // Construct the URL for the JSON file
@@ -55,7 +54,9 @@ async function fetchWeatherData(pointNumber, dateTime) {
 }
 
 // Function to fetch wind data for a specific point and date/time
-async function fetchWindData(pointNumber, formattedDateTime) {
+async function fetchWindData(pointNumber, dateTime) {
+    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
+    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
     try {
         const response = await fetch(url);
