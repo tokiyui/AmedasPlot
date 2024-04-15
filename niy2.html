@@ -72,14 +72,6 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
-
-        // Convert maxTempTime and minTempTime to JST
-        const maxTempJST = new Date(weatherData.maxTempTime);
-        const minTempJST = new Date(weatherData.minTempTime);
-        maxTempJST.setHours(maxTempJST.getHours() + 9);
-        minTempJST.setHours(minTempJST.getHours() + 9);
-        console.log(maxTempJST);
-        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
@@ -87,9 +79,9 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${maxTempJST.getHours()}:${('0' + maxTempJST.getMinutes()).slice(-2)}</td>
+            <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
             <td>${weatherData.maxTemp[0]}</td>
-            <td>${minTempJST.getHours()}:${('0' + minTempJST.getMinutes()).slice(-2)}</td>
+            <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
             <td>${weatherData.minTemp[0]}</td>
         `;
         weatherDataElement.appendChild(row);
