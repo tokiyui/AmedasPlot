@@ -37,12 +37,10 @@
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
-    console.log(fetchLatestDataTime())
     const roundedDateTime = new Date(Math.floor((dateTime.getTime() + (9 * 60 * 60 * 1000)) / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
     
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-    console.log(formattedDateTime);
     // Construct the URL for the JSON file
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
 
@@ -72,6 +70,7 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
+        console.log(latestDataTime);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
