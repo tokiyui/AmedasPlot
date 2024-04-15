@@ -74,12 +74,11 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
-        console.log(weatherData.temp[0]);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
             <td>${latestDataTime}</td>
-            <td>(weatherData.temp[0])</td>
+            <td>${weatherData.temp[0]}</td>
             <td>${weatherData.humidity[0]}</td>
             <td>${weatherData.weather[0]}</td>
             <td>${weatherData.windDirection[0]}</td>
