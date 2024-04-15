@@ -81,7 +81,7 @@ async function fetchWindData(pointnumbers, dateTime) {
     const averageRadian = Math.atan2(ySum, xSum);
     let averageDegree = averageRadian * (180 / Math.PI); // Convert back to degrees
     if (averageDegree < 0) averageDegree += 360; // Ensure degree is within [0, 360)
-    return averageDegree, uMax;
+    return [averageDegree, uMax];
 }
 
 // Call function to display weather data
@@ -116,7 +116,7 @@ async function displayWeatherData() {
             tenki = '<td>';
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
-        const Mamedaifuku = await fetchWindData(point.numbers, jstDateTime);
+        const windData = await fetchWindData(point.numbers, jstDateTime);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
@@ -125,8 +125,8 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${averageWindSpeed.toFixed(2)}</td>
-            <td>${averageWindDirection.toFixed(2)}</td>
+            <td>${windData[0].toFixed(2)}</td>
+            <td>${windData[1].toFixed(2)}</td>
             <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
             <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
         `;
