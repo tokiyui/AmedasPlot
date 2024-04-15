@@ -117,7 +117,7 @@ async function displayWeatherData() {
             tenki = '<td>';
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
-        const Mamedaifuku = await fetchWeatherData(point.numbers, jstDateTime);
+        const Mamedaifuku = await fetchWindData(point.numbers, jstDateTime);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
