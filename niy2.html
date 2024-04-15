@@ -76,10 +76,14 @@ async function displayWeatherData() {
         // UTCからJSTに変換する
         const maxTempTimeUTC = new Date(weatherData.maxTempTime);
         const maxTempTimeJST = new Date(maxTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
+        const minTempTimeUTC = new Date(weatherData.minTempTime);
+        const minTempTimeJST = new Date(minTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
 
         // JSTの時刻と分を取得する
         const maxTempHour = maxTempTimeJST.getHours();
         const maxTempMinute = maxTempTimeJST.getMinutes();
+        const minTempHour = minTempTimeJST.getHours();
+        const minTempMinute = minTempTimeJST.getMinutes();
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -88,10 +92,9 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            // <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
             <td>${maxTempHour}:${('0' + maxTempMinute).slice(-2)}</td>
             <td>${weatherData.maxTemp[0]}</td>
-            <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
+            <td>${minTempHour}:${('0' + minTempMinute).slice(-2)}</td>
             <td>${weatherData.minTemp[0]}</td>
         `;
         weatherDataElement.appendChild(row);
