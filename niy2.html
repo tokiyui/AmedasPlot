@@ -28,11 +28,11 @@
 
     <script>
         // Function to fetch latest data time
-        async function fetchLatestDataTime() {
-            const response = await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt');
-            const dataTimeText = await response.text();
-            return new Date(dataTimeText.trim());
-        }
+        //async function fetchLatestDataTime() {
+        //    const response = await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt');
+        //    const dataTimeText = await response.text();
+        //    return new Date(dataTimeText.trim());
+        //}
 
 // Function to fetch weather data for a specific point and date/time
 async function fetchWeatherData(pointNumber, dateTime) {
@@ -42,10 +42,9 @@ async function fetchWeatherData(pointNumber, dateTime) {
     
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-    
+    console.log(formattedDateTime);
     // Construct the URL for the JSON file
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
-    console.log(url);
 
     try {
         const response = await fetch(url);
