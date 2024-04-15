@@ -74,7 +74,17 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
-        const tenki = weatherdata.weather[0];
+        if (weatherdata.weather[0] === 0) {
+            tenki = "晴れ";
+        } else if (weatherdata.weather[0] === 1) {
+            tenki = "曇り";
+        } else if (weatherdata.weather[0] === 7) {
+            tenki = "雨";
+        } else if (weatherdata.weather[0] === 10) {
+            tenki = "雪";
+        } else {
+            tenki = "その他";
+        }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
                
         // UTCからJSTに変換する
