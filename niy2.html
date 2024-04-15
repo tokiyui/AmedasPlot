@@ -11,6 +11,7 @@
         <thead>
             <tr>
                 <th>地点</th>
+                <th>天気</th>
                 <th>気温</th>
                 <th>湿度</th>
                 <th>風向</th>
@@ -88,7 +89,8 @@ async function displayWeatherData() {
         const maxTempMinute = maxTempTimeJST.getMinutes();
         const minTempHour = minTempTimeJST.getHours();
         const minTempMinute = minTempTimeJST.getMinutes();
-
+console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
+        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
