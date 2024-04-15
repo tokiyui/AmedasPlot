@@ -109,7 +109,7 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${(maxTempHour + 9) % 24}:${('0' + maxTempMinute).slice(-2)}</td>
+            <td>${(weatherData.maxTempTime.Hour + 9) % 24}:${('0' + weatherData.maxTempTime.Minute).slice(-2)}</td>
             <td>${weatherData.maxTemp[0]}</td>
             <td>${minTempHour}:${('0' + minTempMinute).slice(-2)}</td>
             <td>${weatherData.minTemp[0]}</td>
