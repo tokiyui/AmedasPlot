@@ -73,7 +73,6 @@ async function fetchWindData(pointnumbers, dateTime) {
             xSum += Math.cos(radian);
             ySum += Math.sin(radian);
             if (uMax < speed) uMax = speed;
-            console.log(direction, speed);
         } catch (error) {
             console.error('Error fetching wind data for point', pointnumber, ':', error);
         }
