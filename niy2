@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Data</title>
+</head>
+<body>
+    <h1>Weather Data for Selected Points</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Point</th>
+                <th>Date/Time</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Weather</th>
+                <th>Wind Direction</th>
+                <th>Wind Speed (m/s)</th>
+                <th>Max Temp Time</th>
+                <th>Max Temp (°C)</th>
+                <th>Min Temp Time</th>
+                <th>Min Temp (°C)</th>
+            </tr>
+        </thead>
+        <tbody id="weatherData">
+            <!-- Weather data will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch latest data time
+        async function fetchLatestDataTime() {
+            const response = await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt');
+            const dataTimeText = await response.text();
+            return new Date(dataTimeText.trim());
+        }
+
+        // Function to fetch weather data for a specific point and date/time
+        async function fetchWeatherData(pointNumber, dateTime) {
+            const formattedDateTime = dateTime.toISOString().split('.')[0]; // Format date/time
+            const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+            const response = await fetch(url);
+            const jsonData = await response.json();
+            return jsonData[formattedDateTime];
+        }
+
+        // Function to display weather data in the table
+        async function displayWeatherData() {
+            const points = [
+                { number: 56227, name: '金沢' },
+                { number: 56052, name: '輪島' },
+                { number: 57066, name: '福井' },
+                { number: 57248, name: '敦賀' },
+                { number: 57121, name: '大野' }
+            ];
+
+            const latestDataTime = await fetchLatestDataTime();
+
+            const weatherDataElement = document.getElementById('weatherData');
+            for (const point of points) {
+                const weatherData = await fetchWeatherData(point.number, latestDataTime);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${point.name}</td>
+                    <td>${latestDataTime}</td>
+                    <td>${weatherData.temp[0]}</td>
+                    <td>${weatherData.humidity[0]}</td>
+                    <td>${weatherData.weather[0]}</td>
+                    <td>${weatherData.windDirection[0]}</td>
+                    <td>${weatherData.wind[0]}</td>
+                    <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
+                    <td>${weatherData.maxTemp[0]}</td>
+                    <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
+                    <td>${weatherData.minTemp[0]}</td>
+                `;
+                weatherDataElement.appendChild(row);
+            }
+        }
+
+        // Call function to display weather data
+        displayWeatherData();
+    </script>
+</body>
+</html>
