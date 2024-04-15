@@ -102,8 +102,7 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         console.log(point.numbers);
-        const weatherdata = await fetchWeatherData(point.numbers, weatherDateTime);
-        console.log(weatherdata);
+        const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
         const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
 
         if (tenkiNum === 0) {
@@ -117,22 +116,8 @@ async function displayWeatherData() {
         } else {
             tenki = '<td>';
         }
-        const weatherData = await fetchWeatherData(point.number, jstDateTime);   
-        fetchWindData(points.numbers, jstDateTime)
-        const windSpeeds = [];
-        const windDirections = [];
-        for (let i = 0; i < 5; i++) { // Fetch wind data for the past 5 hours
-            const pastDateTime = new Date(jstDateTime.getTime() - (i * 60 * 60 * 1000));
-            const windData = await fetchWindData(point.number, pastDateTime);
-            if (windData) {
-                windSpeeds.push(windData.speed);
-                windDirections.push(windData.direction);
-            }
-        }
-        const averageWindSpeed = windSpeeds.reduce((acc, val) => acc + val, 0) / windSpeeds.length;
-        const averageWindDirection = calculateWindDirectionAverage(windDirections);
-
-
+        const weatherData = await fetchWeatherData(point.number, jstDateTime);
+        const Mamedaifuku = await fetchWeatherData(point.numbers, jstDateTime);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
