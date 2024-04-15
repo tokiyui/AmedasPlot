@@ -76,13 +76,12 @@ async function fetchWindData(pointnumbers, dateTime) {
         } catch (error) {
             console.error('Error fetching wind data for point', pointnumber, ':', error);
         }
-        
+    
     }
     const averageRadian = Math.atan2(ySum, xSum);
     let averageDegree = averageRadian * (180 / Math.PI); // Convert back to degrees
     if (averageDegree < 0) averageDegree += 360; // Ensure degree is within [0, 360)
-    console.log(averageRadian, uMax);
-    return averageDegree;
+    return averageDegree, uMax;
 }
 
 // Call function to display weather data
