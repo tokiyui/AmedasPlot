@@ -40,7 +40,7 @@
 async function fetchWeatherData(pointNumber, dateTime) {
     // Calculate the nearest 3-hour interval
     const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
-
+    console.log(roundedDateTime);
     // Format the date/time for the filename
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '');
 
