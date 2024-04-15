@@ -60,11 +60,11 @@ async function fetchWeatherData(pointNumber, dateTime) {
 // Call function to display weather data
 async function displayWeatherData() {
     const points = [
-        { number: 56227, name: '金沢' },
-        { number: 56052, name: '輪島' },
-        { number: 57066, name: '福井' },
-        { number: 57248, name: '敦賀' },
-        { number: 57121, name: '大野' }
+        { number: 56227, name: '加賀(金沢)' },
+        { number: 56052, name: '能登(輪島)' },
+        { number: 57066, name: '嶺北(福井)' },
+        { number: 57248, name: '嶺南(敦賀)' },
+        { number: 57121, name: '[奥越(大野)]' }
     ];
 
     const latestDataTime = await fetchLatestDataTime();
