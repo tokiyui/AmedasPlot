@@ -57,6 +57,7 @@ console.log(roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, ''));
         console.log(data[dataTime]);
     } catch (error) {
         console.error('Error fetching weather data:', error);
+        console.log('error');
         return null;
     }
 }
