@@ -89,17 +89,17 @@ async function displayWeatherData() {
                
         // UTCからJSTに変換する
         console.log('weatherData.maxTempTime = ',weatherData.maxTempTime);
-        const maxTempTimeUTC = new Date(weatherData.maxTempTime);
-        const maxTempTimeJST = new Date(weatherData.maxTempTime + (9 * 60 * 60 * 1000));
-        const minTempTimeUTC = new Date(weatherData.minTempTime);
-        const minTempTimeJST = new Date(minTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
+        // const maxTempTimeUTC = new Date(weatherData.maxTempTime);
+        // const maxTempTimeJST = new Date(weatherData.maxTempTime + (9 * 60 * 60 * 1000));
+        // const minTempTimeUTC = new Date(weatherData.minTempTime);
+        // const minTempTimeJST = new Date(minTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
 
         // JSTの時刻と分を取得する
-        const maxTempHour = maxTempTimeJST.getHours();
-        const maxTempMinute = maxTempTimeJST.getMinutes();
-        const minTempHour = minTempTimeJST.getHours();
-        const minTempMinute = minTempTimeJST.getMinutes();
-console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
+        // const maxTempHour = maxTempTimeJST.getHours();
+        // const maxTempMinute = maxTempTimeJST.getMinutes();
+        // const minTempHour = minTempTimeJST.getHours();
+        // const minTempMinute = minTempTimeJST.getMinutes();
+// console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
         
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -109,7 +109,7 @@ console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${maxTempHour}:${('0' + maxTempMinute).slice(-2)}</td>
+            <td>${(maxTempHour + 9) % 24}:${('0' + maxTempMinute).slice(-2)}</td>
             <td>${weatherData.maxTemp[0]}</td>
             <td>${minTempHour}:${('0' + minTempMinute).slice(-2)}</td>
             <td>${weatherData.minTemp[0]}</td>
