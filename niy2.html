@@ -100,10 +100,8 @@ async function displayWeatherData() {
     const latestDataTime = await fetchLatestDataTime();
     const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
     const weatherDateTime = new Date(Math.floor(jstDateTime.getTime() / (1 * 60 * 60 * 1000)) * (1 * 60 * 60 * 1000));
-    console.log(latestDataTime, weatherDateTime)
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
-        console.log(point.numbers);
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
         const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
 
