@@ -42,7 +42,6 @@ async function fetchWeatherData(pointNumber, dateTime) {
     const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
     // Construct the URL for the JSON file
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
-    console.log(url);
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -57,7 +56,8 @@ async function fetchWeatherData(pointNumber, dateTime) {
 
 // Function to fetch wind data for a specific point and date/time
 async function fetchWindData(pointNumber, dateTime) {
-    const formattedDateTime = dateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
+    const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
+    const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
     const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
     try {
         const response = await fetch(url);
