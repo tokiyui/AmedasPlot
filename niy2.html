@@ -74,7 +74,8 @@ async function displayWeatherData() {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
         
         // UTCからJSTに変換する
-        const maxTempTimeJST = new Date(Date(weatherData.maxTempTime).getTime() + (9 * 60 * 60 * 1000));
+        const maxTempTimeUTC = new Date(weatherData.maxTempTime);
+        const maxTempTimeJST = new Date(maxTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
 
         // JSTの時刻と分を取得する
         const maxTempHour = maxTempTimeJST.getHours();
