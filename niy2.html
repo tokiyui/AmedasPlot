@@ -123,7 +123,8 @@ async function displayWeatherData() {
         } else {
             tenki = '<td>';
         }
-        const weatherData = await fetchWeatherData(point.number, jstDateTime);        
+        const weatherData = await fetchWeatherData(point.number, jstDateTime);   
+        fetchWindData(points.numbers, jstDateTime)
         const windSpeeds = [];
         const windDirections = [];
         for (let i = 0; i < 5; i++) { // Fetch wind data for the past 5 hours
