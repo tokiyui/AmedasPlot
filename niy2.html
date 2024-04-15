@@ -18,6 +18,7 @@
                 <th>最大風速</th>
                 <th>最高気温(時刻)</th>
                 <th>最低気温(時刻)</th>
+                <th>降水</th>
             </tr>
         </thead>
         <tbody id="weatherData">
@@ -57,7 +58,7 @@ async function fetchWindData(pointnumbers, dateTime) {
     let xSum = 0;
     let ySum = 0;
     let uMax = 0;
-    
+    let rain = 0;
     for (const pointNumber of pointnumbers) {
         const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
         const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
@@ -69,6 +70,7 @@ async function fetchWindData(pointnumbers, dateTime) {
             const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');
             const direction = data[dataTime].windDirection[0];
             const speed = data[dataTime].wind[0];
+            const rain += data[dataTime].precipitation10m[0];
             const radian = direction * (Math.PI / 8.0); // Convert to radians
             xSum += Math.cos(radian) * speed;
             ySum += Math.sin(radian) * speed;
@@ -82,7 +84,7 @@ async function fetchWindData(pointnumbers, dateTime) {
     let averageDegree = averageRadian * (180 / Math.PI); // Convert back to degrees
     console.log(averageDegree);
     if (averageDegree < 0) averageDegree += 360; // Ensure degree is within [0, 360)
-    return [averageDegree, uMax];
+    return [averageDegree, uMax, rain];
 }
 
 // Call function to display weather data
@@ -119,6 +121,11 @@ async function displayWeatherData() {
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
         const windData = await fetchWindData(point.numbers, jstDateTime);
         const windDirection = Math.round(windData[0] / 45);
+        if (windData[0] == 0) {
+            rainbool = '<td>なし';
+        } else {
+            rainbool = '<td><span style="color:lightblue">あり</span>'
+        }
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
@@ -129,6 +136,7 @@ async function displayWeatherData() {
             <td>${windData[1].toFixed(1)}</td>
             <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
             <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
+            ${rainbool}</td>
         `;
         weatherDataElement.appendChild(row);
     }
