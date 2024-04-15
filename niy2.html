@@ -66,6 +66,7 @@ async function fetchWindData(pointNumber, dateTime) {
             direction: data[formattedDateTime].windDirection[0],
             speed: data[formattedDateTime].wind[0]
         };
+        console.log(direction,speed);
     } catch (error) {
         console.error('Error fetching wind data:', error);
         return null;
