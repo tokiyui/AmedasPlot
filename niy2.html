@@ -89,11 +89,11 @@ async function fetchWindData(pointnumbers, dateTime) {
 // Call function to display weather data
 async function displayWeatherData() {
     const points = [
-        { number: 56227, name: '加賀(金沢)', numbers: [56036, 56052, 56093, 56116, 56146, 56176] },
-        { number: 56052, name: '能登(輪島)', numbers: [56186, 56227, 56286, 56276, 56301] },
-        { number: 57066, name: '嶺北(福井)', numbers: [57001, 57026, 57066, 57051, 57206] },
-        { number: 57248, name: '嶺南(敦賀)', numbers: [57248, 57286, 57317] },
-        { number: 57121, name: '[奥越(大野)]', numbers: [57082, 57121] }
+        { number: 56227, name: '金沢(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176] },
+        { number: 56052, name: '輪島(能登)', numbers: [56186, 56227, 56286, 56276, 56301] },
+        { number: 57066, name: '福井(嶺北)', numbers: [57001, 57026, 57066, 57051, 57206] },
+        { number: 57248, name: '敦賀(嶺南)', numbers: [57248, 57286, 57317] },
+        { number: 57121, name: '[大野(奥越)]', numbers: [57082, 57121] }
     ];
     const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
     const latestDataTime = await fetchLatestDataTime();
