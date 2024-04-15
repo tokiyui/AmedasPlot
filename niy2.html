@@ -74,6 +74,7 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
+        console.log(weatherdata);
         if (weatherdata.weather[0] === 0) {
             tenki = "晴れ";
         } else if (weatherdata.weather[0] === 1) {
