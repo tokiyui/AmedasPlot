@@ -91,20 +91,7 @@ async function displayWeatherData() {
             tenki = "その他";
         }
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
-               
-        // UTCからJSTに変換する
-        console.log('weatherData.maxTempTime = ',weatherData.maxTempTime);
-        // const maxTempTimeUTC = new Date(weatherData.maxTempTime);
-        // const maxTempTimeJST = new Date(weatherData.maxTempTime + (9 * 60 * 60 * 1000));
-        // const minTempTimeUTC = new Date(weatherData.minTempTime);
-        // const minTempTimeJST = new Date(minTempTimeUTC.getTime() + (9 * 60 * 60 * 1000));
 
-        // JSTの時刻と分を取得する
-        // const maxTempHour = maxTempTimeJST.getHours();
-        // const maxTempMinute = maxTempTimeJST.getMinutes();
-        // const minTempHour = minTempTimeJST.getHours();
-        // const minTempMinute = minTempTimeJST.getMinutes();
-// console.log(maxTempTimeUTC,maxTempTimeJST,maxTempHour,maxTempMinute);
         console.log(weatherData.maxTempTime.hour);
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -114,10 +101,8 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td><span style="color:red">${weatherData.maxTemp[0]}</span></td>
-            <td><span style="color:black">${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)}</span></td>
-            <td>${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)}</td>
-            <td>${weatherData.minTemp[0]}</td>
+            <td><span style="color:red">${weatherData.maxTemp[0]}</span><span style="color:black">${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)}</span></td>
+            <td><span style="color:blue">${weatherData.minTemp[0]}</span><span style="color:black">${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)}</span></td>
         `;
         weatherDataElement.appendChild(row);
     }
