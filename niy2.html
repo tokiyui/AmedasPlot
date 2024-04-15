@@ -72,7 +72,14 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
-        console.log(weatherData);
+        
+        // UTCからJSTに変換する
+        const maxTempTimeJST = new Date(Date(weatherData.maxTempTime).getTime() + (9 * 60 * 60 * 1000));
+
+        // JSTの時刻と分を取得する
+        const maxTempHour = maxTempTimeJST.getHours();
+        const maxTempMinute = maxTempTimeJST.getMinutes();
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
@@ -80,7 +87,8 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${weatherData.windDirection[0]}</td>
             <td>${weatherData.wind[0]}</td>
-            <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
+            // <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
+            <td>${maxTempHour}:${('0' + maxTempMinute).slice(-2)}</td>
             <td>${weatherData.maxTemp[0]}</td>
             <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
             <td>${weatherData.minTemp[0]}</td>
