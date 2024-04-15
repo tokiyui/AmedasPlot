@@ -70,7 +70,7 @@ async function fetchWindData(pointnumbers, dateTime) {
             const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');
             const direction = data[dataTime].windDirection[0];
             const speed = data[dataTime].wind[0];
-            const rain += data[dataTime].precipitation10m[0];
+            rain += data[dataTime].precipitation10m[0];
             const radian = direction * (Math.PI / 8.0); // Convert to radians
             xSum += Math.cos(radian) * speed;
             ySum += Math.sin(radian) * speed;
