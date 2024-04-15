@@ -78,6 +78,7 @@ async function displayWeatherData() {
         const minTempJST = new Date(weatherData.minTempTime);
         maxTempJST.setHours(maxTempJST.getHours() + 9);
         minTempJST.setHours(minTempJST.getHours() + 9);
+        console.log(maxTempJST);
         
         const row = document.createElement('tr');
         row.innerHTML = `
