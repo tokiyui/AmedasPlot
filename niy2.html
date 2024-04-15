@@ -72,8 +72,8 @@ async function displayWeatherData() {
 
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
-        const weatherData = await fetchWeatherData(point.number, weatherDateTime);
-        const tenki = weatherData.weather[0];
+        const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
+        const tenki = weatherdata.weather[0];
         const weatherData = await fetchWeatherData(point.number, jstDateTime);
                
         // UTCからJSTに変換する
