@@ -48,6 +48,7 @@ async function fetchWeatherData(pointNumber, dateTime) {
         const response = await fetch(url);
         const data = await response.json();
         const dataTime = dateTime.toISOString().slice(0, 19).replace(/[-:]/g, '').replace(/T/g, '');;
+        console.log(dataTime);
         return data[dataTime];    
     } catch (error) {
         console.error('Error fetching weather data:', error);
@@ -70,7 +71,7 @@ async function displayWeatherData() {
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherData = await fetchWeatherData(point.number, latestDataTime);
-        console.log(weatherData, fetchLatestDataTime());
+        console.log(weatherData);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${point.name}</td>
