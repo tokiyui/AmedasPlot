@@ -36,48 +36,59 @@
             return new Date(dataTimeText.trim());
         }
 
-        // Function to fetch weather data for a specific point and date/time
-        async function fetchWeatherData(pointNumber, dateTime) {
-            const formattedDateTime = dateTime.toISOString().split('.')[0]; // Format date/time
-            const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
-            const response = await fetch(url, { mode: 'no-cors' });
-            const jsonData = await response.json();
-            return jsonData[formattedDateTime];
-        }
+// Function to fetch weather data for a specific point and date/time
+async function fetchWeatherData(pointNumber, dateTime) {
+    // Generate the filename based on the given datetime
+    const formattedDateTime = dateTime.toISOString().split('.')[0].replace(/[-:]/g, '').replace('T', '_');
+    const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
 
-        // Function to display weather data in the table
-        async function displayWeatherData() {
-            const points = [
-                { number: 56227, name: '金沢' },
-                { number: 56052, name: '輪島' },
-                { number: 57066, name: '福井' },
-                { number: 57248, name: '敦賀' },
-                { number: 57121, name: '大野' }
-            ];
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const dataTime = dateTime.toISOString().split('.')[0].replace(/[-:]/g, '');
+        return data[dataTime];
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        return null;
+    }
+}
 
-            const latestDataTime = await fetchLatestDataTime();
+// Call function to display weather data
+async function displayWeatherData() {
+    const points = [
+        { number: 56227, name: '金沢' },
+        { number: 56052, name: '輪島' },
+        { number: 57066, name: '福井' },
+        { number: 57248, name: '敦賀' },
+        { number: 57121, name: '大野' }
+    ];
 
-            const weatherDataElement = document.getElementById('weatherData');
-            for (const point of points) {
-                const weatherData = await fetchWeatherData(point.number, latestDataTime);
+    const latestDataTime = await fetchLatestDataTime();
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${point.name}</td>
-                    <td>${latestDataTime}</td>
-                    <td>${weatherData.temp[0]}</td>
-                    <td>${weatherData.humidity[0]}</td>
-                    <td>${weatherData.weather[0]}</td>
-                    <td>${weatherData.windDirection[0]}</td>
-                    <td>${weatherData.wind[0]}</td>
-                    <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
-                    <td>${weatherData.maxTemp[0]}</td>
-                    <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
-                    <td>${weatherData.minTemp[0]}</td>
-                `;
-                weatherDataElement.appendChild(row);
-            }
-        }
+    const weatherDataElement = document.getElementById('weatherData');
+    for (const point of points) {
+        const weatherData = await fetchWeatherData(point.number, latestDataTime);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${point.name}</td>
+            <td>${latestDataTime}</td>
+            <td>${weatherData.temp[0]}</td>
+            <td>${weatherData.humidity[0]}</td>
+            <td>${weatherData.weather[0]}</td>
+            <td>${weatherData.windDirection[0]}</td>
+            <td>${weatherData.wind[0]}</td>
+            <td>${weatherData.maxTempTime.hour}:${weatherData.maxTempTime.minute}</td>
+            <td>${weatherData.maxTemp[0]}</td>
+            <td>${weatherData.minTempTime.hour}:${weatherData.minTempTime.minute}</td>
+            <td>${weatherData.minTemp[0]}</td>
+        `;
+        weatherDataElement.appendChild(row);
+    }
+}
+
+// Call function to display weather data
+displayWeatherData();
 
         // Call function to display weather data
         displayWeatherData();
