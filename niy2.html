@@ -82,7 +82,6 @@ async function fetchWindData(pointnumbers, dateTime) {
     }
     const averageRadian = Math.atan2(ySum, xSum);
     let averageDegree = averageRadian * (180 / Math.PI); // Convert back to degrees
-    console.log(averageDegree);
     if (averageDegree < 0) averageDegree += 360; // Ensure degree is within [0, 360)
     return [averageDegree, uMax, rain];
 }
