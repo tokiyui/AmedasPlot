@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>石川・福井のアメダス実況監視</h1>
+    <p id="latestDataTime">最新データ時刻：</p> <!-- データ時刻を表示する要素を追加 -->
     <table border="1">
         <thead>
             <ul>
@@ -105,6 +106,12 @@ async function displayWeatherData() {
     const latestDataTime = await fetchLatestDataTime();
     const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
     const weatherDateTime = new Date(Math.floor(jstDateTime.getTime() / (1 * 60 * 60 * 1000)) * (1 * 60 * 60 * 1000));
+    
+    // Display the latest data time
+    const latestDataTimeElement = document.getElementById('latestDataTime');
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Tokyo' };
+    latestDataTimeElement.textContent += ' ' + jstDateTime.toLocaleString('ja-JP', options);
+
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
         const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
@@ -145,8 +152,8 @@ async function displayWeatherData() {
     }
 }
 
-        // Call function to display weather data
-        displayWeatherData();
-    </script>
+// Call function to display weather data
+displayWeatherData();
+</script>
 </body>
 </html>
