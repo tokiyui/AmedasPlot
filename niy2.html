@@ -110,7 +110,7 @@ async function displayWeatherData() {
     // Display the latest data time
     const latestDataTimeElement = document.getElementById('latestDataTime');
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-    latestDataTimeElement.textContent += ' ' + jstDateTime.toLocaleString('ja-JP', options);
+    latestDataTimeElement.textContent += ' ' + latestDataTime.toLocaleString('ja-JP', options);
 
     const weatherDataElement = document.getElementById('weatherData');
     for (const point of points) {
