@@ -96,11 +96,11 @@ async function fetchWindData(pointnumbers, dateTime) {
 // Call function to display weather data
 async function displayWeatherData() {
     const points = [
-        { number: 56227, name: '金沢(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
-        { number: 56052, name: '輪島(能登)', numbers: [56186, 56227, 56286, 56276, 56301, 56081, 56192] },
-        { number: 57066, name: '福井(嶺北)', numbers: [57001, 57026, 57066, 57051, 57206, 57071, 57106] },
-        { number: 57248, name: '敦賀(嶺南)', numbers: [57248, 57286, 57317, 57311] },
-        { number: 57121, name: '[大野(奥越)]', numbers: [57082, 57121, 57176] }
+        { number: 56227, name: '金沢&nbsp;(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
+        { number: 56052, name: '輪島&nbsp;(能登)', numbers: [56186, 56227, 56286, 56276, 56301, 56081, 56192] },
+        { number: 57066, name: '福井&nbsp;(嶺北)', numbers: [57001, 57026, 57066, 57051, 57206, 57071, 57106] },
+        { number: 57248, name: '敦賀&nbsp;(嶺南)', numbers: [57248, 57286, 57317, 57311] },
+        { number: 57121, name: '[大野&nbsp;(奥越)]', numbers: [57082, 57121, 57176] }
     ];
     const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
     const latestDataTime = await fetchLatestDataTime();
@@ -146,8 +146,8 @@ async function displayWeatherData() {
             <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
             <td>${windDirections[windDirection]}</td>
             <td>${windData[1].toFixed(1)}</td>
-            <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
-            <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span><br><span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
+            <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
+            <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
             ${rainbool}</td>
         `;
         weatherDataElement.appendChild(row);
