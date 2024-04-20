@@ -543,7 +543,7 @@ for area in [0, 1, 2, 3]:
     grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
-    prmsl = gaussian_filter(grid_npre, sigma=10.0) 
+    prmsl = gaussian_filter(grid_npre, sigma=4.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
     grid_npre[sealand_filterd <= 1] = np.nan
@@ -856,6 +856,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
+prmsl = gaussian_filter(grid_npre, sigma=20) 
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='gray')
 plt.clabel(cont, fontsize=15)
 
