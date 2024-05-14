@@ -8,7 +8,7 @@
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
 
-import json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys
+import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -19,11 +19,9 @@ import pandas.tseries.offsets as offsets
 from datetime import datetime, timedelta
 from itertools import repeat
 from metpy.units import units
-from scipy.interpolate import griddata
+from scipy.interpolate import griddata, interp2d, RectBivariateSpline, RegularGridInterpolator
 from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
-from scipy.interpolate import interp2d, RectBivariateSpline, RegularGridInterpolator
-import argparse
 import netCDF4 as nc
 from ftplib import FTP
 import xarray as xr
@@ -709,8 +707,6 @@ vor = gaussian_filter(vor, sigma=2.0)
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
 max_value = np.max(fg)
 fg = gaussian_filter(fg, sigma=2.0)
-
-
 
 ### 300hPa ###
 # 作図                                                                                    
