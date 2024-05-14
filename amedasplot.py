@@ -696,12 +696,6 @@ dx, dy = mpcalc.lat_lon_grid_deltas(lons, lats)
 ug300, vg300 = mpcalc.geostrophic_wind(height300 * units('m'), dx=dx, dy=dy, latitude=grid_lat_p * units('degree'))
 ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, latitude=grid_lat_p * units('degree'))
 
-#ug300 = gaussian_filter(ug300, sigma=4.0)
-#vg300 = gaussian_filter(vg300, sigma=4.0)
-#ug500 = gaussian_filter(ug500, sigma=4.0)
-#vg500 = gaussian_filter(vg500, sigma=4.0)
-
-#vor = mpcalc.vorticity(ug500 * units('m/s'), vg500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
 fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
@@ -819,16 +813,12 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, np.inf], colors=['none', 'orange'])
-plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 40, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 30, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 5
 
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
-#ax.streamplot(grid_lon_p, grid_lat_p, u850, v850, linewidth=2, density=0.5, color="purple")
-
-#plt.contourf(grid_lon_p, grid_lat_p, fg, levels=[-float('inf'), 10, float('inf')], colors=['none', 'yellow'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
