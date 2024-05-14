@@ -558,7 +558,6 @@ for area in [0, 1, 2, 3]:
     grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
-    prmsl = gaussian_filter(grid_npre, sigma=4.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
     grid_npre[sealand_filterd <= 1] = np.nan
@@ -715,9 +714,6 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
-fg = mpcalc.frontogenesis(ept925 * units('K'), u925 * units('m/s'), v925 * units('m/s'), dx=dx, dy=dy) * 10000000000
-max_value = np.max(fg)
-fg = gaussian_filter(fg, sigma=2.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -859,7 +855,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-prmsl = gaussian_filter(prmsl, sigma=10) 
+prmsl = gaussian_filter(grid_npre, sigma=10) 
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='gray')
 plt.clabel(cont, fontsize=15)
 
