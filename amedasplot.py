@@ -440,7 +440,7 @@ for area in [0, 1, 2, 3]:
                     lon_list_p.append(float(row['Longitude']))
                     npre_list.append(float(pressure))
     except FileNotFoundError:
-        print(f"File {file_name} not found.")
+        print(f"File {synop_file_name} not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
