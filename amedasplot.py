@@ -427,7 +427,7 @@ for area in [0, 1, 2, 3]:
     lon_list_p = []
     npre_list = []
 
-    synop_file_name = f'SYNOP/{:4d}{:02d}{:02d}{:02d}.csv'
+    synop_file_name = 'SYNOP/{:4d}{:02d}{:02d}{:02d}.csv'
     synop_file_name=synop_file_name.format(year,month,day,hour)
     
     try:
