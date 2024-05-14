@@ -427,6 +427,23 @@ for area in [0, 1, 2, 3]:
     lon_list_p = []
     npre_list = []
 
+    synop_file_name = f'SYNOP/{:4d}{:02d}{:02d}{:02d}.csv'
+    synop_file_name=synop_file_name.format(year,month,day,hour)
+    
+    try:
+        with open(synop_file_name, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                pressure = row['Pressure']
+                if pressure != '-':
+                    lat_list_p.append(float(row['Latitude']))
+                    lon_list_p.append(float(row['Longitude']))
+                    npre_list.append(float(pressure))
+    except FileNotFoundError:
+        print(f"File {file_name} not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
     # 地点プロット                                                                                                 
     for stno,val in dat_json.items():
         # 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
