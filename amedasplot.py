@@ -544,18 +544,34 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
 
     # 海上のデータは観測がないためMSMで補正する
-    grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
-    grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
+    #grid_npre[sealand == 0] = (prmsl[sealand == 0] + grid_npre[sealand == 0]) / 2 #海上の格子はアメダスによる補外とMSM予報値の平均
+    #grid_temp[sealand == 0] = (tmp[sealand == 0] + grid_temp[sealand == 0]) / 2
 
     # データがない格子もMSM予報値をそのまま採用する
-    nan_indices_npre = np.isnan(grid_npre)
-    grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
-    nan_indices_temp = np.isnan(grid_temp)
-    grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
+    #nan_indices_npre = np.isnan(grid_npre)
+    #grid_npre[nan_indices_npre] = prmsl[nan_indices_npre]
+    #nan_indices_temp = np.isnan(grid_temp)
+    #grid_temp[nan_indices_temp] = tmp[nan_indices_temp]
+
+    diff_temp = grid_temp - tmp
+    diff_npre = grid_npre - prmsl
+    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
+    diff_npre = np.where(sealand_filterd <= 9000, gaussian_filter(diff_npre, sigma=2.0), diff_npre)
+    diff_temp = np.where(sealand_filterd <= 9000, gaussian_filter(diff_temp, sigma=2.0), diff_temp)
+
+    diff_npre[sealand > 0] = grid_npre - prmsl
+    diff_temp[sealand > 0] = grid_temp - tmp
+
+    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
+    grid_npre = prmsl + diff_npre
+    grid_temp = tmp + diff_temp
+    
 
     # ガウシアンフィルタを適用
-    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
-    grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
+    #grid_npre = gaussian_filter(grid_npre, sigma=2.0)
+    #grid_temp = gaussian_filter(grid_temp, sigma=2.0) 
     grid_npre = np.where(sealand_filterd <= 9000, gaussian_filter(grid_npre, sigma=2.0), grid_npre)
     grid_temp = np.where(sealand_filterd <= 9000, gaussian_filter(grid_temp, sigma=2.0), grid_temp)
 
