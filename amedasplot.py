@@ -560,8 +560,8 @@ for area in [0, 1, 2, 3]:
     diff_npre = np.where(sealand_filterd <= 9000, gaussian_filter(diff_npre, sigma=2.0), diff_npre)
     diff_temp = np.where(sealand_filterd <= 9000, gaussian_filter(diff_temp, sigma=2.0), diff_temp)
 
-    diff_npre[sealand > 0] = grid_npre - prmsl
-    diff_temp[sealand > 0] = grid_temp - tmp
+    diff_npre[sealand > 0] = grid_npre[sealand > 0] - prmsl[sealand > 0]
+    diff_temp[sealand > 0] = grid_temp[sealand > 0] - tmp[sealand > 0]
 
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
