@@ -439,6 +439,7 @@ for area in [0, 1, 2, 3]:
                     lat_list_p.append(float(row['Latitude']))
                     lon_list_p.append(float(row['Longitude']))
                     npre_list.append(float(pressure))
+                    print(float(pressure))
     except FileNotFoundError:
         print(f"File {synop_file_name} not found.")
     except Exception as e:
@@ -856,7 +857,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
 prmsl = gaussian_filter(grid_npre, sigma=10) 
-cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='gray')
+cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
 data = np.flipud(data_ir)
