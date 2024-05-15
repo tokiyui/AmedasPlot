@@ -558,8 +558,8 @@ for area in [0, 1, 2, 3]:
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    grid_npre[sealand_filterd <= 1] = np.nan
-    grid_temp[sealand_filterd <= 1] = np.nan
+    #grid_npre[sealand_filterd <= 1] = np.nan
+    #grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
     lon_range = np.where((grid_lon_s[0, :] >= i_area[0] - 0.25) & (grid_lon_s[0, :] <= i_area[1] + 0.25))
