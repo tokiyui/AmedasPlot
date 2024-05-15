@@ -542,6 +542,7 @@ for area in [0, 1, 2, 3]:
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
+    hoge = grid_npre
 
     diff_temp = grid_temp - tmp
     diff_npre = grid_npre - prmsl
@@ -569,6 +570,7 @@ for area in [0, 1, 2, 3]:
     lon_indices = lon_range[0]
     lat_indices = lat_range[0]
 
+    grid_npre = hoge
     # 切り出し
     grid_lon_sliced = grid_lon_s[lat_indices][:, lon_indices]
     grid_lat_sliced = grid_lat_s[lat_indices][:, lon_indices]
