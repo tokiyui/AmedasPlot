@@ -542,15 +542,12 @@ for area in [0, 1, 2, 3]:
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
-    hoge = grid_npre
+
     diff_temp = grid_temp - tmp
     diff_npre = grid_npre - prmsl
     
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
-    
-    diff_npre = np.where(sealand_filterd <= 9000, gaussian_filter(diff_npre, sigma=2.0), diff_npre)
-    diff_temp = np.where(sealand_filterd <= 9000, gaussian_filter(diff_temp, sigma=2.0), diff_temp)
 
     diff_npre[sealand > 0] = grid_npre[sealand > 0] - prmsl[sealand > 0]
     diff_temp[sealand > 0] = grid_temp[sealand > 0] - tmp[sealand > 0]
@@ -561,10 +558,8 @@ for area in [0, 1, 2, 3]:
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
 
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    #grid_npre[sealand_filterd <= 1] = np.nan
-    #grid_temp[sealand_filterd <= 1] = np.nan
-
-    grid_npre = hoge
+    grid_npre[sealand_filterd <= 1] = np.nan
+    grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
     lon_range = np.where((grid_lon_s[0, :] >= i_area[0] - 0.25) & (grid_lon_s[0, :] <= i_area[1] + 0.25))
