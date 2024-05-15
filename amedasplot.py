@@ -562,11 +562,11 @@ for area in [0, 1, 2, 3]:
 
     diff_npre[sealand > 0] = grid_npre[sealand > 0] - prmsl[sealand > 0]
     diff_temp[sealand > 0] = grid_temp[sealand > 0] - tmp[sealand > 0]
-
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
-    diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
     grid_npre = prmsl + diff_npre
     grid_temp = tmp + diff_temp
+    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
+
     
 
     # ガウシアンフィルタを適用
