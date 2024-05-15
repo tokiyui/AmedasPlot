@@ -428,7 +428,7 @@ for area in [0, 1, 2, 3]:
     npre_list = []
 
     synop_file_name = 'SYNOP/{:4d}{:02d}{:02d}{:02d}.csv'
-    synop_file_name=synop_file_name.format(year,month,day,hour)
+    synop_file_name=synop_file_name.format(utc.strftime("%Y%m%d%H"))
     
     try:
         with open(synop_file_name, newline='', encoding='utf-8') as csvfile:
