@@ -34,7 +34,7 @@ def process_url(cou, year, month, day, hour):
         if temperature == '':
             temperature = '-'
         humidity = match[8].replace('%', '')
-        pressure = match[9].replace(' Hpa', '') if 'N/A' not in match[9] else 'N/A'
+        pressure = '-' if 'N/A' in match[9] or 'm' in match[9] else match[9].replace(' Hpa', '')
        
         if 'calm' in match[10]:
             wind_speed = 'calm'
