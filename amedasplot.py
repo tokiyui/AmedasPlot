@@ -545,8 +545,8 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     hoge = grid_npre
 
-    diff_temp = grid_temp - tmp
-    diff_npre = grid_npre - prmsl
+    diff_temp = (grid_temp - tmp) * sealand / 10000
+    diff_npre = (grid_npre - prmsl) * sealand / 10000
     
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
