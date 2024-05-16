@@ -428,7 +428,8 @@ for area in [0, 1, 2, 3]:
     lon_list_p = []
     npre_list = []
 
-    synop_file_name = "SYNOP/{}Z.csv".format(utc.strftime("%Y%m%d%H"))
+    synop_file_name = "SYNOP/{}Z".format(utc.strftime("%Y%m%d%H"))
+    synop_file_name = synop_file_name + '.csv'
     print(utc.strftime("%Y%m%d%H"))
     try:
         with open(synop_file_name, newline='', encoding='utf-8') as csvfile:
