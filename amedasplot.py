@@ -8,7 +8,7 @@
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
 
-import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys
+import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys, csv
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -428,9 +428,7 @@ for area in [0, 1, 2, 3]:
     lon_list_p = []
     npre_list = []
 
-    synop_file_name = "SYNOP/{}Z".format(utc.strftime("%Y%m%d%H"))
-    synop_file_name = synop_file_name + '.csv'
-    print(utc.strftime("%Y%m%d%H"))
+    synop_file_name = "SYNOP/{}Z.csv".format(utc.strftime("%Y%m%d%H"))
     try:
         with open(synop_file_name, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
