@@ -544,8 +544,8 @@ for area in [0, 1, 2, 3]:
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
 
-    diff_temp = (grid_temp - tmp) * sealand_filterd / 10000.0
-    diff_npre = (grid_npre - prmsl) * sealand_filterd / 10000.0
+    diff_temp = 0 #(grid_temp - tmp) * sealand_filterd / 10000.0
+    diff_npre = 0 #(grid_npre - prmsl) * sealand_filterd / 10000.0
     
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
