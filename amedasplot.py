@@ -438,7 +438,6 @@ for area in [0, 1, 2, 3]:
                     lat_list_p.append(float(row['Latitude']))
                     lon_list_p.append(float(row['Longitude']))
                     npre_list.append(float(pressure))
-                    print(float(pressure))
     except FileNotFoundError:
         print(f"File {synop_file_name} not found.")
     except Exception as e:
@@ -542,7 +541,8 @@ for area in [0, 1, 2, 3]:
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
-    hoge = grid_npre
+    grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
+    grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
 
     diff_temp = (grid_temp - tmp) * sealand_filterd / 10000.0
     diff_npre = (grid_npre - prmsl) * sealand_filterd / 10000.0
