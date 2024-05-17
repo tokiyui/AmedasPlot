@@ -557,8 +557,8 @@ for area in [0, 1, 2, 3]:
     print("tmp の形状:", tmp.shape)
 
     
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_temp[sealand_filterd > 0] = grid_temp[sealand_filterd > 0] - tmp[sealand_filterd > 0]
+    #diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
+    #diff_temp[sealand_filterd > 0] = grid_temp[sealand_filterd > 0] - tmp[sealand_filterd > 0]
     
     grid_npre = prmsl + diff_npre
     grid_temp = tmp + diff_temp
