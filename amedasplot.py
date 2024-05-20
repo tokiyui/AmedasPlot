@@ -543,7 +543,7 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
     print("grid_temp の形状:", grid_temp.shape)
     print("tmp の形状:", tmp.shape)
