@@ -547,7 +547,7 @@ for area in [0, 1, 2, 3]:
     print("grid_temp の形状:", grid_temp.shape)
     print("tmp の形状:", tmp.shape)
 
-    prmsl = gaussian_filter(prmsl, sigma=4.0)
+    prmsl = gaussian_filter(prmsl, sigma=2.0)
     #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd / 10000.0
     diff_npre = (grid_npre - prmsl) * sealand_filterd / 10000.0
     
