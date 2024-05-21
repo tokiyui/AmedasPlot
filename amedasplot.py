@@ -550,11 +550,11 @@ for area in [0, 1, 2, 3]:
     #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd / 10000.0
     diff_npre = (grid_npre - prmsl) * sealand_filterd / 10000.0
     
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
 
     #diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
     #diff_temp[sealand_filterd > 0] = grid_temp[sealand_filterd > 0] - tmp[sealand_filterd > 0]
