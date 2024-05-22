@@ -584,9 +584,9 @@ for area in [0, 1, 2, 3]:
     grid_temp = tmp #+ diff_temp
     
     #diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
-
+    grid_npre_j = grid_npre
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    grid_npre[sealand_filterd <= 1] = np.nan
+    grid_npre_j[sealand_filterd <= 1] = np.nan
     #grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
@@ -600,7 +600,7 @@ for area in [0, 1, 2, 3]:
     # 切り出し
     grid_lon_sliced = grid_lon_s[lat_indices][:, lon_indices]
     grid_lat_sliced = grid_lat_s[lat_indices][:, lon_indices]
-    psea_grid = grid_npre[lat_indices][:, lon_indices]
+    psea_grid = grid_npre_j[lat_indices][:, lon_indices]
     temp_grid = grid_temp[lat_indices][:, lon_indices]
 
     # 等温線をプロット
