@@ -347,14 +347,14 @@ data = data.reshape(505, 481)
 grid_lon_s, grid_lat_s = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 sealand = np.flip(data*10000, axis=0)
 
-sealand[(grid_lon_s - grid_lat_s < 94.5) & (grid_lon_s < 132)] = 0
-sealand[(grid_lat_s > 45.5)] = 0
-sealand[(grid_lon_s > 145.5)] = 0
+#sealand[(grid_lon_s - grid_lat_s < 94.5) & (grid_lon_s < 132)] = 0
+#sealand[(grid_lat_s > 45.5)] = 0
+#sealand[(grid_lon_s > 145.5)] = 0
 
 sealand = maximum_filter(sealand, size=(15, 15))
 
 # ガウシアンフィルタを適用
-sealand_filterd = gaussian_filter(sealand, sigma=4.0) # sigmaはガウス分布の標準偏差
+sealand_filterd = gaussian_filter(sealand, sigma=1.0) # sigmaはガウス分布の標準偏差
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
@@ -543,19 +543,13 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
-    grid_npre = gaussian_filter(grid_npre, sigma=4.0)
+    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
     prmsl = gaussian_filter(prmsl, sigma=2.0)
     tmp = gaussian_filter(tmp, sigma=2.0)
-    #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd / 10000.0
+    #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd
     diff_npre = (grid_npre - prmsl) * sealand_filterd
     
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
@@ -577,9 +571,9 @@ for area in [0, 1, 2, 3]:
     grid_temp = tmp #+ diff_temp
     
     #diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
-    grid_npre_j = grid_npre
+
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    #grid_npre_j[sealand_filterd <= 1] = np.nan
+    #grid_npre[sealand_filterd <= 1] = np.nan
     #grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
