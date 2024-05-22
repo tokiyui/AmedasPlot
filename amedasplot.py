@@ -584,7 +584,7 @@ for area in [0, 1, 2, 3]:
     # 切り出し
     grid_lon_sliced = grid_lon_s[lat_indices][:, lon_indices]
     grid_lat_sliced = grid_lat_s[lat_indices][:, lon_indices]
-    psea_grid = grid_npre_j[lat_indices][:, lon_indices]
+    psea_grid = grid_npre[lat_indices][:, lon_indices]
     temp_grid = grid_temp[lat_indices][:, lon_indices]
 
     # 等温線をプロット
