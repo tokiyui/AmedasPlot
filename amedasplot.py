@@ -538,6 +538,10 @@ for area in [0, 1, 2, 3]:
                     color_temp = "black"
                 ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")  
 
+    prmsl = gaussian_filter(prmsl, sigma=2.0)
+    tmp = gaussian_filter(tmp, sigma=2.0)
+
+
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
@@ -545,17 +549,10 @@ for area in [0, 1, 2, 3]:
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
     grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
-    prmsl = gaussian_filter(prmsl, sigma=2.0)
-    tmp = gaussian_filter(tmp, sigma=2.0)
+
     #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd
     diff_npre = (grid_npre - prmsl) * sealand_filterd
     
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 0] = grid_npre[sealand_filterd > 0] - prmsl[sealand_filterd > 0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
