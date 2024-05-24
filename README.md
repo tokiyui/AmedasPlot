@@ -1,5 +1,5 @@
 # AmedasPlot
-![最新](latestEast.png)
+![最新](latest/latestEast.png)
 
 関東〜近畿のレーダー・アメダスプロット図を表示しています。他の地域は https://tokiyui.github.io/AmedasPlot/ からご確認いただけます。
 
