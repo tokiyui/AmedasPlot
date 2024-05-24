@@ -525,13 +525,11 @@ for area in [0, 1, 2, 3]:
                 color="none"
             ax.plot(wlon, wlat, marker='o', markersize=markersize_0, color=color, transform=proj)
             if wind_ok and au*au+av*av>4.0: # 矢羽プロット
-                ax.barbs(wlon, wlat, 
-                          (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+                ax.barbs(wlon, wlat, (au * units('m/s')).to('kt').m, (av * units('m/s')).to('kt').m, length=barb_length, transform=proj)
             if npre_dispflag and pre >= 0.0: # 気圧プロット
                 ax.text(fig_z[0]+0.029, fig_z[1]+0.015,'{:6.1f}'.format(npre),size=char_size, color="black", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
             if temp_dispflag and temp > -200.0: # 気温プロット
-                color_temp = "red"
-                ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color=color_temp, transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
+                ax.text(fig_z[0]-0.025, fig_z[1]+0.015,'{:5.1f}'.format(temp),size=char_size, color="red", transform=ax.transAxes,verticalalignment="top", horizontalalignment="center")
             if wbt_dispflag and wb_temp > -200.0: # 湿球温度プロット
                 if dp_temp < 0:
                     color_temp = "purple"
@@ -607,7 +605,8 @@ for area in [0, 1, 2, 3]:
 
     # ベクトルの間引き間隔
     stride = 8
-    ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
+    if u*u+v*v>4.0:
+        ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
