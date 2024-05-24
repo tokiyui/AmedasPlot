@@ -606,8 +606,8 @@ for area in [0, 1, 2, 3]:
     plt.clabel(cont, fontsize=15)
 
     # ベクトルの間引き間隔
-    stride = 10
-    ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=4, transform=proj)
+    stride = 5
+    ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
