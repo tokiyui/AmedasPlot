@@ -606,7 +606,7 @@ for area in [0, 1, 2, 3]:
     plt.clabel(cont, fontsize=15)
 
     # ベクトルの間引き間隔
-    stride = 5
+    stride = 8
     ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
 
     ## H stamp
