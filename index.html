@@ -39,12 +39,12 @@
 
 
 <div id="imageContainer">
-  <img id="selectedImage" src="latestEast.png" alt="Default Image">
-  <img id="selectedImage" src="latest.png">
-  <img id="selectedImage" src="latest_300.png">  
-  <img id="selectedImage" src="latest_500.png">  
-  <img id="selectedImage" src="latest_700.png">  
-  <img id="selectedImage" src="latest_850.png">  
+  <img id="selectedImage" src="latest/latestEast.png" alt="Default Image">
+  <img id="selectedImage" src="latest/latest.png">
+  <img id="selectedImage" src="latest/latest_300.png">  
+  <img id="selectedImage" src="latest/latest_500.png">  
+  <img id="selectedImage" src="latest/latest_700.png">  
+  <img id="selectedImage" src="latest/latest_850.png">  
 </div>
 
 <script>
@@ -55,19 +55,19 @@ function changeImage() {
 
   switch (selectedValue) {
     case "hokkaido":
-      imageElement.src = "latestHokkaido.png";
+      imageElement.src = "latest/latestHokkaido.png";
       break;
     case "tohoku":
-      imageElement.src = "latestTohoku.png";
+      imageElement.src = "latest/latestTohoku.png";
       break;
     case "kanto":
-      imageElement.src = "latestEast.png";
+      imageElement.src = "latest/latestEast.png";
       break;
     case "kinki":
-      imageElement.src = "latestWest.png";
+      imageElement.src = "latest/latestWest.png";
       break;
     default:
-      imageElement.src = "latestEast.png";
+      imageElement.src = "latest/latestEast.png";
   }
 }
 </script>
