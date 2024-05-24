@@ -605,8 +605,7 @@ for area in [0, 1, 2, 3]:
 
     # ベクトルの間引き間隔
     stride = 8
-    if u*u+v*v>4.0:
-        ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
+    ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
