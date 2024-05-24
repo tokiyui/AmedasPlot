@@ -184,7 +184,14 @@ def read_msm(time):
     tmp_fc0 = grbs.select(parameterName='Temperature', forecastTime=ft)[0]
     tmp, lats, lons = tmp_fc0.data()
     tmp_flipped = np.flip(tmp - 273.15, axis=0)
-    return prmsl_flipped, tmp_flipped
+    # 風速のデータを取得する
+    u_fc0 = grbs.select(parameterName='u-component of wind', forecastTime=ft)[0]
+    u, lats, lons = u_fc0.data()
+    u_flipped = np.flip(u, axis=0)
+    v_fc0 = grbs.select(parameterName='v-component of wind', forecastTime=ft)[0]
+    v, lats, lons = v_fc0.data()
+    v_flipped = np.flip(v, axis=0)
+    return prmsl_flipped, tmp_flipped, u_flipped, v_flipped
     
 # 緯度経度で指定したポイントの図上の座標などを取得する関数 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
@@ -335,7 +342,7 @@ filepath = download_time(utc)
 
 # データを読む
 rain = load_jmara_grib2(filepath) #レーダーGPV
-prmsl, tmp = read_msm(utc) #MSM海面気圧
+prmsl, tmp, u, v = read_msm(utc) #MSM海面気圧
 
 # 地形データ取得
 data = np.fromfile("LANDSEA.MSM_5K", dtype=np.dtype('>f4'))  # 地形バイナリデータをBig Endianの単精度浮動小数点数として読み込む
@@ -541,7 +548,6 @@ for area in [0, 1, 2, 3]:
     prmsl = gaussian_filter(prmsl, sigma=2.0)
     tmp = gaussian_filter(tmp, sigma=2.0)
 
-
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
@@ -598,6 +604,10 @@ for area in [0, 1, 2, 3]:
 
     # 等圧線のラベルを付ける
     plt.clabel(cont, fontsize=15)
+
+    # ベクトルの間引き間隔
+    stride = 10
+    ax.barbs(grid_lon[::stride, ::stride], grid_lat[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=4, transform=proj)
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
