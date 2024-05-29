@@ -552,7 +552,7 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
-    grid_npre = gaussian_filter(grid_npre, sigma=10.0)
+    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
     #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd
     diff_npre = (grid_npre - prmsl) #* sealand_filterd
@@ -873,7 +873,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-prmsl = gaussian_filter(grid_npre, sigma=10) 
+prmsl = gaussian_filter(grid_npre, sigma=20) 
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
