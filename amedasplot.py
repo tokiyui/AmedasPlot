@@ -552,14 +552,13 @@ for area in [0, 1, 2, 3]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
-    grid_npre = gaussian_filter(grid_npre, sigma=4.0)
+    grid_npre = gaussian_filter(grid_npre, sigma=10.0)
 
     #diff_temp = 0 #(grid_temp - tmp) * sealand_filterd
     diff_npre = (grid_npre - prmsl) #* sealand_filterd
     
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
-    #diff_npre[sealand_filterd = 1] = grid_npre[sealand_filterd = 1] - prmsl[sealand_filterd = 1]
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
