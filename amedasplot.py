@@ -560,22 +560,12 @@ for area in [0, 1, 2, 3]:
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
-    diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
-
-    #diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
-    #diff_temp[sealand_filterd > 0] = grid_temp[sealand_filterd > 0] - tmp[sealand_filterd > 0]
 
     grid_npre = prmsl + diff_npre
-    grid_temp = tmp #+ diff_temp
     
-    #diff_temp = gaussian_filter(diff_temp, sigma=2.0) 
-
-    ######grid_npre = sealand_filterd ##################################
-
     #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    #grid_npre[sealand_filterd <= 1] = np.nan
-    #grid_temp[sealand_filterd <= 1] = np.nan
+    grid_npre[sealand_filterd <= 1] = np.nan
+    grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
     lon_range = np.where((grid_lon_s[0, :] >= i_area[0] - 0.25) & (grid_lon_s[0, :] <= i_area[1] + 0.25))
@@ -873,8 +863,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-#prmsl = gaussian_filter(grid_npre, sigma=0) 
-#prmsl = gaussian_filter(grid_npre, sigma=25) 
+prmsl = gaussian_filter(prmsl, sigma=1.0) 
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
