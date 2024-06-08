@@ -12,18 +12,20 @@
       for (var i = 0; i < stations.length; i++) {
         var url = baseUrl + stations[i];
 
-        var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-
-        fetch(proxyUrl)
-          .then(response => response.json())
+        fetch(url)
+          .then(response => response.text())
           .then(data => {
-            // JSONデータからメタデータを取得
-            var responseText = data.contents;
-            var parser = new DOMParser();
-            var xmlDoc = parser.parseFromString(responseText, "text/html");
-            var metar = xmlDoc.querySelector("code").textContent;
-
             // METARデータを取得した後の処理
+            var lines = data.split("\n");
+            var metar = "";
+
+            for (var j = 0; j < lines.length; j++) {
+              if (lines[j].startsWith(stations[i])) {
+                metar = lines[j];
+                break;
+              }
+            }
+
             metarData += "<h2>" + stations[i] + "</h2>";
             metarData += "<pre>" + metar + "</pre>";
 
