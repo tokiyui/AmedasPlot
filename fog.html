@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>METARデータ表示</title>
+  <title>Aircraft METAR Data</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $.get("https://tgftp.nws.noaa.gov/data/observations/metar/stations/RJNK.TXT", function(data) {
-        var lines = data.split("\n");
-        var metarData = lines[1].split(" ");
+    function handleMetarData(data) {
+      var metar = data.split("\n")[0]; // 最初の行のみを取得
 
-        // 各要素の取得
-        var date = metarData[0];
-        var time = metarData[1];
-        var wind = metarData[2];
-        var visibility = metarData[3];
-        var clouds = metarData[4];
-        var temperature = metarData[5];
-        var pressure = metarData[6];
+      // METARデータの要素を分割
+      var elements = metar.split(" ");
+      var date = elements[0];
+      var time = elements[1];
+      var wind = elements[2];
+      var visibility = elements[3];
+      var clouds = elements[4];
+      var temperature = elements[5];
+      var pressure = elements[6];
 
-        // HTMLに要素を表示
-        $("#date").text("日付: " + date);
-        $("#time").text("時刻: " + time);
-        $("#wind").text("風: " + wind);
-        $("#visibility").text("視程: " + visibility);
-        $("#clouds").text("雲: " + clouds);
-        $("#temperature").text("気温: " + temperature);
-        $("#pressure").text("気圧: " + pressure);
-      });
-    });
+      // HTMLに要素を表示
+      $("#date").text("Date: " + date);
+      $("#time").text("Time: " + time);
+      $("#wind").text("Wind: " + wind);
+      $("#visibility").text("Visibility: " + visibility);
+      $("#clouds").text("Clouds: " + clouds);
+      $("#temperature").text("Temperature: " + temperature);
+      $("#pressure").text("Pressure: " + pressure);
+    }
   </script>
 </head>
 <body>
-  <h1>METARデータ</h1>
+  <h1>Aircraft METAR Data</h1>
   <div id="date"></div>
   <div id="time"></div>
   <div id="wind"></div>
@@ -39,5 +37,15 @@
   <div id="clouds"></div>
   <div id="temperature"></div>
   <div id="pressure"></div>
+
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: "https://api.allorigins.win/raw?url=https://tgftp.nws.noaa.gov/data/observations/metar/stations/RJNK.TXT",
+        dataType: "jsonp",
+        jsonpCallback: "handleMetarData"
+      });
+    });
+  </script>
 </body>
 </html>
