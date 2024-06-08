@@ -5,34 +5,37 @@
 </head>
 <body>
   <h1>METAR Data</h1>
-  <table id="metar-table">
-    <tr>
-      <th>空港コード</th>
-      <th>時刻</th>
-      <th>視程</th>
-    </tr>
-  </table>
+  <table id="metar-table"></table>
 
-  <script src="https://cors-anywhere.herokuapp.com/"></script>
   <script>
+    function handleCrossOriginRequest(url) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.responseText);
+          } else {
+            reject(xhr.statusText);
+          }
+        };
+
+        xhr.onerror = () => {
+          reject(xhr.statusText);
+        };
+
+        xhr.send();
+      });
+    }
+
     function fetchAndAddMETARToTable() {
-      const url = 'https://cors-anywhere.herokuapp.com/https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
-      fetch(url)
-        .then(response => response.text())
+      const url = 'https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
+      
+      handleCrossOriginRequest(url)
         .then(metarData => {
-          const table = document.getElementById('metar-table');
-          metarData.split('\n').forEach(line => {
-            if (line.trim() !== '') {
-              const parts = line.split(' ');
-              const airportCode = parts[0];
-              const time = parts[1];
-              const visibility = parts[2];
-              const row = table.insertRow();
-              row.insertCell().textContent = airportCode;
-              row.insertCell().textContent = time;
-              row.insertCell().textContent = visibility;
-            }
-          });
+          // メタデータの処理
+          console.log(metarData);
         })
         .catch(error => {
           console.error('Error fetching METAR data:', error);
