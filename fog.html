@@ -1,51 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Aircraft METAR Data</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>METARステーションデータ</title>
   <script>
-    function handleMetarData(data) {
-      var metar = data.split("\n")[0]; // 最初の行のみを取得
+    function fetchMETAR() {
+      var stations = ["RJSN", "RJNT", "RJNW", "RJNK"];
+      var baseUrl = "https://aviationweather.gov/cgi-bin/data/metar.cgi?ids=";
 
-      // METARデータの要素を分割
-      var elements = metar.split(" ");
-      var date = elements[0];
-      var time = elements[1];
-      var wind = elements[2];
-      var visibility = elements[3];
-      var clouds = elements[4];
-      var temperature = elements[5];
-      var pressure = elements[6];
+      var metarData = "";
 
-      // HTMLに要素を表示
-      $("#date").text("Date: " + date);
-      $("#time").text("Time: " + time);
-      $("#wind").text("Wind: " + wind);
-      $("#visibility").text("Visibility: " + visibility);
-      $("#clouds").text("Clouds: " + clouds);
-      $("#temperature").text("Temperature: " + temperature);
-      $("#pressure").text("Pressure: " + pressure);
+      for (var i = 0; i < stations.length; i++) {
+        var url = baseUrl + stations[i];
+
+        var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+
+        fetch(proxyUrl)
+          .then(response => response.json())
+          .then(data => {
+            // JSONデータからメタデータを取得
+            var responseText = data.contents;
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(responseText, "text/html");
+            var metar = xmlDoc.querySelector("code").textContent;
+
+            // METARデータを取得した後の処理
+            metarData += "<h2>" + stations[i] + "</h2>";
+            metarData += "<pre>" + metar + "</pre>";
+
+            if (i === stations.length - 1) {
+              // 最後のステーションのデータを取得した後、HTMLに表示
+              document.getElementById("metarContainer").innerHTML = metarData;
+            }
+          })
+          .catch(error => {
+            // エラーハンドリング
+            console.log("エラーが発生しました:", error);
+          });
+      }
     }
   </script>
 </head>
 <body>
-  <h1>Aircraft METAR Data</h1>
-  <div id="date"></div>
-  <div id="time"></div>
-  <div id="wind"></div>
-  <div id="visibility"></div>
-  <div id="clouds"></div>
-  <div id="temperature"></div>
-  <div id="pressure"></div>
-
-  <script>
-    $(document).ready(function() {
-      $.ajax({
-        url: "https://api.allorigins.win/raw?url=https://tgftp.nws.noaa.gov/data/observations/metar/stations/RJNK.TXT",
-        dataType: "jsonp",
-        jsonpCallback: "handleMetarData"
-      });
-    });
-  </script>
+  <button onclick="fetchMETAR()">METARデータを取得</button>
+  <div id="metarContainer"></div>
 </body>
 </html>
