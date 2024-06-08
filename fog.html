@@ -1,64 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>METAR報</title>
-  <style>
-    table {
-      font-family: Arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-  
-    th, td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
-    }
-  
-    th {
-      background-color: #f2f2f2;
-    }
-  </style>
+  <title>METARデータ表示</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.get("https://tgftp.nws.noaa.gov/data/observations/metar/stations/RJNK.TXT", function(data) {
+        var lines = data.split("\n");
+        var metarData = lines[1].split(" ");
+
+        // 各要素の取得
+        var date = metarData[0];
+        var time = metarData[1];
+        var wind = metarData[2];
+        var visibility = metarData[3];
+        var clouds = metarData[4];
+        var temperature = metarData[5];
+        var pressure = metarData[6];
+
+        // HTMLに要素を表示
+        $("#date").text("日付: " + date);
+        $("#time").text("時刻: " + time);
+        $("#wind").text("風: " + wind);
+        $("#visibility").text("視程: " + visibility);
+        $("#clouds").text("雲: " + clouds);
+        $("#temperature").text("気温: " + temperature);
+        $("#pressure").text("気圧: " + pressure);
+      });
+    });
+  </script>
 </head>
 <body>
-  <h1>METAR報</h1>
-  <table id="metarTable">
-    <tr>
-      <th>空港コード</th>
-      <th>時刻</th>
-      <th>視程</th>
-    </tr>
-  </table>
-
-  <script>
-    // 指定されたURLからデータを取得
-    fetch("https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK")
-      .then(response => response.text())
-      .then(data => {
-        // データを解析し、テーブルに追加
-        const metarTable = document.getElementById("metarTable");
-        const lines = data.trim().split("\n");
-        for (let i = 0; i < lines.length; i++) {
-          const fields = lines[i].trim().split(" ");
-          const airportCode = fields[0];
-          const time = fields[1];
-          const visibility = fields[fields.length - 2];
-
-          const row = document.createElement("tr");
-          const airportCodeCell = document.createElement("td");
-          airportCodeCell.textContent = airportCode;
-          const timeCell = document.createElement("td");
-          timeCell.textContent = time;
-          const visibilityCell = document.createElement("td");
-          visibilityCell.textContent = visibility;
-
-          row.appendChild(airportCodeCell);
-          row.appendChild(timeCell);
-          row.appendChild(visibilityCell);
-          metarTable.appendChild(row);
-        }
-      })
-      .catch(error => console.log(error));
-  </script>
+  <h1>METARデータ</h1>
+  <div id="date"></div>
+  <div id="time"></div>
+  <div id="wind"></div>
+  <div id="visibility"></div>
+  <div id="clouds"></div>
+  <div id="temperature"></div>
+  <div id="pressure"></div>
 </body>
 </html>
