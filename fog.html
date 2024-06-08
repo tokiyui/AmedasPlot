@@ -13,10 +13,10 @@
     </tr>
   </table>
 
+  <script src="https://cors-anywhere.herokuapp.com/"></script>
   <script>
-    // METARデータを取得してテーブルに追加する関数
     function fetchAndAddMETARToTable() {
-      const url = 'https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
+      const url = 'https://cors-anywhere.herokuapp.com/https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
       fetch(url)
         .then(response => response.text())
         .then(metarData => {
@@ -39,7 +39,6 @@
         });
     }
 
-    // METARデータを取得してテーブルに追加
     fetchAndAddMETARToTable();
   </script>
 </body>
