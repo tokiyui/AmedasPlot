@@ -14,29 +14,33 @@
   </table>
 
   <script>
-    // METARデータを解析してテーブルに追加する関数
-    function addMETARToTable(metarData) {
-      const table = document.getElementById('metar-table');
-      metarData.split('\n').forEach(line => {
-        if (line.trim() !== '') {
-          const parts = line.split(' ');
-          const airportCode = parts[0];
-          const time = parts[1];
-          const visibility = parts[2];
-          const row = table.insertRow();
-          row.insertCell().textContent = airportCode;
-          row.insertCell().textContent = time;
-          row.insertCell().textContent = visibility;
-        }
-      });
+    // METARデータを取得してテーブルに追加する関数
+    function fetchAndAddMETARToTable() {
+      const url = 'https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
+      fetch(url)
+        .then(response => response.text())
+        .then(metarData => {
+          const table = document.getElementById('metar-table');
+          metarData.split('\n').forEach(line => {
+            if (line.trim() !== '') {
+              const parts = line.split(' ');
+              const airportCode = parts[0];
+              const time = parts[1];
+              const visibility = parts[2];
+              const row = table.insertRow();
+              row.insertCell().textContent = airportCode;
+              row.insertCell().textContent = time;
+              row.insertCell().textContent = visibility;
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching METAR data:', error);
+        });
     }
 
-    // 提供された文字列からMETARデータを解析してテーブルに追加
-    const metarData = `RJSN 081100Z 04011KT CAVOK 22/17 Q1012
-RJNT 081100Z VRB02KT 9999 FEW030 BKN/// 24/14 Q1012
-RJNW 081000Z 00000KT CAVOK 21/14 Q1013
-RJNK 081100Z VRB02KT 9999 FEW180 BKN/// 24/15 Q1012`;
-    addMETARToTable(metarData);
+    // METARデータを取得してテーブルに追加
+    fetchAndAddMETARToTable();
   </script>
 </body>
 </html>
