@@ -29,20 +29,43 @@
       });
     }
 
+    function parseMetarData(data) {
+      const lines = data.trim().split('\n');
+      const metarTable = document.getElementById('metar-table');
+
+      // テーブルをクリアする
+      metarTable.innerHTML = '';
+
+      lines.forEach(line => {
+        const [station, time, wind, visibility, cloud, temp, qnh] = line.split(' ');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${station}</td>
+          <td>${time}</td>
+          <td>${wind}</td>
+          <td>${visibility}</td>
+          <td>${cloud}</td>
+          <td>${temp}</td>
+          <td>${qnh}</td>
+        `;
+        metarTable.appendChild(row);
+      });
+    }
+
     function fetchAndAddMETARToTable() {
       const url = 'https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK';
       
       handleCrossOriginRequest(url)
         .then(metarData => {
-          // メタデータの処理
-          console.log(metarData);
+          parseMetarData(metarData);
         })
         .catch(error => {
           console.error('Error fetching METAR data:', error);
         });
     }
 
-    fetchAndAddMETARToTable();
+    // 5秒ごとにMETAR情報を更新する
+    setInterval(fetchAndAddMETARToTable, 5000);
   </script>
 </body>
 </html>
