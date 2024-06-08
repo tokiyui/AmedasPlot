@@ -1,81 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>METAR Data</title>
+  <title>METAR報</title>
+  <style>
+    table {
+      font-family: Arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+  
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+  
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
-  <h1>METAR Data</h1>
-  <table id="metar-table"></table>
+  <h1>METAR報</h1>
+  <table id="metarTable">
+    <tr>
+      <th>空港コード</th>
+      <th>時刻</th>
+      <th>視程</th>
+    </tr>
+  </table>
 
   <script>
-    function parseMetarData(data) {
-      const lines = data.trim().split('\n');
-      const metarTable = document.getElementById('metar-table');
+    // 指定されたURLからデータを取得
+    fetch("https://aviationweather.gov/cgi-bin/data/metar.php?ids=RJSN,RJNT,RJNW,RJNK")
+      .then(response => response.text())
+      .then(data => {
+        // データを解析し、テーブルに追加
+        const metarTable = document.getElementById("metarTable");
+        const lines = data.trim().split("\n");
+        for (let i = 0; i < lines.length; i++) {
+          const fields = lines[i].trim().split(" ");
+          const airportCode = fields[0];
+          const time = fields[1];
+          const visibility = fields[fields.length - 2];
 
-      // テーブルをクリアする
-      metarTable.innerHTML = '';
+          const row = document.createElement("tr");
+          const airportCodeCell = document.createElement("td");
+          airportCodeCell.textContent = airportCode;
+          const timeCell = document.createElement("td");
+          timeCell.textContent = time;
+          const visibilityCell = document.createElement("td");
+          visibilityCell.textContent = visibility;
 
-      lines.forEach(line => {
-        const [station, time, wind, visibility, cloud, temp, qnh] = line.split(' ');
-        const [tempDeg, tempValue] = temp.split('/');
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${station}</td>
-          <td>${time}</td>
-          <td>${wind}</td>
-          <td>${visibility}</td>
-          <td>${cloud}</td>
-          <td>${tempDeg}/${tempValue}</td>
-          <td>${qnh}</td>
-        `;
-        metarTable.appendChild(row);
-      });
-    }
-
-    function fetchAndAddMETARToTable() {
-      fetch('/metar')
-        .then(response => response.text())
-        .then(metarData => {
-          parseMetarData(metarData);
-        })
-        .catch(error => {
-          console.error('Error fetching METAR data:', error);
-        });
-    }
-
-    // 5秒ごとにMETAR情報を更新する
-    setInterval(fetchAndAddMETARToTable, 5000);
-  </script>
-
-  <script>
-    const express = require('express');
-    const axios = require('axios');
-
-    const app = express();
-    const port = 3000;
-
-    app.use((req, res, next) => {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      next();
-    });
-
-    app.get('/metar', async (req, res) => {
-      try {
-        const response = await axios.get('https://aviationweather.gov/cgi-bin/data/metar.php', {
-          params: {
-            ids: 'RJSN,RJNT,RJNW,RJNK'
-          }
-        });
-        res.send(response.data);
-      } catch (error) {
-        console.error('Error fetching METAR data:', error);
-        res.status(500).send('Error fetching METAR data');
-      }
-    });
-
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
+          row.appendChild(airportCodeCell);
+          row.appendChild(timeCell);
+          row.appendChild(visibilityCell);
+          metarTable.appendChild(row);
+        }
+      })
+      .catch(error => console.log(error));
   </script>
 </body>
 </html>
