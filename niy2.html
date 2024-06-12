@@ -154,8 +154,37 @@ async function displayWeatherData() {
     }
 }
 
+        async function fetchMetar(stationId) {
+            const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://tgftp.nws.noaa.gov/data/observations/metar/stations/' + stationId + '.TXT')}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error fetching METAR data: ${response.statusText}`);
+                }
+                const data = await response.json();
+                const text = data.contents;
+                return text.split('\n').filter(line => line)[1]; // Get the second line which contains the METAR report
+            } catch (error) {
+                console.error('Error:', error);
+                return 'METAR data could not be retrieved.';
+            }
+        }
+
+        async function displayMetarReports() {
+            const report = await fetchMetar(RJNK);
+            const visibilityRegex = /\b(\d{4})\b/; // Matches a group of 4 digits which is a common format for visibility
+            const matchv = report.match(visibilityRegex);
+            const visibility = matchv ? matchv[1] : '視程情報が見つかりませんでした';
+            const timeRegex = /\b(\d{6}Z)\b/; // Matches the time format in METAR (e.g., 123456Z)
+            const matcht = report.match(timeRegex);
+            const time = matcht ? matcht[1] : '時刻情報が見つかりませんでした';
+            document.getElementById(station.toLowerCase()).textContent = `小松空港の視程 ${visibility} メートル, (時刻 ${time})`;
+            }
+        }
+
 // Call function to display weather data
 displayWeatherData();
+    displayMetarReports();
 </script>
 </body>
 </html>
