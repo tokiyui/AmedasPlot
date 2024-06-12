@@ -150,8 +150,8 @@ async function displayWeatherData() {
             <td>${windData[1].toFixed(1)}</td>
             <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
             <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
-            <td>${rainbool}</td>
-            <td>${weatherData.visibility[0]}</td>
+            ${rainbool}</td>
+            <td>${weatherData.visibility[0]/1000.0}</td>
         `;
         weatherDataElement.appendChild(row);
     }
