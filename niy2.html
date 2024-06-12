@@ -179,7 +179,6 @@ async function displayWeatherData() {
             const matcht = report.match(timeRegex);
             const time = matcht ? matcht[1] : '時刻情報が見つかりませんでした';
             document.getElementById(station.toLowerCase()).textContent = `小松空港の視程 ${visibility} メートル, (時刻 ${time})`;
-            }
         }
 
 // Call function to display weather data
