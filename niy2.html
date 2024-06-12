@@ -171,7 +171,7 @@ async function displayWeatherData() {
         }
 
         async function displayMetarReports() {
-            const report = await fetchMetar(RJNK);
+            const report = await fetchMetar("RJNK");
             const visibilityRegex = /\b(\d{4})\b/; // Matches a group of 4 digits which is a common format for visibility
             const matchv = report.match(visibilityRegex);
             const visibility = matchv ? matchv[1] : '視程情報が見つかりませんでした';
