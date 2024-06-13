@@ -57,6 +57,19 @@
             }
         }
 
+        async function fetchValidWeatherData(pointNumber, dateTime) {
+            let weatherData = await fetchWeatherData(pointNumber, dateTime);
+            if (!weatherData) {
+                const previousDateTime1 = new Date(dateTime.getTime() - (1 * 60 * 60 * 1000)); // 1時間前
+                weatherData = await fetchWeatherData(pointNumber, previousDateTime1);
+                if (!weatherData) {
+                    const previousDateTime2 = new Date(dateTime.getTime() - (20 * 60 * 1000)); // 20分前
+                    weatherData = await fetchWeatherData(pointNumber, previousDateTime2);
+                }
+            }
+            return weatherData;
+        }
+
         async function fetchWindData(pointnumbers, dateTime) {
             let xSum = 0;
             let ySum = 0;
@@ -147,112 +160,46 @@
                 { number: 57121, name: '[大野&nbsp;(奥越)]', numbers: [57082, 57121, 57176] }
             ];
 
-            const nawphusUrls = {
-                wajima: 'https://nowphas.mlit.go.jp/nip_yugiha/105/7/20240612',
-                kanazawa: 'https://nowphas.mlit.go.jp/nip_yugiha/106/7/20240612',
-                fukui: 'https://nowphas.mlit.go.jp/nip_yugiha/117/7/20240612',
-                tsuruga: 'https://nowphas.mlit.go.jp/nip_yugiha/122/7/20240612',
-            };
+            const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西'];
 
-            const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
+            const latestDateTime = await fetchLatestDataTime();
+            document.getElementById('latestDataTime').textContent = `最新データ時刻：${latestDateTime}`;
 
-            const latestDataTime = await fetchLatestDataTime();
-            const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
-            const weatherDateTime = new Date(jstDateTime.getTime() - (jstDateTime.getMinutes() * 60 * 1000) - (jstDateTime.getSeconds() * 1000));
-
-            const latestDataTimeElement = document.getElementById('latestDataTime');
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            latestDataTimeElement.textContent += ' ' + latestDataTime.toLocaleString('ja-JP', options);
-
-            const weatherDataElement = document.getElementById('weatherData');
-
+            const weatherTableBody = document.getElementById('weatherData');
             for (const point of points) {
-                const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
-                const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
-                let tenki;
-                if (tenkiNum === 0) {
-                    tenki = '<td bgcolor="orange">晴れ';
-                } else if (tenkiNum === 1) {
-                    tenki = '<td bgcolor="gray">曇り';
-                } else if (tenkiNum === 7) {
-                    tenki = '<td bgcolor="lightblue">雨';
-                } else if (tenkiNum === 10) {
-                    tenki = '<td bgcolor="blue">雪';
-                } else if (tenkiNum === 16) {
-                    tenki = '<td bgcolor="yellow">雷';
-                } else {
-                    tenki = '<td>';
-                }
-                const weatherData = await fetchWeatherData(point.number, jstDateTime);
-                const windData = await fetchWindData(point.numbers, jstDateTime);
-                const windDirection = Math.round(windData[0] / 45);
-                let rainbool;
-                if (windData[2] == 0) {
-                    rainbool = '<td>なし';
-                } else {
-                    rainbool = '<td bgcolor="lightblue">あり'
-                }
-
-                let nawphusData;
-                if (point.name.includes('金沢')) {
-                    nawphusData = await fetchNawphusData('kanazawa', nawphusUrls.kanazawa);
-                } else if (point.name.includes('輪島')) {
-                    nawphusData = await fetchNawphusData('wajima', nawphusUrls.wajima);
-                } else if (point.name.includes('福井')) {
-                    nawphusData = await fetchNawphusData('fukui', nawphusUrls.fukui);
-                } else if (point.name.includes('敦賀')) {
-                    nawphusData = await fetchNawphusData('tsuruga', nawphusUrls.tsuruga);
-                } else {
-                    nawphusData = 'データが見つかりませんでした';
-                }
+                const validWeatherData = await fetchValidWeatherData(point.number, latestDateTime);
+                const windData = await fetchWindData(point.numbers, latestDateTime);
 
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${point.name}</td>
-                    ${tenki}</td>
-                    <td>${weatherData.temp[0]}</td>
-                    <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
-                    <td>${windDirections[windDirection]}</td>
-                    <td>${windData[1].toFixed(1)}</td>
-                    <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
-                    <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
-                    ${rainbool}</td>
-                    <td>${weatherData.visibility[0]/1000.0}</td>
-                    <td>${nawphusData}</td>
-                `;
-                weatherDataElement.appendChild(row);
-            }
-        }
+                const columns = [
+                    point.name,
+                    validWeatherData ? '晴れ' : '不明',  // 天気は仮のデータ
+                    validWeatherData ? validWeatherData.temp[0] : '---',
+                    validWeatherData ? validWeatherData.humidity[0] : '---',
+                    windData ? windDirections[Math.round(windData[0] / 45) % 8] : '---',
+                    windData ? windData[1] : '---',
+                    validWeatherData ? validWeatherData.tempMax[0] + ' (' + validWeatherData.tempMax[1] + ')' : '---',
+                    validWeatherData ? validWeatherData.tempMin[0] + ' (' + validWeatherData.tempMin[1] + ')' : '---',
+                    windData ? (windData[2] > 0 ? '有' : '無') : '---',
+                    validWeatherData ? validWeatherData.visibility[0] : '---',
+                    'ナウファスデータは後ほど追加'  // ナウファスデータは後で追加
+                ];
 
-        async function fetchMetar(stationId) {
-            const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://tgftp.nws.noaa.gov/data/observations/metar/stations/' + stationId + '.TXT')}`;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Error fetching METAR data: ${response.statusText}`);
-                }
-                const data = await response.json();
-                const text = data.contents;
-                return text.split('\n').filter(line => line)[1];
-            } catch (error) {
-                console.error('Error:', error);
-                return 'METAR data could not be retrieved.';
-            }
-        }
+                columns.forEach(colText => {
+                    const cell = document.createElement('td');
+                    cell.textContent = colText;
+                    row.appendChild(cell);
+                });
 
-        async function displayMetarReports() {
-            const report = await fetchMetar("RJNK");
-            const visibilityRegex = /\b(\d{4})\b/;
-            const matchv = report.match(visibilityRegex);
-            const visibility = matchv ? matchv[1] : '視程情報が見つかりませんでした';
-            const timeRegex = /\b(\d{6}Z)\b/;
-            const matcht = report.match(timeRegex);
-            const time = matcht ? matcht[1] : '時刻情報が見つかりませんでした';
-            document.getElementById("rjnk").textContent = `<td>小松空港の視程 ${visibility} メートル (時刻 ${time})`;
+                weatherTableBody.appendChild(row);
+            }
+
+            // ナウファスデータの取得と更新
+            const nawphusDataRjnk = await fetchNawphusData('rjnk', 'https://www1.kaiho.mlit.go.jp/KAN1/kaisyo/RJNK/nawhmap.htm');
+            document.getElementById('rjnk').textContent = nawphusDataRjnk;
         }
 
         displayWeatherData();
-        displayMetarReports();
     </script>
 </body>
 </html>
