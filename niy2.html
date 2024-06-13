@@ -121,11 +121,11 @@ const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComp
                             //const time2Minutes = parseTime(time2);
                             if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
                                 latestTime = time1Minutes;
-                                latestData = `${time1}\t${waveHeight1}\t${period1}\t${direction1}`;
+                                latestData = `${waveHeight1}`;
                             }
                             if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
                                 latestTime = time2Minutes;
-                                latestData = `${time2}\t${waveHeight2}\t${period2}\t${direction2}`;
+                                latestData = `${waveHeight2}`;
                             }
                         }
                     });
