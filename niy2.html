@@ -119,11 +119,11 @@
                             const time2Minutes = hour2 * 60 + minute2;
                             if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
                                 latestTime = time1Minutes;
-                                latestData = `${time1} ${waveHeight1}m, ${period1}s, ${direction1}`;
+                                latestData = `${waveHeight1}m (${time1})`;
                             }
                             if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
                                 latestTime = time2Minutes;
-                                latestData = `${time2} ${waveHeight2}m, ${period2}s, ${direction2}`;
+                                latestData = `${waveHeight2}m (${time2})`;
                             }
                         }
                     });
