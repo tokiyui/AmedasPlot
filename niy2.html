@@ -37,15 +37,15 @@
     <div class="metar-report" id="rjnk"></div>
     <script>
         async function fetchLatestDataTime() {
-const response = await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt');
+            const response = await fetch('https://www.jma.go.jp/bosai/amedas/data/latest_time.txt');
             const dataTimeText = await response.text();
             return new Date(dataTimeText.trim());
         }
- 
+
         async function fetchWeatherData(pointNumber, dateTime) {
             const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
             const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+            const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
@@ -56,16 +56,16 @@ const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${form
                 return null;
             }
         }
- 
-        async function fetchWindData(pointnumbers, dateTime) {
+
+        async function fetchWindData(pointNumbers, dateTime) {
             let xSum = 0;
             let ySum = 0;
             let uMax = 0;
             let rain = 0;
-            for (const pointNumber of pointnumbers) {
+            for (const pointNumber of pointNumbers) {
                 const roundedDateTime = new Date(Math.floor(dateTime.getTime() / (3 * 60 * 60 * 1000)) * (3 * 60 * 60 * 1000));
                 const formattedDateTime = roundedDateTime.toISOString().slice(0, 13).replace(/[-:]/g, '').replace(/T/g, '_');
-const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
+                const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${formattedDateTime}.json`;
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
@@ -86,10 +86,10 @@ const url = `https://www.jma.go.jp/bosai/amedas/data/point/${pointNumber}/${form
             if (averageDegree < 0) averageDegree += 360;
             return [averageDegree, uMax, rain];
         }
- 
+
         async function fetchNawphusData(port, url) {
             try {
-const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -115,17 +115,15 @@ const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComp
                             const direction2 = cells[7].innerText.trim();
                             const [hour1, minute1] = time1.split(':').map(Number);
                             const time1Minutes = hour1 * 60 + minute1;
-                            const [hour2, minute2] = time1.split(':').map(Number);
+                            const [hour2, minute2] = time2.split(':').map(Number);
                             const time2Minutes = hour2 * 60 + minute2;
-                            //const time1Minutes = parseTime(time1);
-                            //const time2Minutes = parseTime(time2);
                             if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
                                 latestTime = time1Minutes;
-                                latestData = `${latestTime} ${waveHeight1}`;
+                                latestData = `${time1} ${waveHeight1}m, ${period1}s, ${direction1}`;
                             }
                             if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
                                 latestTime = time2Minutes;
-                                latestData = `${latestTime} ${waveHeight2}`;
+                                latestData = `${time2} ${waveHeight2}m, ${period2}s, ${direction2}`;
                             }
                         }
                     });
@@ -136,7 +134,7 @@ const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComp
                 return 'データの取得に失敗しました';
             }
         }
- 
+
         async function displayWeatherData() {
             const points = [
                 { number: 56227, name: '金沢&nbsp;(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
@@ -145,29 +143,29 @@ const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComp
                 { number: 57248, name: '敦賀&nbsp;(嶺南)', numbers: [57248, 57286, 57317, 57311] },
                 { number: 57121, name: '[大野&nbsp;(奥越)]', numbers: [57082, 57121, 57176] }
             ];
- 
+
             const nawphusUrls = {
-wajima: 'https://nowphas.mlit.go.jp/nip_yugiha/105/7/20240614',
-kanazawa: 'https://nowphas.mlit.go.jp/nip_yugiha/106/7/20240614',
-fukui: 'https://nowphas.mlit.go.jp/nip_yugiha/117/7/20240614',
-tsuruga: 'https://nowphas.mlit.go.jp/nip_yugiha/122/7/20240614',
+                wajima: 'https://nowphas.mlit.go.jp/nip_yugiha/105/7/20240614',
+                kanazawa: 'https://nowphas.mlit.go.jp/nip_yugiha/106/7/20240614',
+                fukui: 'https://nowphas.mlit.go.jp/nip_yugiha/117/7/20240614',
+                tsuruga: 'https://nowphas.mlit.go.jp/nip_yugiha/122/7/20240614',
             };
- 
+
             const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
- 
+
             const latestDataTime = await fetchLatestDataTime();
             const jstDateTime = new Date(latestDataTime.getTime() + (9 * 60 * 60 * 1000));
             const weatherDateTime = new Date(Math.floor(jstDateTime.getTime() / (1 * 60 * 60 * 1000)) * (1 * 60 * 60 * 1000));
- 
+
             const latestDataTimeElement = document.getElementById('latestDataTime');
             const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             latestDataTimeElement.textContent += ' ' + latestDataTime.toLocaleString('ja-JP', options);
- 
+
             const weatherDataElement = document.getElementById('weatherData');
- 
+
             for (const point of points) {
-                const weatherdata = await fetchWeatherData(point.number, weatherDateTime);
-                const tenkiNum = typeof weatherdata.weather !== 'undefined' ? weatherdata.weather[0] : "100";
+                const weatherData = await fetchWeatherData(point.number, weatherDateTime);
+                const tenkiNum = typeof weatherData.weather !== 'undefined' ? weatherData.weather[0] : "100";
                 let tenki;
                 if (tenkiNum === 0) {
                     tenki = '<td bgcolor="orange">晴れ';
@@ -182,32 +180,31 @@ tsuruga: 'https://nowphas.mlit.go.jp/nip_yugiha/122/7/20240614',
                 } else {
                     tenki = '<td>';
                 }
-                const weatherData = await fetchWeatherData(point.number, jstDateTime);
                 const windData = await fetchWindData(point.numbers, jstDateTime);
                 const windDirection = Math.round(windData[0] / 45);
                 let rainbool;
                 if (windData[2] == 0) {
                     rainbool = '<td>なし';
                 } else {
-                    rainbool = '<td bgcolor="lightblue">あり'
+                    rainbool = '<td bgcolor="lightblue">あり';
                 }
- 
+
                 let nawphusData;
-if (point.name.includes('金沢')) {
+                if (point.name.includes('金沢')) {
                     nawphusData = await fetchNawphusData('kanazawa', nawphusUrls.kanazawa);
-} else if (point.name.includes('輪島')) {
+                } else if (point.name.includes('輪島')) {
                     nawphusData = await fetchNawphusData('wajima', nawphusUrls.wajima);
-} else if (point.name.includes('福井')) {
+                } else if (point.name.includes('福井')) {
                     nawphusData = await fetchNawphusData('fukui', nawphusUrls.fukui);
-} else if (point.name.includes('敦賀')) {
+                } else if (point.name.includes('敦賀')) {
                     nawphusData = await fetchNawphusData('tsuruga', nawphusUrls.tsuruga);
                 } else {
                     nawphusData = 'データが見つかりませんでした';
                 }
- 
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
-${point.name}</td>
+                    ${point.name}</td>
                     ${tenki}</td>
                     <td>${weatherData.temp[0]}</td>
                     <td>${weatherData.humidity ? weatherData.humidity[0] || '' : ''}</td>
@@ -216,13 +213,13 @@ ${point.name}</td>
                     <td><span style="color:red">${weatherData.maxTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.maxTempTime.hour + 9) % 24}:${('0' + weatherData.maxTempTime.minute).slice(-2)})</span></td>
                     <td><span style="color:blue">${weatherData.minTemp[0].toFixed(1)}</span>&nbsp;<span style="color:black">(${(weatherData.minTempTime.hour + 9) % 24}:${('0' + weatherData.minTempTime.minute).slice(-2)})</span></td>
                     ${rainbool}</td>
-                    <td>${weatherData.visibility[0]/1000.0}</td>
+                    <td>${weatherData.visibility[0] / 1000.0}</td>
                     <td>${nawphusData}</td>
                 `;
                 weatherDataElement.appendChild(row);
             }
         }
- 
+
         async function fetchMetar(stationId) {
             const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://tgftp.nws.noaa.gov/data/observations/metar/stations/' + stationId + '.TXT')}`;
             try {
@@ -238,7 +235,7 @@ ${point.name}</td>
                 return 'METAR data could not be retrieved.';
             }
         }
- 
+
         async function displayMetarReports() {
             const report = await fetchMetar("RJNK");
             const visibilityRegex = /\b(\d{4})\b/;
@@ -247,9 +244,11 @@ ${point.name}</td>
             const timeRegex = /\b(\d{6}Z)\b/;
             const matcht = report.match(timeRegex);
             const time = matcht ? matcht[1] : '時刻情報が見つかりませんでした';
-            document.getElementById("rjnk").textContent = `<td>小松空港の視程 ${visibility} メートル (時刻 ${time})`;
+            document.getElementById("rjnk").textContent = `小松空港の視程 ${visibility} メートル (時刻 ${time})`;
         }
- 
+
         displayWeatherData();
         displayMetarReports();
-    </script></body></html>
+    </script>
+</body>
+</html>
