@@ -344,7 +344,7 @@ print(data_url)
 
 # データの取得
 response = urlopen(data_url)
-data = response.read()
+data = response.json()
 
 # データの解析
 lons_liden = []
