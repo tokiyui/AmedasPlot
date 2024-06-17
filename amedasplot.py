@@ -335,11 +335,11 @@ amd_json = json.loads(station_json)
 
 # LIDENデータのURL
 data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{:4d}{:02d}{:02d}{:02d}{:02d}00/none/{:4d}{:02d}{:02d}{:02d}{:02d}00/surf/liden/data.geojson?id=liden"
-url_data_json=url_data_json.format(year,month,day,hour,min)
-print(url_data_json,url_data_json)
+data_url=data_url.format(year,month,day,hour,min)
+print(data_url)
 
 # データの取得
-response = urlopen(url_data_json)
+response = urlopen(data_url)
 data = response.read()
 
 # データの解析
