@@ -339,8 +339,8 @@ url_data_json=url_data_json.format(year,month,day,hour,min)
 print(url_data_json,url_data_json)
 
 # データの取得
-response = requests.get(data_url)
-data = response.json()
+response = urlopen(url_data_json)
+data = response.read()
 
 # データの解析
 lons_liden = []
