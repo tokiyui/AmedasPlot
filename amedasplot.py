@@ -343,7 +343,7 @@ data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/li
 data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
 
 # データの取得
-requests.get(data_url)
+response = requests.get(data_url)
 data = response.json()
 
 # データの解析
