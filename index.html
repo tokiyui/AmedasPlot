@@ -34,6 +34,7 @@
   <option value="tohoku">北陸・東北</option>
   <option value="kanto" selected>関東〜近畿</option>
   <option value="kinki">近畿〜九州</option>
+  <option value="nansei">沖縄・奄美</option>
 </select>
 
 
@@ -65,6 +66,9 @@ function changeImage() {
       break;
     case "kinki":
       imageElement.src = "latest/latestWest.png";
+      break;
+    case "nansei":
+      imageElement.src = "latest/latestOkinawaAmami.png";
       break;
     default:
       imageElement.src = "latest/latestEast.png";
