@@ -24,7 +24,7 @@ from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
 import netCDF4 as nc
 from ftplib import FTP
-import xarray as xr]
+import xarray as xr
 import requests
 
 ## 極大/極小ピーク検出関数                                                             
