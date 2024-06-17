@@ -364,7 +364,7 @@ for i in range(1,12):
 # データのURL
 data_url = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/{}/immed/{}/surf/rasrf_point/data.geojson?id=rasrf_point"
 data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
-
+print(data_url)
 # データの取得
 response = requests.get(data_url)
 data = json.loads(response.text)
