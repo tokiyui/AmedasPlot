@@ -26,6 +26,7 @@ import netCDF4 as nc
 from ftplib import FTP
 import xarray as xr
 import requests
+from matplotlib.colors import ListedColormap, BoundaryNorm
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -382,7 +383,7 @@ for feature in data["features"]:
 coordinates = np.array(coordinates)
 x = coordinates[:, 0]
 y = coordinates[:, 1]
- 
+print(x)
 # 値データをNumPy配列に変換
 values = np.array(values)
  
