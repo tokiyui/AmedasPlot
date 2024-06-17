@@ -476,23 +476,20 @@ for area in [0, 1, 2, 3, 4]:
     ax = fig.add_subplot(1, 1, 1, projection=proj)
     ax.set_extent(i_area, proj)
 
+    # カラーマップの作成
+    norm = BoundaryNorm(clevs, len(clevs) - 1)
+
+
     # レーダーGPV描画
     #lon = np.arange(slon, elon, rlon)
     #lat = np.arange(slat, elat, rlat)
     #LON, LAT = np.meshgrid(lon, lat)
     #LON, LAT = LON.T, LAT.T
     #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
-    cs = ax.contourf(xi, yi, zi, colors=jmacolors, levels=clevs, extend="max")
+    cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
 
     cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
     #cb.ax.tick_params(labelsize=8) 
-
-    # カラーマップの作成
-    #norm = BoundaryNorm(clevs, len(clevs) - 1)
- 
-    # データのプロット
-    #plt.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
-
 
     # グリッド線を引く                                                               
     xticks=np.arange(-180,180,dlon)
