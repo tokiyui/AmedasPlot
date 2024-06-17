@@ -339,7 +339,7 @@ time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
 
 # 前1時間の雷実況
-for i in range(1,12)
+for i in range(1,12):
     time_liden = utc - offsets.Minute(5*i)
 
     # LIDENデータのURL
