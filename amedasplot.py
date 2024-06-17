@@ -366,9 +366,9 @@ data_url = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/{}/immed/{}/surf/rasr
 data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
 
 # データの取得
-response = urlopen(url_data_json)
-data = response.read()
-
+response = requests.get(data_url)
+data = json.loads(response.text)
+ 
 # 座標と値のリストを作成
 coordinates = []
 values = []
