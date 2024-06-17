@@ -338,23 +338,27 @@ amd_json = json.loads(station_json)
 time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
 
-# LIDENデータのURL
-data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/liden/data.geojson?id=liden"
-data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
+# 前1時間の雷実況
+for i in range(1,12)
+    time_liden = utc - offsets.Minute(5*i)
 
-# データの取得
-response = requests.get(data_url)
-data = response.json()
+    # LIDENデータのURL
+    data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/liden/data.geojson?id=liden"
+    data_url=data_url.format(time_liden.strftime("%Y%m%d%H%M"),time_liden.strftime("%Y%m%d%H%M"))
 
-# データの解析
-lons_liden = []
-lats_liden = []
+    # データの取得
+    response = requests.get(data_url)
+    data = response.json()
 
-for feature in data['features']:
-    coordinates = feature['geometry']['coordinates']
-    lon, lat = coordinates
-    lons_liden.append(lon)
-    lats_liden.append(lat)
+    # データの解析
+    lons_liden = []
+    lats_liden = []
+
+    for feature in data['features']:
+        coordinates = feature['geometry']['coordinates']
+        lon, lat = coordinates
+        lons_liden.append(lon)
+        lats_liden.append(lat)
     
 # GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
