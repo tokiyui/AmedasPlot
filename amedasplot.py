@@ -339,7 +339,7 @@ utc = time - offsets.Hour(9)
 
 # LIDENデータのURL
 data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/liden/data.geojson?id=liden"
-data_url=data_url.format(time.strftime("%Y%m%d%H%M"),time.strftime("%Y%m%d%H%M"))
+data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
 print(data_url)
 
 # データの取得
