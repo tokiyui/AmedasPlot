@@ -335,7 +335,7 @@ amd_json = json.loads(station_json)
 
 # LIDENデータのURL
 data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{:4d}{:02d}{:02d}{:02d}{:02d}00/none/{:4d}{:02d}{:02d}{:02d}{:02d}00/surf/liden/data.geojson?id=liden"
-data_url=data_url.format(year,month,day,hour,min)
+data_url=data_url.format(year,month,day,hour,min,year,month,day,hour,min)
 print(data_url)
 
 # データの取得
