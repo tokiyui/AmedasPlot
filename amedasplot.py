@@ -359,7 +359,45 @@ for i in range(1,12):
         lon, lat = coordinates
         lons_liden.append(lon)
         lats_liden.append(lat)
-    
+
+### 解析雨量
+# データのURL
+data_url = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/{}/immed/{}/surf/rasrf_point/data.geojson?id=rasrf_point"
+data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
+
+# データの取得
+response = requests.get(data_url)
+data = json.loads(response.text)
+ 
+# 座標と値のリストを作成
+coordinates = []
+values = []
+for feature in data["features"]:
+    coordinate = feature["geometry"]["coordinates"]
+    value = float(feature["properties"]["value"])
+    coordinates.append(coordinate)
+    values.append(value)
+ 
+# 座標データをNumPy配列に変換
+coordinates = np.array(coordinates)
+x = coordinates[:, 0]
+y = coordinates[:, 1]
+ 
+# 値データをNumPy配列に変換
+values = np.array(values)
+ 
+# グリッドの作成
+xi = np.linspace(min(x), max(x), 1000)
+yi = np.linspace(min(y), max(y), 1000)
+xi, yi = np.meshgrid(xi, yi)
+ 
+# 値データを補間
+zi = np.zeros_like(xi)
+for i in range(len(values)):
+    xi_index = np.abs(xi[0] - x[i]).argmin()
+    yi_index = np.abs(yi[:, 0] - y[i]).argmin()
+    zi[yi_index, xi_index] = values[i]
+   
 # GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
 
@@ -439,13 +477,22 @@ for area in [0, 1, 2, 3, 4]:
     ax.set_extent(i_area, proj)
 
     # レーダーGPV描画
-    lon = np.arange(slon, elon, rlon)
-    lat = np.arange(slat, elat, rlat)
-    LON, LAT = np.meshgrid(lon, lat)
-    LON, LAT = LON.T, LAT.T
-    cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+    #lon = np.arange(slon, elon, rlon)
+    #lat = np.arange(slat, elat, rlat)
+    #LON, LAT = np.meshgrid(lon, lat)
+    #LON, LAT = LON.T, LAT.T
+    #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+    cs = ax.contourf(xi, yi, zi, colors=jmacolors, levels=clevs, extend="max")
+
     cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
-    cb.ax.tick_params(labelsize=8)
+    #cb.ax.tick_params(labelsize=8) 
+
+    # カラーマップの作成
+    #norm = BoundaryNorm(clevs, len(clevs) - 1)
+ 
+    # データのプロット
+    #plt.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
+
 
     # グリッド線を引く                                                               
     xticks=np.arange(-180,180,dlon)
