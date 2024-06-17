@@ -333,9 +333,13 @@ response.close()
 station_json=content.decode()
 amd_json = json.loads(station_json)
 
+# アメダスデータと同じ時刻のUTCを計算
+time = pd.Timestamp(year,month,day,hour,min)
+utc = time - offsets.Hour(9)
+
 # LIDENデータのURL
-data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{:4d}{:02d}{:02d}{:02d}{:02d}00/none/{:4d}{:02d}{:02d}{:02d}{:02d}00/surf/liden/data.geojson?id=liden"
-data_url=data_url.format(year,month,day,hour,min,year,month,day,hour,min)
+data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/liden/data.geojson?id=liden"
+data_url=data_url.format(time.strftime("%Y%m%d%H%M"),time.strftime("%Y%m%d%H%M"))
 print(data_url)
 
 # データの取得
@@ -352,11 +356,7 @@ for feature in data['features']:
     lons_liden.append(lon)
     lats_liden.append(lat)
     
-# 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
-# アメダスデータと同じ時刻のレーダーGPVをダウンロード
-time = pd.Timestamp(year,month,day,hour,min)
-utc = time - offsets.Hour(9)
-
+# GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
 
 # データを読む
