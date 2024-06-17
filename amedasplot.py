@@ -332,6 +332,25 @@ content = response.read()
 response.close()
 station_json=content.decode()
 amd_json = json.loads(station_json)
+
+# LIDENデータのURL
+data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{:4d}{:02d}{:02d}{:02d}{:02d}00/none/{:4d}{:02d}{:02d}{:02d}{:02d}00/surf/liden/data.geojson?id=liden"
+url_data_json=url_data_json.format(year,month,day,hour,min)
+print(url_data_json)
+
+# データの取得
+response = requests.get(data_url)
+data = response.json()
+
+# データの解析
+lons_liden = []
+lats_liden = []
+
+for feature in data['features']:
+    coordinates = feature['geometry']['coordinates']
+    lon, lat = coordinates
+    lons_liden.append(lon)
+    lats_liden.append(lat)
     
 # 描画する時間の指定(年,月,日,時,分)：データは10分ごと（前10分の雨量が記録されている）    
 # アメダスデータと同じ時刻のレーダーGPVをダウンロード
@@ -597,6 +616,9 @@ for area in [0, 1, 2, 3]:
     # ベクトルの間引き間隔
     stride = 8
     ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
+
+    # LIDENプロット
+    plt.scatter(lons_liden, lats_liden, marker='x', color='yellow')
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
