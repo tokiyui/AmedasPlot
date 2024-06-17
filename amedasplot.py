@@ -390,8 +390,8 @@ values = np.array(values)
 # グリッドの作成
 print(x.shape,y.shape)
 
-xi = np.linspace(np.min(x), np.max(x), 100)
-yi = np.linspace(np.min(y), np.max(y), 100)
+xi = np.linspace(np.min(x), np.max(x), 370)
+yi = np.linspace(np.min(y), np.max(y), 481)
 xi, yi = np.meshgrid(xi, yi)
  
 # 値データを補間
