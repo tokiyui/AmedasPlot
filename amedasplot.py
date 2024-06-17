@@ -383,7 +383,9 @@ for feature in data["features"]:
 coordinates = np.array(coordinates)
 x = coordinates[:, 0]
 y = coordinates[:, 1]
-print(x)
+print(min(x),max(x))
+print(min(y),max(y))
+
 # 値データをNumPy配列に変換
 values = np.array(values)
  
