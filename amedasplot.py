@@ -671,7 +671,7 @@ for area in [0, 1, 2, 3, 4]:
     ax.barbs(grid_lon_s[::stride, ::stride], grid_lat_s[::stride, ::stride], u[::stride, ::stride], v[::stride, ::stride], length=6, transform=proj)
 
     # LIDENプロット
-    plt.scatter(lons_liden, lats_liden, marker='x', color='pink')
+    plt.scatter(lons_liden, lats_liden, marker='x', color='pink', s=10)
 
     ## H stamp
     maxid = detect_peaks(psea_grid, filter_size=40, dist_cut=10)
