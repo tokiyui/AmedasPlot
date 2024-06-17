@@ -412,7 +412,7 @@ mlon, mlat = 2560, 3360
 slon, elon, rlon = 118, 150, 1/80
 slat, elat, rlat = 20, 48, 1/120
 
-for area in [0, 1, 2, 3]:
+for area in [0, 1, 2, 3, 4]:
     # 地図の描画範囲指定
     if (area == 0):
         i_area = [139, 147, 40, 46]
@@ -426,7 +426,10 @@ for area in [0, 1, 2, 3]:
     elif (area == 3):
         i_area = [135, 143, 36, 42]
         areaname="Tohoku"
-
+    elif (area == 4):
+        i_area = [123, 131, 25, 31]
+        areaname="AmamiOkinawa"
+        
     # 図のSIZE指定inch                                                                        
     fig = plt.figure(figsize=(8,6))
     # 余白設定                                                                                
