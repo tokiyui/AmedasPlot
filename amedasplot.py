@@ -388,6 +388,8 @@ y = coordinates[:, 1]
 values = np.array(values)
  
 # グリッドの作成
+print(x.shape,y.shape)
+
 xi = np.linspace(np.min(x), np.max(x), 10000)
 yi = np.linspace(np.min(y), np.max(y), 10000)
 xi, yi = np.meshgrid(xi, yi)
