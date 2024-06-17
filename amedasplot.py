@@ -24,7 +24,8 @@ from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
 import netCDF4 as nc
 from ftplib import FTP
-import xarray as xr
+import xarray as xr]
+import requests
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -340,10 +341,9 @@ utc = time - offsets.Hour(9)
 # LIDENデータのURL
 data_url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/{}00/none/{}00/surf/liden/data.geojson?id=liden"
 data_url=data_url.format(utc.strftime("%Y%m%d%H%M"),utc.strftime("%Y%m%d%H%M"))
-print(data_url)
 
 # データの取得
-response = urlopen(data_url)
+requests.get(data_url)
 data = response.json()
 
 # データの解析
