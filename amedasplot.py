@@ -480,12 +480,11 @@ for area in [0, 1, 2, 3, 4]:
     # カラーマップの作成
     norm = BoundaryNorm(clevs, len(clevs) - 1)
 
-
     # レーダーGPV描画
-    #lon = np.arange(slon, elon, rlon)
-    #lat = np.arange(slat, elat, rlat)
-    #LON, LAT = np.meshgrid(lon, lat)
-    #LON, LAT = LON.T, LAT.T
+    lon = np.arange(slon, elon, rlon)
+    lat = np.arange(slat, elat, rlat)
+    LON, LAT = np.meshgrid(lon, lat)
+    LON, LAT = LON.T, LAT.T
     #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
     cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
 
