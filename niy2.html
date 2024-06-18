@@ -129,7 +129,7 @@ async function fetchNawphusData(port, url) {
 
           if (timeMinutes > latestTime && waveHeight && period && direction) {
             latestTime = timeMinutes;
-            latestData = `${waveHeight} (${timeMinutes})`;
+            latestData = `${waveHeight} (${hour}:${minute})`;
           }
         } else {
           console.log(`Data missing at ${cells[0].innerText.trim()}`);
