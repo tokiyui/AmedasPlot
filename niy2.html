@@ -137,13 +137,6 @@ const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComp
             }
         }
 
-    return latestData.trim();
-  } catch (error) {
-    console.error('Error fetching Nawphus data:', error);
-    return 'データの取得に失敗しました';
-  }
-}
-
         async function displayWeatherData() {
             const points = [
                 { number: 56227, name: '金沢&nbsp;(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
