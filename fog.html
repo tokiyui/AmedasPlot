@@ -115,7 +115,10 @@ function convertTime(timeInUTC) {
                 const visibility = extractVisibility(report);
                 const time = extractTime(report);
                 const isoTimeString = convertUTCTimeToJST(time);
-                document.getElementById(station.toLowerCase()).textContent = `${stationNames[station]}: 視程 ${visibility} メートル, (${isoTimeString})`;
+                document.getElementById(station.toLowerCase()).textContent = `${stationNames[station]}: 視程 ${visibility} メートル (${isoTimeString})`;
+                if (visibility <= 5000) {
+                    visibilityElement.style.backgroundColor = 'yellow';
+                }
             }
         }
 
@@ -145,6 +148,9 @@ function convertTime(timeInUTC) {
                     const visibility = data[point.code]?.['visibility'][0] ?? 'データなし';
                     const times = convertTime(latestTime);
                     document.getElementById(`visibility_${point.code}`).innerText = `${point.name}:  視程 ${visibility} メートル (${times})`;
+                    if (visibility <= 5000) {
+                        visibilityElement.style.backgroundColor = 'yellow';
+                    }
                 });
             } catch (error) {
                 console.error(error);
