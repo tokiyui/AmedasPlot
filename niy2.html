@@ -98,11 +98,14 @@ async function fetchNawphusData(port, url) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const table3 = doc.querySelectorAll('table')[2];
-    let latestTime = -1;
-    let latestData = 'データが見つかりませんでした';
+    let latestData = '';
+
     if (table3) {
       const rows = table3.querySelectorAll('tr');
-      rows.forEach(row => {
+      let previousDate = null;
+      let currentDate = null;
+
+      rows.forEach((row, index) => {
         const cells = row.querySelectorAll('td');
         if (cells.length === 8) {
           const time1 = cells[0].innerText.trim();
@@ -114,22 +117,38 @@ async function fetchNawphusData(port, url) {
           const period2 = cells[6].innerText.trim();
           const direction2 = cells[7].innerText.trim();
           const [hour1, minute1] = time1.split(':').map(Number);
-          const time1Minutes = hour1 * 60 + minute1;
           const [hour2, minute2] = time2.split(':').map(Number);
-          const time2Minutes = hour2 * 60 + minute2;
-          if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
-            latestTime = time1Minutes;
-            latestData = `${waveHeight1}m (${time1})`;
-            console.log(latestData);
+
+          // 日付の変更を検知
+          if (index % 2 === 0) {
+            previousDate = currentDate;
+            currentDate = new Date(`2024-06-${String(Math.floor(index / 2) + 18).padStart(2, '0')}`);
           }
-          if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
-            latestTime = time2Minutes;
-            latestData = `${waveHeight2}m (${time2})`;
+
+          // 欠測データの処理
+          if (!waveHeight1 || !period1 || !direction1) {
+            latestData += `${currentDate.getDate()}日 ${time1} データなし\n`;
+          } else {
+            latestData += `${currentDate.getDate()}日 ${time1} 波高:${waveHeight1}m 周期:${period1}秒 方向:${direction1}\n`;
+          }
+
+          if (!waveHeight2 || !period2 || !direction2) {
+            latestData += `${currentDate.getDate()}日 ${time2} データなし\n`;
+          } else {
+            latestData += `${currentDate.getDate()}日 ${time2} 波高:${waveHeight2}m 周期:${period2}秒 方向:${direction2}\n`;
+          }
+
+          // 日付が変わった場合は、1日前のページに戻る
+          if (previousDate && currentDate.getDate() !== previousDate.getDate()) {
+            latestData += `\n前日のデータに移動します。\n\n`;
+            const previousUrl = `https://nowphas.mlit.go.jp/nip_yugiha/122/7/${previousDate.toISOString().slice(0, 10)}`;
+            return fetchNawphusData(port, previousUrl);
           }
         }
       });
     }
-    return latestData;
+
+    return latestData.trim();
   } catch (error) {
     console.error('Error fetching Nawphus data:', error);
     return 'データの取得に失敗しました';
