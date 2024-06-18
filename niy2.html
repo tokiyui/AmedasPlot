@@ -90,6 +90,7 @@
 async function fetchNawphusData(port, url) {
   try {
     const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+    console.log(url)
     if (!response.ok) {
       throw new Error(`HTTPエラー！ ステータス: ${response.status}`);
     }
