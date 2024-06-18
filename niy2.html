@@ -164,7 +164,7 @@ async function fetchNawphusData(port, url) {
                 { number: 57121, name: '[大野&nbsp;(奥越)]', numbers: [57082, 57121, 57176] }
             ];
             
-            const today = new Date();
+            const today = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
             const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
             console.log(dateStr)
             const nawphusUrls = {
