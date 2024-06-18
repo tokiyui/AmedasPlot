@@ -163,11 +163,14 @@ async function fetchNawphusData(port, url) {
                 { number: 57121, name: '[大野&nbsp;(奥越)]', numbers: [57082, 57121, 57176] }
             ];
             
-            const today = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+// 現在の日付をJST (日本標準時) で取得
+const today = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+
 // 8桁の日付を作成
-const year = today.getFullYear();
-const month = String(today.getMonth() + 1).padStart(2, '0');
-const day = String(today.getDate()).padStart(2, '0');
+const dateObj = new Date(today);
+const year = dateObj.getFullYear();
+const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+const day = String(dateObj.getDate()).padStart(2, '0');
 const dateStr = `${year}${month}${day}`;
             console.log(dateStr)
             const nawphusUrls = {
