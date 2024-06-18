@@ -165,7 +165,7 @@ async function fetchNawphusData(port, url) {
             ];
             
             const today = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-            const dateStr = today.slice(0, 4) + today.slice(5, 7) + today.slice(8, 10);
+            const dateStr = today.slice(0, 4) + today.slice(4, 6) + today.slice(6, 8);
             console.log(dateStr)
             const nawphusUrls = {
     wajima: `https://nowphas.mlit.go.jp/nip_yugiha/105/7/${dateStr}`,
