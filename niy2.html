@@ -122,10 +122,14 @@ async function fetchNawphusData(port, url) {
           if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
             latestTime = time1Minutes;
             latestData = `${waveHeight1} (${time1Minutes})`;
+          } else if (!waveHeight1 || !period1 || !direction1) {
+            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
           }
           if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
             latestTime = time2Minutes;
             latestData = `${waveHeight2} (${time2Minutes})`;
+          } else if (!waveHeight2 || !period2 || !direction2) {
+            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
           }
         } else if (cells.length === 4) {
           const time = cells[0].innerText.trim();
@@ -138,6 +142,8 @@ async function fetchNawphusData(port, url) {
           if (timeMinutes > latestTime && waveHeight && period && direction) {
             latestTime = timeMinutes;
             latestData = `${waveHeight} (${timeMinutes})`;
+          } else if (!waveHeight || !period || !direction) {
+            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
           }
         }
       }
