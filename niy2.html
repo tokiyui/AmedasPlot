@@ -87,72 +87,55 @@
             return [averageDegree, uMax, rain];
         }
 
-async function fetchNawphusData(port, url) {
-  try {
-    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    const html = data.contents;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const table3 = doc.querySelectorAll('table')[2];
-    let latestData = '';
-    let previousDate = null;
-    let currentDate = null;
-
-    if (table3) {
-      const rows = table3.querySelectorAll('tr');
-      let latestTime = -1;
-
-      rows.forEach((row, index) => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length === 8) {
-          const time1 = cells[0].innerText.trim();
-          const waveHeight1 = cells[1].innerText.trim();
-          const period1 = cells[2].innerText.trim();
-          const direction1 = cells[3].innerText.trim();
-          const time2 = cells[4].innerText.trim();
-          const waveHeight2 = cells[5].innerText.trim();
-          const period2 = cells[6].innerText.trim();
-          const direction2 = cells[7].innerText.trim();
-          const [hour1, minute1] = time1.split(':').map(Number);
-          const time1Minutes = hour1 * 60 + minute1;
-          const [hour2, minute2] = time2.split(':').map(Number);
-          const time2Minutes = hour2 * 60 + minute2;
-
-          // 日付の変更を検知
-          if (index % 2 === 0) {
-            previousDate = currentDate;
-            currentDate = new Date(`2024-06-${String(Math.floor(index / 2) + 18).padStart(2, '0')}`);
-          }
-
-          // 欠測データの処理
-          if (!waveHeight1 || !period1 || !direction1) {
-            latestData += `${currentDate.getDate()}日 ${time1} データなし\n`;
-          } else {
-            latestData += `${currentDate.getDate()}日 ${time1} 波高:${waveHeight1}m 周期:${period1}秒 方向:${direction1}\n`;
-          }
-
-          if (!waveHeight2 || !period2 || !direction2) {
-            latestData += `${currentDate.getDate()}日 ${time2} データなし\n`;
-          } else {
-            latestData += `${currentDate.getDate()}日 ${time2} 波高:${waveHeight2}m 周期:${period2}秒 方向:${direction2}\n`;
-          }
-
-          // 最新のデータを更新
-          if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
-            latestTime = time1Minutes;
-            latestData = `最新データ (${currentDate.getDate()}日 ${time1}): 波高:${waveHeight1}m 周期:${period1}秒 方向:${direction1}`;
-          }
-          if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
-            latestTime = time2Minutes;
-            latestData = `最新データ (${currentDate.getDate()}日 ${time2}): 波高:${waveHeight2}m 周期:${period2}秒 方向:${direction2}`;
-          }
+        async function fetchNawphusData(port, url) {
+            try {
+const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const html = data.contents;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const table3 = doc.querySelectorAll('table')[2];
+                let latestTime = -1;
+                let latestData = 'データが見つかりませんでした';
+                if (table3) {
+                    const rows = table3.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        if (cells.length === 8) {
+                            const time1 = cells[0].innerText.trim();
+                            const waveHeight1 = cells[1].innerText.trim();
+                            const period1 = cells[2].innerText.trim();
+                            const direction1 = cells[3].innerText.trim();
+                            const time2 = cells[4].innerText.trim();
+                            const waveHeight2 = cells[5].innerText.trim();
+                            const period2 = cells[6].innerText.trim();
+                            const direction2 = cells[7].innerText.trim();
+                            const [hour1, minute1] = time1.split(':').map(Number);
+                            const time1Minutes = hour1 * 60 + minute1;
+                            const [hour2, minute2] = time1.split(':').map(Number);
+                            const time2Minutes = hour2 * 60 + minute2;
+                            //const time1Minutes = parseTime(time1);
+                            //const time2Minutes = parseTime(time2);
+                            if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
+                                latestTime = time1Minutes;
+                                latestData = `${waveHeight1} (${time1Minutes})`;
+                            }
+                            if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
+                                latestTime = time2Minutes;
+                                latestData = `${waveHeight2} (${time2Minutes})`;
+                            }
+                        }
+                    });
+                }
+                return latestData;
+            } catch (error) {
+                console.error('Error fetching Nawphus data:', error);
+                return 'データの取得に失敗しました';
+            }
         }
-      });
-    }
 
     return latestData.trim();
   } catch (error) {
