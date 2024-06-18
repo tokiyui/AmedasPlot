@@ -168,10 +168,10 @@ async function fetchNawphusData(port, url) {
             const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
             console.log(dateStr)
             const nawphusUrls = {
-                wajima: 'https://nowphas.mlit.go.jp/nip_yugiha/105/7/${date_str}',
-                kanazawa: 'https://nowphas.mlit.go.jp/nip_yugiha/106/7/${dateStr}',
-                fukui: 'https://nowphas.mlit.go.jp/nip_yugiha/117/7/${dateStr}',
-                tsuruga: 'https://nowphas.mlit.go.jp/nip_yugiha/122/7/${dateStr}',
+    wajima: `https://nowphas.mlit.go.jp/nip_yugiha/105/7/${dateStr}`,
+    kanazawa: `https://nowphas.mlit.go.jp/nip_yugiha/106/7/${dateStr}`,
+    fukui: `https://nowphas.mlit.go.jp/nip_yugiha/117/7/${dateStr}`,
+    tsuruga: `https://nowphas.mlit.go.jp/nip_yugiha/122/7/${dateStr}`,
             };
 
             const windDirections = ['北', '北東', '東', '南東', '南', '南西', '西', '北西', '北'];
