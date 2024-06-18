@@ -109,7 +109,7 @@ async function fetchNawphusData(port, url) {
       }
       return false;
     };
-
+    console.log(table3);
     if (table3) {
       const rows = table3.querySelectorAll('tr');
       for (let i = rows.length - 1; i >= 0; i--) {
@@ -141,9 +141,10 @@ async function fetchNawphusData(port, url) {
     if (latestData === 'データが見つかりませんでした') {
       // 前日のファイルの処理を追加する必要があります
       // 前日のファイルのURLを取得する処理を追加してください
-      const previousDayUrl = getPreviousDayUrl(url);
-      const previousDayData = await fetchNawphusData(port, previousDayUrl);
-      return previousDayData;
+      #const previousDayUrl = getPreviousDayUrl(url);
+      #const previousDayData = await fetchNawphusData(port, previousDayUrl);
+      #return previousDayData;
+      return 0;
     }
 
     return latestData;
