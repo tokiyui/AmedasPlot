@@ -100,38 +100,24 @@ async function fetchNawphusData(port, url) {
     const table3 = doc.querySelectorAll('table')[2];
     let latestTime = -1;
     let latestData = 'データが見つかりませんでした';
+
+    const checkDataAvailability = (cells) => {
+      for (let i = 4; i < cells.length; i++) {
+        if (cells[i].innerText.trim()) {
+          return true;
+        }
+      }
+      return false;
+    };
+
     if (table3) {
       const rows = table3.querySelectorAll('tr');
       for (let i = rows.length - 1; i >= 0; i--) {
         const row = rows[i];
         const cells = row.querySelectorAll('td');
-        if (cells.length === 8) {
-          const time1 = cells[0].innerText.trim();
-          const waveHeight1 = cells[1].innerText.trim();
-          const period1 = cells[2].innerText.trim();
-          const direction1 = cells[3].innerText.trim();
-          const time2 = cells[4].innerText.trim();
-          const waveHeight2 = cells[5].innerText.trim();
-          const period2 = cells[6].innerText.trim();
-          const direction2 = cells[7].innerText.trim();
-          const [hour1, minute1] = time1.split(':').map(Number);
-          const time1Minutes = hour1 * 60 + minute1;
-          const [hour2, minute2] = time2.split(':').map(Number);
-          const time2Minutes = hour2 * 60 + minute2;
+        const hasData = checkDataAvailability(cells);
 
-          if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
-            latestTime = time1Minutes;
-            latestData = `${waveHeight1} (${time1Minutes})`;
-          } else if (!waveHeight1 || !period1 || !direction1) {
-            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
-          }
-          if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
-            latestTime = time2Minutes;
-            latestData = `${waveHeight2} (${time2Minutes})`;
-          } else if (!waveHeight2 || !period2 || !direction2) {
-            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
-          }
-        } else if (cells.length === 4) {
+        if (hasData) {
           const time = cells[0].innerText.trim();
           const waveHeight = cells[1].innerText.trim();
           const period = cells[2].innerText.trim();
@@ -142,12 +128,21 @@ async function fetchNawphusData(port, url) {
           if (timeMinutes > latestTime && waveHeight && period && direction) {
             latestTime = timeMinutes;
             latestData = `${waveHeight} (${timeMinutes})`;
-          } else if (!waveHeight || !period || !direction) {
-            break; // 一番下の行のデータが欠測していた場合、処理を終了して最新のデータを保持します
           }
+        } else {
+          break;
         }
       }
     }
+
+    if (latestData === 'データが見つかりませんでした') {
+      // 前日のファイルの処理を追加する必要があります
+      // 前日のファイルのURLを取得する処理を追加してください
+      const previousDayUrl = getPreviousDayUrl(url);
+      const previousDayData = await fetchNawphusData(port, previousDayUrl);
+      return previousDayData;
+    }
+
     return latestData;
   } catch (error) {
     console.error('Nawphusデータの取得中にエラーが発生しました:', error);
