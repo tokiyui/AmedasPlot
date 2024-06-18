@@ -125,11 +125,14 @@ async function fetchNawphusData(port, url) {
           const [hour, minute] = time.split(':').map(Number);
           const timeMinutes = hour * 60 + minute;
 
+          console.log(`Checking data at ${time}`);
+
           if (timeMinutes > latestTime && waveHeight && period && direction) {
             latestTime = timeMinutes;
             latestData = `${waveHeight} (${timeMinutes})`;
           }
         } else {
+          console.log(`Data missing at ${cells[0].innerText.trim()}`);
           break;
         }
       }
