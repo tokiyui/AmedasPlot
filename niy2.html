@@ -120,6 +120,7 @@ async function fetchNawphusData(port, url) {
           if (time1Minutes > latestTime && waveHeight1 && period1 && direction1) {
             latestTime = time1Minutes;
             latestData = `${waveHeight1}m (${time1})`;
+            console.log(latestData);
           }
           if (time2Minutes > latestTime && waveHeight2 && period2 && direction2) {
             latestTime = time2Minutes;
