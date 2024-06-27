@@ -915,7 +915,7 @@ plt.clabel(cont, fontsize=15)
 plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 40, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
-stride = 5
+stride = 10
 
 ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
 
