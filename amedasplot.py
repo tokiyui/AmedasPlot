@@ -821,9 +821,9 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
 wind_speed = gaussian_filter(wind_speed, sigma=4.0)
 #plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
-cont = plt.contour((grid_lon_p, grid_lat_p, wind_speed, levels=60, linewidths=2, colors='pink')
-cont = plt.contour((grid_lon_p, grid_lat_p, wind_speed, levels=80, linewidths=2, colors='blue')
-cont = plt.contour((grid_lon_p, grid_lat_p, wind_speed, levels=100, linewidths=2, colors='lightpurple')
+cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=60, linewidths=2, colors='pink')
+cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=80, linewidths=2, colors='blue')
+cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=100, linewidths=2, colors='lightpurple')
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
