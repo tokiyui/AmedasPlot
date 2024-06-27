@@ -773,8 +773,8 @@ ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'
 ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
 kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
 
-tmp500 = gaussian_filter(tmp500, sigma=3.0)
-tmp850 = gaussian_filter(tmp850, sigma=3.0)
+tmp500 = gaussian_filter(tmp500, sigma=4)
+tmp850 = gaussian_filter(tmp850, sigma=4)
 
 data_wv, lon, lat = read_hima(ft, '08')
 data_ir, lon, lat = read_hima(time, '13')
