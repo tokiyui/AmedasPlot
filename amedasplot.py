@@ -773,8 +773,8 @@ ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'
 ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
 kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
 
-tmp500 = gaussian_filter(tmp500, sigma=4.0)
-tmp850 = gaussian_filter(tmp850, sigma=4.0)
+tmp500 = gaussian_filter(tmp500, sigma=3.0)
+tmp850 = gaussian_filter(tmp850, sigma=3.0)
 
 data_wv, lon, lat = read_hima(ft, '08')
 data_ir, lon, lat = read_hima(time, '13')
@@ -820,7 +820,8 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 #wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
 wind_speed = gaussian_filter(wind_speed, sigma=4.0)
-plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
+#plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
+cont = plt.contour((grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], linewidths=2, colors=['none', 'blue', 'purple'])
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
@@ -905,7 +906,8 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=2, linestyles='solid', colors='green')
+cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=1, linestyles='solid', colors='green')
+cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
 plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 40, np.inf], colors=['none', 'yellow', 'pink', 'red'])
