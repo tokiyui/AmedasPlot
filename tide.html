@@ -43,9 +43,14 @@
         const astroNextYearUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${tomorrow.getFullYear()}_145681.json`;
 
         async function fetchJson(url) {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
-            return await response.json();
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (e) {
+                console.error(`Failed to fetch from ${url}`, e);
+                throw e;
+            }
         }
 
         function calculateAverage(arr, count) {
@@ -104,6 +109,9 @@
             const tideAvg = calculateAverage(tide, 241);
             const departureAvg = calculateAverage(departure, 241);
 
+            console.log('Tide Average:', tideAvg);
+            console.log('Departure Average:', departureAvg);
+
             let astroData;
             try {
                 astroData = await fetchJson(astroUrl);
@@ -129,9 +137,6 @@
                 const adjustedDeparture = entry.departure + departureAvg;
                 tableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
             });
-
-            console.log('Tide Average:', tideAvg);
-            console.log('Departure Average:', departureAvg);
         }
 
         displayTideData();
