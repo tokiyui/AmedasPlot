@@ -12,6 +12,7 @@
 </head>
 <body>
     <h1>Tide Level Data</h1>
+    <div id="error-message" style="color: red;"></div>
     <table border="1">
         <thead>
             <tr>
@@ -92,6 +93,7 @@
         }
 
         async function displayTideData() {
+            const errorMessageElement = document.getElementById('error-message');
             let tideData;
             try {
                 tideData = await fetchJson(tideUrl);
@@ -99,7 +101,7 @@
                 try {
                     tideData = await fetchJson(tideBackupUrl);
                 } catch (e) {
-                    console.error('Failed to fetch tide data:', e);
+                    errorMessageElement.textContent = '潮汐データの取得に失敗しました。';
                     return;
                 }
             }
@@ -109,14 +111,16 @@
             const tideAvg = calculateAverage(tide, 241);
             const departureAvg = calculateAverage(departure, 241);
 
-            console.log('Tide Average:', tideAvg);
-            console.log('Departure Average:', departureAvg);
+            errorMessageElement.innerHTML = `
+                <p>Tide Average: ${tideAvg}</p>
+                <p>Departure Average: ${departureAvg}</p>
+            `;
 
             let astroData;
             try {
                 astroData = await fetchJson(astroUrl);
             } catch (e) {
-                console.error('Failed to fetch astro data for this year:', e);
+                errorMessageElement.textContent = '今年のアストロデータの取得に失敗しました。';
                 return;
             }
 
@@ -124,7 +128,7 @@
             try {
                 tomorrowAstroData = await fetchJson(astroNextYearUrl);
             } catch (e) {
-                console.error('Failed to fetch astro data for next year:', e);
+                errorMessageElement.textContent = '来年のアストロデータの取得に失敗しました。';
                 return;
             }
 
