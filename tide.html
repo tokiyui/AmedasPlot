@@ -184,6 +184,7 @@
             todayAstro.forEach((value, index) => {
                 const time = `${String(index).padStart(2, '0')}:00`;
                 const adjustedTide = value + departureAvg;
+                console.log(adjustedTide);
                 astroTableBody.appendChild(createAstroTableRow(time, value, adjustedTide));
             });
             tomorrowAstro.forEach((value, index) => {
