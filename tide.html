@@ -13,6 +13,7 @@
 <body>
     <h1>Tide Level Data</h1>
     <div id="error-message" style="color: red;"></div>
+    <div id="averages"></div>
     <table border="1">
         <thead>
             <tr>
@@ -94,6 +95,7 @@
 
         async function displayTideData() {
             const errorMessageElement = document.getElementById('error-message');
+            const averagesElement = document.getElementById('averages');
             let tideData;
             try {
                 tideData = await fetchJson(tideUrl);
@@ -111,7 +113,7 @@
             const tideAvg = calculateAverage(tide, 241);
             const departureAvg = calculateAverage(departure, 241);
 
-            errorMessageElement.innerHTML = `
+            averagesElement.innerHTML = `
                 <p>Tide Average: ${tideAvg}</p>
                 <p>Departure Average: ${departureAvg}</p>
             `;
