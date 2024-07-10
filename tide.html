@@ -27,6 +27,20 @@
         <tbody id="tide-table-body">
         </tbody>
     </table>
+    <h2>Astro Data</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>時刻</th>
+                <th>Tide</th>
+                <th>Departure</th>
+                <th>Adjusted Tide</th>
+                <th>Adjusted Departure</th>
+            </tr>
+        </thead>
+        <tbody id="astro-table-body">
+        </tbody>
+    </table>
     <script>
         const today = new Date();
         const yesterday = new Date(today);
@@ -118,6 +132,13 @@
                 <p>Departure Average: ${departureAvg}</p>
             `;
 
+            const tableBody = document.getElementById('tide-table-body');
+            tideData.tide_obs.forEach(entry => {
+                const adjustedTide = entry.tide + departureAvg;
+                const adjustedDeparture = entry.departure + departureAvg;
+                tableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
+            });
+
             let astroData;
             try {
                 astroData = await fetchJson(astroUrl);
@@ -137,11 +158,11 @@
             const todayAstro = astroData[todayStr] || [];
             const tomorrowAstro = tomorrowAstroData[tomorrowStr] || [];
 
-            const tableBody = document.getElementById('tide-table-body');
+            const astroTableBody = document.getElementById('astro-table-body');
             [...todayAstro, ...tomorrowAstro].forEach(entry => {
                 const adjustedTide = entry.tide + departureAvg;
                 const adjustedDeparture = entry.departure + departureAvg;
-                tableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
+                astroTableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
             });
         }
 
