@@ -33,9 +33,7 @@
             <tr>
                 <th>時刻</th>
                 <th>Tide</th>
-                <th>Departure</th>
                 <th>Adjusted Tide</th>
-                <th>Adjusted Departure</th>
             </tr>
         </thead>
         <tbody id="astro-table-body">
@@ -109,6 +107,28 @@
             return tr;
         }
 
+        function createAstroTableRow(time, tide, adjustedTide) {
+            const tr = document.createElement('tr');
+
+            const timeTd = document.createElement('td');
+            timeTd.textContent = time;
+            tr.appendChild(timeTd);
+
+            const tideTd = document.createElement('td');
+            tideTd.textContent = tide;
+            if (tide >= 80 && tide < 130) tideTd.classList.add('yellow-cell');
+            if (tide >= 130) tideTd.classList.add('red-cell');
+            tr.appendChild(tideTd);
+
+            const adjustedTideTd = document.createElement('td');
+            adjustedTideTd.textContent = adjustedTide;
+            if (adjustedTide >= 80 && adjustedTide < 130) adjustedTideTd.classList.add('yellow-cell');
+            if (adjustedTide >= 130) adjustedTideTd.classList.add('red-cell');
+            tr.appendChild(adjustedTideTd);
+
+            return tr;
+        }
+
         async function displayTideData() {
             const errorMessageElement = document.getElementById('error-message');
             const averagesElement = document.getElementById('averages');
@@ -164,12 +184,12 @@
             todayAstro.forEach((value, index) => {
                 const time = `${String(index).padStart(2, '0')}:00`;
                 const adjustedTide = value + departureAvg;
-                astroTableBody.appendChild(createTableRow(time, value, 0, adjustedTide, departureAvg));
+                astroTableBody.appendChild(createAstroTableRow(time, value, adjustedTide));
             });
             tomorrowAstro.forEach((value, index) => {
                 const time = `${String(index).padStart(2, '0')}:00`;
                 const adjustedTide = value + departureAvg;
-                astroTableBody.appendChild(createTableRow(time, value, 0, adjustedTide, departureAvg));
+                astroTableBody.appendChild(createAstroTableRow(time, value, adjustedTide));
             });
         }
 
