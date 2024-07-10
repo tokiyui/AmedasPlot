@@ -52,6 +52,8 @@
         const todayStr = today.toISOString().split('T')[0].replace(/-/g, '');
         const yesterdayStr = yesterday.toISOString().split('T')[0].replace(/-/g, '');
         const tomorrowStr = tomorrow.toISOString().split('T')[0].replace(/-/g, '');
+        const todayKey = todayStr.slice(4);
+        const tomorrowKey = tomorrowStr.slice(4);
 
         const tideUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${todayStr}_145681.json`;
         const tideBackupUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${yesterdayStr}_145681.json`;
@@ -155,14 +157,19 @@
                 return;
             }
 
-            const todayAstro = astroData[todayStr] || [];
-            const tomorrowAstro = tomorrowAstroData[tomorrowStr] || [];
+            const todayAstro = astroData.tide[todayKey] || [];
+            const tomorrowAstro = tomorrowAstroData.tide[tomorrowKey] || [];
 
             const astroTableBody = document.getElementById('astro-table-body');
-            [...todayAstro, ...tomorrowAstro].forEach(entry => {
-                const adjustedTide = entry.tide + departureAvg;
-                const adjustedDeparture = entry.departure + departureAvg;
-                astroTableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
+            todayAstro.forEach((value, index) => {
+                const time = `${String(index).padStart(2, '0')}:00`;
+                const adjustedTide = value + departureAvg;
+                astroTableBody.appendChild(createTableRow(time, value, 0, adjustedTide, departureAvg));
+            });
+            tomorrowAstro.forEach((value, index) => {
+                const time = `${String(index).padStart(2, '0')}:00`;
+                const adjustedTide = value + departureAvg;
+                astroTableBody.appendChild(createTableRow(time, value, 0, adjustedTide, departureAvg));
             });
         }
 
