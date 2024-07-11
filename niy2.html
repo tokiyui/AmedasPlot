@@ -91,7 +91,7 @@ async function fetchNawphusData(port, url) {
   try {
     const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
     if (!response.ok) {
-      throw new Error(`HTTPエラー！ ステータス: ${response.status}`);
+      throw new Error(`HTTPエラー! ステータス: ${response.status}`);
     }
     const data = await response.json();
     const html = data.contents;
@@ -102,14 +102,14 @@ async function fetchNawphusData(port, url) {
     let latestData = 'データが見つかりませんでした';
 
     const checkDataAvailability = (cells) => {
-      for (let i = 4; i < cells.length; i++) {
+      for (let i = 1; i < cells.length; i++) {
         if (cells[i].innerText.trim()) {
           return true;
         }
       }
       return false;
     };
-    console.log(doc);
+
     if (table3) {
       const rows = table3.querySelectorAll('tr');
       for (let i = rows.length - 1; i >= 0; i--) {
@@ -133,7 +133,6 @@ async function fetchNawphusData(port, url) {
           }
         } else {
           console.log(`Data missing at ${cells[0].innerText.trim()}`);
-          break;
         }
       }
     }
@@ -153,7 +152,6 @@ async function fetchNawphusData(port, url) {
     return 'データの取得に失敗しました';
   }
 }
-
         async function displayWeatherData() {
             const points = [
                 { number: 56227, name: '金沢&nbsp;(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
