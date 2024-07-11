@@ -102,12 +102,9 @@ async function fetchNawphusData(port, url) {
     let latestData = 'データが見つかりませんでした';
 
     const checkDataAvailability = (cells) => {
-      for (let i = 1; i < cells.length; i++) {
-        if (cells[i].innerText.trim()) {
-          return true;
-        }
-      }
-      return false;
+      const hasDataInLeft = cells[1].innerText.trim();
+      const hasDataInRight = cells[5] && cells[5].innerText.trim();
+      return hasDataInLeft || hasDataInRight;
     };
 
     if (table3) {
@@ -118,21 +115,35 @@ async function fetchNawphusData(port, url) {
         const hasData = checkDataAvailability(cells);
 
         if (hasData) {
-          const time = cells[0].innerText.trim();
+          const leftTime = cells[0].innerText.trim();
+          const rightTime = cells[4] && cells[4].innerText.trim();
           const waveHeight = cells[1].innerText.trim();
           const period = cells[2].innerText.trim();
           const direction = cells[3].innerText.trim();
-          const [hour, minute] = time.split(':').map(Number);
-          const timeMinutes = hour * 60 + minute;
 
-          console.log(`Checking data at ${time}`);
+          const parseTime = (time) => {
+            const [hour, minute] = time.split(':').map(Number);
+            return hour * 60 + minute;
+          };
 
-          if (timeMinutes > latestTime && waveHeight && period && direction) {
-            latestTime = timeMinutes;
-            latestData = `${waveHeight} (${time})`;
+          const leftTimeMinutes = parseTime(leftTime);
+          const rightTimeMinutes = cells[4] ? parseTime(rightTime) : -1;
+          const hasLeftData = waveHeight && period && direction;
+          const hasRightData = cells[5] && cells[5].innerText.trim() && cells[6].innerText.trim() && cells[7].innerText.trim();
+
+          console.log(`Checking data at ${leftTime}${rightTime ? ` and ${rightTime}` : ''}`);
+
+          if (leftTimeMinutes > latestTime && hasLeftData) {
+            latestTime = leftTimeMinutes;
+            latestData = `${waveHeight} (${leftTime})`;
+          }
+
+          if (rightTimeMinutes > latestTime && hasRightData) {
+            latestTime = rightTimeMinutes;
+            latestData = `${cells[5].innerText.trim()} (${rightTime})`;
           }
         } else {
-          console.log(`Data missing at ${cells[0].innerText.trim()}`);
+          console.log(`Data missing at ${cells[0].innerText.trim()}${cells[4] ? ` and ${cells[4].innerText.trim()}` : ''}`);
         }
       }
     }
@@ -152,6 +163,7 @@ async function fetchNawphusData(port, url) {
     return 'データの取得に失敗しました';
   }
 }
+        
         async function displayWeatherData() {
             const points = [
                 { number: 56227, name: '金沢&nbsp;(加賀)', numbers: [56036, 56052, 56093, 56116, 56146, 56176, 56232, 56346] },
