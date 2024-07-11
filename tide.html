@@ -46,155 +46,137 @@
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
 
-        const year = today.getFullYear();
-        const todayStr = today.toISOString().split('T')[0].replace(/-/g, '');
-        const yesterdayStr = yesterday.toISOString().split('T')[0].replace(/-/g, '');
-        const tomorrowStr = tomorrow.toISOString().split('T')[0].replace(/-/g, '');
-        const todayKey = todayStr.slice(4);
-        const tomorrowKey = tomorrowStr.slice(4);
+const year = today.getFullYear();
+    const todayStr = today.toISOString().split('T')[0].replace(/-/g, '');
+    const yesterdayStr = yesterday.toISOString().split('T')[0].replace(/-/g, '');
+    const tomorrowStr = tomorrow.toISOString().split('T')[0].replace(/-/g, '');
+    const todayKey = todayStr.slice(4);
+    const tomorrowKey = tomorrowStr.slice(4);
 
-        const tideUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${todayStr}_145681.json`;
-        const tideBackupUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${yesterdayStr}_145681.json`;
-        const astroUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${year}_145681.json`;
-        const astroNextYearUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${tomorrow.getFullYear()}_145681.json`;
+    const tideUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${todayStr}_145681.json`;
+    const tideBackupUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${yesterdayStr}_145681.json`;
+    const astroUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${year}_145681.json`;
+    const astroNextYearUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${tomorrow.getFullYear()}_145681.json`;
 
-        async function fetchJson(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (e) {
-                console.error(`Failed to fetch from ${url}`, e);
-                throw e;
-            }
+    async function fetchJson(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (e) {
+            console.error(`Failed to fetch from ${url}`, e);
+            throw e;
         }
+    }
 
-        function calculateAverage(arr, count) {
-            const slice = arr.slice(-count);
-            const sum = slice.reduce((acc, val) => acc + val, 0);
-            return Math.round(sum / slice.length);
-        }
+    function calculateAverage(arr, count) {
+        const slice = arr.slice(-count);
+        const sum = slice.reduce((acc, val) => acc + val, 0);
+        return Math.round(sum / slice.length);
+    }
 
-        function createTableRow(time, tide, departure, adjustedTide, adjustedDeparture) {
-            const tr = document.createElement('tr');
+    function createTableRow(time, tide, departure, adjustedTide, adjustedDeparture) {
+        const tr = document.createElement('tr');
 
-            const timeTd = document.createElement('td');
-            timeTd.textContent = time;
-            tr.appendChild(timeTd);
+        const timeTd = document.createElement('td');
+        timeTd.textContent = time;
+        tr.appendChild(timeTd);
 
-            const tideTd = document.createElement('td');
-            tideTd.textContent = tide;
-            if (tide >= 80 && tide < 130) tideTd.classList.add('yellow-cell');
-            if (tide >= 130) tideTd.classList.add('red-cell');
-            tr.appendChild(tideTd);
+        const tideTd = document.createElement('td');
+        tideTd.textContent = tide;
+        if (tide >= 80 && tide < 130) tideTd.classList.add('yellow-cell');
+        if (tide >= 130) tideTd.classList.add('red-cell');
+        tr.appendChild(tideTd);
 
-            const departureTd = document.createElement('td');
-            departureTd.textContent = departure;
-            if (departure >= 10) departureTd.classList.add('red-text');
-            tr.appendChild(departureTd);
+        const departureTd = document.createElement('td');
+        departureTd.textContent = departure;
+        if (departure >= 10) departureTd.classList.add('red-text');
+        tr.appendChild(departureTd);
 
-            const adjustedTideTd = document.createElement('td');
-            adjustedTideTd.textContent = adjustedTide;
-            if (adjustedTide >= 80 && adjustedTide < 130) adjustedTideTd.classList.add('yellow-cell');
-            if (adjustedTide >= 130) adjustedTideTd.classList.add('red-cell');
-            tr.appendChild(adjustedTideTd);
+        const adjustedTideTd = document.createElement('td');
+        adjustedTideTd.textContent = adjustedTide;
+        if (adjustedTide >= 80 && adjustedTide < 130) adjustedTideTd.classList.add('yellow-cell');
+        if (adjustedTide >= 130) adjustedTideTd.classList.add('red-cell');
+        tr.appendChild(adjustedTideTd);
 
-            const adjustedDepartureTd = document.createElement('td');
-            adjustedDepartureTd.textContent = adjustedDeparture;
-            if (adjustedDeparture >= 10) adjustedDepartureTd.classList.add('red-text');
-            tr.appendChild(adjustedDepartureTd);
+        const adjustedDepartureTd = document.createElement('td');
+        adjustedDepartureTd.textContent = adjustedDeparture;
+        if (adjustedDeparture >= 10) adjustedDepartureTd.classList.add('red-text');
+        tr.appendChild(adjustedDepartureTd);
 
-            return tr;
-        }
+        return tr;
+    }
 
-        function createAstroTableRow(time, tide, adjustedTide) {
-            const tr = document.createElement('tr');
+    function createAstroTableRow(time, tide, adjustedTide) {
+        const tr = document.createElement('tr');
 
-            const timeTd = document.createElement('td');
-            timeTd.textContent = time;
-            tr.appendChild(timeTd);
+        const timeTd = document.createElement('td);
+        timeTd.textContent = time;
+        tr.appendChild(timeTd);
 
-            const tideTd = document.createElement('td');
-            tideTd.textContent = tide;
-            if (tide >= 80 && tide < 130) tideTd.classList.add('yellow-cell');
-            if (tide >= 130) tideTd.classList.add('red-cell');
-            tr.appendChild(tideTd);
+        const tideTd = document.createElement('td');
+        tideTd.textContent = tide;
+        tr.appendChild(tideTd);
 
-            const adjustedTideTd = document.createElement('td');
-            adjustedTideTd.textContent = adjustedTide;
-            if (adjustedTide >= 80 && adjustedTide < 130) adjustedTideTd.classList.add('yellow-cell');
-            if (adjustedTide >= 130) adjustedTideTd.classList.add('red-cell');
-            tr.appendChild(adjustedTideTd);
+        const adjustedTideTd = document.createElement('td');
+        adjustedTideTd.textContent = adjustedTide;
+        tr.appendChild(adjustedTideTd);
 
-            return tr;
-        }
+        return tr;
+    }
 
-        async function displayTideData() {
-            const errorMessageElement = document.getElementById('error-message');
-            const averagesElement = document.getElementById('averages');
-            let tideData;
-            try {
-                tideData = await fetchJson(tideUrl);
-            } catch (e) {
-                try {
-                    tideData = await fetchJson(tideBackupUrl);
-                } catch (e) {
-                    errorMessageElement.textContent = '潮汐データの取得に失敗しました。';
-                    return;
-                }
-            }
+    function displayError(message) {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = message;
+    }
 
-            const tide = tideData.tide;
-            const departure = tideData.departure;
-            const tideAvg = calculateAverage(tide, 241);
-            const departureAvg = calculateAverage(departure, 241);
+    async function fetchData() {
+        try {
+            const tideData = await fetchJson(tideUrl);
+            const astroData = await fetchJson(astroUrl);
+            const astroNextYearData = await fetchJson(astroNextYearUrl);
 
-            averagesElement.innerHTML = `
-                <p>Tide Average: ${tideAvg}</p>
-                <p>Departure Average: ${departureAvg}</p>
-            `;
-
-            const tableBody = document.getElementById('tide-table-body');
-            tideData.tide_obs.forEach(entry => {
-                const adjustedTide = entry.tide + departureAvg;
-                const adjustedDeparture = entry.departure + departureAvg;
-                tableBody.appendChild(createTableRow(entry.time, entry.tide, entry.departure, adjustedTide, adjustedDeparture));
-            });
-
-            let astroData;
-            try {
-                astroData = await fetchJson(astroUrl);
-            } catch (e) {
-                errorMessageElement.textContent = '今年のアストロデータの取得に失敗しました。';
-                return;
-            }
-
-            let tomorrowAstroData;
-            try {
-                tomorrowAstroData = await fetchJson(astroNextYearUrl);
-            } catch (e) {
-                errorMessageElement.textContent = '来年のアストロデータの取得に失敗しました。';
-                return;
-            }
-
-            const todayAstro = astroData.tide[todayKey] || [];
-            const tomorrowAstro = tomorrowAstroData.tide[tomorrowKey] || [];
-
+            const tideTableBody = document.getElementById('tide-table-body');
             const astroTableBody = document.getElementById('astro-table-body');
-            todayAstro.forEach((value, index) => {
-                const time = `${String(index).padStart(2, '0')}:00`;
-                const adjustedTide = value + departureAvg;
-                console.log(adjustedTide);
-                astroTableBody.appendChild(createAstroTableRow(time, value, adjustedTide));
-            });
-            tomorrowAstro.forEach((value, index) => {
-                const time = `${String(index).padStart(2, '0')}:00`;
-                const adjustedTide = value + departureAvg;
-                astroTableBody.appendChild(createAstroTableRow(time, value, adjustedTide));
-            });
-        }
+            const averagesDiv = document.getElementById('averages');
+            const averages = {
+                tide: calculateAverage(tideData[todayKey], 10),
+                departure: calculateAverage(tideData[todayKey + '_departure'], 10),
+                adjustedTide: calculateAverage(tideData[todayKey + '_adjusted'], 10),
+                adjustedDeparture: calculateAverage(tideData[todayKey + '_adjusted_departure'], 10)
+            };
+            averagesDiv.textContent = `Averages (last 10 data points): 
+                Tide: ${averages.tide}, 
+                Departure: ${averages.departure}, 
+                Adjusted Tide: ${averages.adjustedTide}, 
+                Adjusted Departure: ${averages.adjustedDeparture}`;
 
-        displayTideData();
-    </script>
-</body>
-</html>
+            tideData[todayKey].forEach((tide, index) => {
+                const time = tideData.time[index];
+                const departure = tideData[todayKey + '_departure'][index];
+                const adjustedTide = tideData[todayKey + '_adjusted'][index];
+                const adjustedDeparture = tideData[todayKey + '_adjusted_departure'][index];
+                const tr = createTableRow(time, tide, departure, adjustedTide, adjustedDeparture);
+                tideTableBody.appendChild(tr);
+            });
+
+            astroData[todayKey].forEach((tide, index) => {
+                const time = astroData.time[index];
+                const adjustedTide = astroData[todayKey + '_adjusted'][index];
+                const tr = createAstroTableRow(time, tide, adjustedTide);
+                astroTableBody.appendChild(tr);
+            });
+
+            astroNextYearData[tomorrowKey].forEach((tide, index) => {
+                const time = astroNextYearData.time[index];
+                const adjustedTide = astroNextYearData[tomorrowKey + '_adjusted'][index];
+                const tr = createAstroTableRow(time, tide, adjustedTide);
+                astroTableBody.appendChild(tr);
+            });
+        } catch (e) {
+            displayError('Failed to fetch tide data.');
+        }
+    }
+
+    fetchData();
+</script>
