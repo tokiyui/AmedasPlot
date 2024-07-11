@@ -771,7 +771,8 @@ rh925 = np.flip(grbs.select(parameterName='Relative humidity', level=925, foreca
 ept850 = gaussian_filter(mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
-kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
+// kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
+kindex = 20 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
