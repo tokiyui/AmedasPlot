@@ -1,136 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    table {
-      border-collapse: collapse;
-    }
-
-    th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: center;
-    }
-
-    td.red {
-      color: red;
-    }
-
-    td.yellow {
-      background-color: yellow;
-    }
-
-    td.red-bg {
-      background-color: red;
-      color: white;
-    }
-  </style>
+  <title>Tide Data</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <table id="data-table">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Tide</th>
-        <th>Departure</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+  <h1>Tide Data</h1>
+  <div id="result"></div>
 
   <script>
-    // Function to calculate the average of an array of numbers
-    function calculateAverage(numbers) {
-      const sum = numbers.reduce((acc, curr) => acc + curr, 0);
-      return Math.round(sum / numbers.length);
-    }
+    $(document).ready(function() {
+      // 最新のデータを取得するURL
+      var todayURL = "https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_(今日の日付YYYYMMDD)_145681.json";
+      var yesterdayURL = "https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_(昨日の日付YYYYMMDD)_145681.json";
 
-    // Function to fetch JSON data from the provided URL
-    async function fetchData(url) {
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        throw new Error('Error fetching data');
-      }
-    }
+      // 今日の日付を取得
+      var today = new Date();
+      var yyyy = today.getFullYear();
+      var mm = String(today.getMonth() + 1).padStart(2, '0');
+      var dd = String(today.getDate()).padStart(2, '0');
+      var todayDate = yyyy + mm + dd;
 
-    // Function to add a row to the data table
-    function addRow(time, tide, departure) {
-      const tableBody = document.querySelector('#data-table tbody');
-      const row = document.createElement('tr');
-      const timeCell = document.createElement('td');
-      const tideCell = document.createElement('td');
-      const departureCell = document.createElement('td');
+      // 昨日の日付を取得
+      var yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      var yyyyYesterday = yesterday.getFullYear();
+      var mmYesterday = String(yesterday.getMonth() + 1).padStart(2, '0');
+      var ddYesterday = String(yesterday.getDate()).padStart(2, '0');
+      var yesterdayDate = yyyyYesterday + mmYesterday + ddYesterday;
 
-      timeCell.textContent = time;
-      tideCell.textContent = tide;
-      departureCell.textContent = departure;
-
-      row.appendChild(timeCell);
-      row.appendChild(tideCell);
-      row.appendChild(departureCell);
-      tableBody.appendChild(row);
-    }
-
-    // Function to process the fetched data
-    function processData(data) {
-      const tideData = data.tide;
-      const departureData = data.departure;
-
-      // Calculate averages
-      const tideAverage = calculateAverage(tideData.slice(-241));
-      const departureAverage = calculateAverage(departureData.slice(-241));
-
-      // Add rows to the table
-      Object.keys(tideData).forEach(date => {
-        const tide = tideData[date];
-        const departure = departureData[date];
-        const time = `${data.time.slice(5, 10)}-${date}`;
-
-        // Add departure average to each data point
-        const tideWithAverage = tide.map(value => value + departureAverage);
-
-        // Add row to the table
-        addRow(time, tideWithAverage.join(','), departure);
-
-        // Apply cell styles based on conditions
-        const lastDeparture = departure[departure.length - 1];
-        const lastTideWithAverage = tideWithAverage[tideWithAverage.length - 1];
-        const departureCell = document.querySelector('#data-table tbody tr:last-child td:nth-child(3)');
-
-        if (lastDeparture >= 10) {
-          departureCell.classList.add('red');
-        }
-
-        if (lastTideWithAverage >= 130) {
-          departureCell.classList.add('red-bg');
-        } else if (lastTideWithAverage >= 80) {
-          departureCell.classList.add('yellow');
-        }
-      });
-    }
-
-    // Fetch and process data from the provided URLs
-    async function fetchDataAndProcess() {
-      const todayURL = 'https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_20240711_145681.json';
-      const yesterdayURL = 'https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_20240710_145681.json';
-      let data;
-
-      try {
-        data = await fetchData(todayURL);
-      } catch (error) {
-        // Fetch yesterday's data if today's data is unavailable
-        data = await fetchData(yesterdayURL);
+      // データ取得関数
+      function getData(url) {
+        return $.ajax({
+          url: url,
+          dataType: "json"
+        });
       }
 
-      processData(data);
-    }
+      // 最新のデータ取得
+      getData(todayURL)
+        .done(function(data) {
+          processData(data);
+        })
+        .fail(function() {
+          // データが存在しない場合は昨日のデータを取得
+          getData(yesterdayURL)
+            .done(function(data) {
+              processData(data);
+            })
+            .fail(function() {
+              displayError("データの取得に失敗しました。");
+            });
+        });
 
-    // Call the main function to fetch and process data
-    fetchDataAndProcess();
+      // データ処理関数
+      function processData(data) {
+        var tideData = data.tide;
+        var departureData = data.departure;
+        var last241Tide = getLastNElements(tideData, 241);
+        var last241Departure = getLastNElements(departureData, 241);
+        var tideAverage = calculateAverage(last241Tide);
+        var departureAverage = calculateAverage(last241Departure);
+
+        // 結果表示
+        displayResult(tideAverage, departureAverage);
+      }
+
+      // 配列の最後からN個の要素を取得する関数
+      function getLastNElements(array, n) {
+        return array.slice(Math.max(array.length - n, 0));
+      }
+
+      // 配列の平均値を計算する関数
+      function calculateAverage(array) {
+        var sum = array.reduce(function(a, b) {
+          return a + b;
+        }, 0);
+        return Math.round(sum / array.length);
+      }
+
+      // 結果表示関数
+      function displayResult(tideAverage, departureAverage) {
+        var result = "Tide Average: " + tideAverage + "<br>";
+        result += "Departure Average: " + departureAverage;
+        $("#result").html(result);
+      }
+
+      // エラーメッセージ表示関数
+      function displayError(message) {
+        $("#result").html("Error: " + message);
+      }
+    });
   </script>
 </body>
 </html>
