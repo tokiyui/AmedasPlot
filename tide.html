@@ -1,143 +1,136 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tide Level Data</title>
-    <style>
-        .red-text { color: red; }
-        .yellow-cell { background-color: yellow; }
-        .red-cell { background-color: red; }
-    </style>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+
+    td.red {
+      color: red;
+    }
+
+    td.yellow {
+      background-color: yellow;
+    }
+
+    td.red-bg {
+      background-color: red;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <h1>Tide Level Data</h1>
-    <div id="error-message" style="color: red;"></div>
-    <div id="averages"></div>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>時刻</th>
-                <th>Tide</th>
-                <th>Departure</th>
-                <th>Adjusted Tide</th>
-                <th>Adjusted Departure</th>
-            </tr>
-        </thead>
-        <tbody id="tide-table-body">
-        </tbody>
-    </table>
-    <h2>Astro Data</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>時刻</th>
-                <th>Tide</th>
-                <th>Adjusted Tide</th>
-            </tr>
-        </thead>
-        <tbody id="astro-table-body">
-        </tbody>
-    </table>
-    <script>
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Tide</th>
+        <th>Departure</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 
-        const year = today.getFullYear();
-        const todayStr = today.toISOString().split('T')[0].replace(/-/g, '');
-        const yesterdayStr = yesterday.toISOString().split('T')[0].replace(/-/g, '');
-        const tomorrowStr = tomorrow.toISOString().split('T')[0].replace(/-/g, '');
-        const todayKey = todayStr.slice(4);
-        const tomorrowKey = tomorrowStr.slice(4);
+  <script>
+    // Function to calculate the average of an array of numbers
+    function calculateAverage(numbers) {
+      const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+      return Math.round(sum / numbers.length);
+    }
 
-        const tideUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${todayStr}_145681.json`;
-        const tideBackupUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${yesterdayStr}_145681.json`;
-        const astroUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${year}_145681.json`;
-        const astroNextYearUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_${tomorrow.getFullYear()}_145681.json`;
+    // Function to fetch JSON data from the provided URL
+    async function fetchData(url) {
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        throw new Error('Error fetching data');
+      }
+    }
 
-        async function fetchJson(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (e) {
-                console.error(`Failed to fetch from ${url}`, e);
-                throw e;
-            }
+    // Function to add a row to the data table
+    function addRow(time, tide, departure) {
+      const tableBody = document.querySelector('#data-table tbody');
+      const row = document.createElement('tr');
+      const timeCell = document.createElement('td');
+      const tideCell = document.createElement('td');
+      const departureCell = document.createElement('td');
+
+      timeCell.textContent = time;
+      tideCell.textContent = tide;
+      departureCell.textContent = departure;
+
+      row.appendChild(timeCell);
+      row.appendChild(tideCell);
+      row.appendChild(departureCell);
+      tableBody.appendChild(row);
+    }
+
+    // Function to process the fetched data
+    function processData(data) {
+      const tideData = data.tide;
+      const departureData = data.departure;
+
+      // Calculate averages
+      const tideAverage = calculateAverage(tideData.slice(-241));
+      const departureAverage = calculateAverage(departureData.slice(-241));
+
+      // Add rows to the table
+      Object.keys(tideData).forEach(date => {
+        const tide = tideData[date];
+        const departure = departureData[date];
+        const time = `${data.time.slice(5, 10)}-${date}`;
+
+        // Add departure average to each data point
+        const tideWithAverage = tide.map(value => value + departureAverage);
+
+        // Add row to the table
+        addRow(time, tideWithAverage.join(','), departure);
+
+        // Apply cell styles based on conditions
+        const lastDeparture = departure[departure.length - 1];
+        const lastTideWithAverage = tideWithAverage[tideWithAverage.length - 1];
+        const departureCell = document.querySelector('#data-table tbody tr:last-child td:nth-child(3)');
+
+        if (lastDeparture >= 10) {
+          departureCell.classList.add('red');
         }
 
-        function calculateAverage(arr, count) {
-            const slice = arr.slice(-count);
-            const sum = slice.reduce((acc, val) => acc + val, 0);
-            return Math.round(sum / slice.length);
+        if (lastTideWithAverage >= 130) {
+          departureCell.classList.add('red-bg');
+        } else if (lastTideWithAverage >= 80) {
+          departureCell.classList.add('yellow');
         }
+      });
+    }
 
-        function createTableRow(time, tide, departure, adjustedTide, adjustedDeparture) {
-            const tr = document.createElement('tr');
+    // Fetch and process data from the provided URLs
+    async function fetchDataAndProcess() {
+      const todayURL = 'https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_20240711_145681.json';
+      const yesterdayURL = 'https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_20240710_145681.json';
+      let data;
 
-            const timeTd = document.createElement('td');
-            timeTd.textContent = time;
-            tr.appendChild(timeTd);
+      try {
+        data = await fetchData(todayURL);
+      } catch (error) {
+        // Fetch yesterday's data if today's data is unavailable
+        data = await fetchData(yesterdayURL);
+      }
 
-            const tideTd = document.createElement('td');
-            tideTd.textContent = tide;
-            if (tide >= 80 && tide < 130) tideTd.classList.add('yellow-cell');
-            if (tide >= 130) tideTd.classList.add('red-cell');
-            tr.appendChild(tideTd);
+      processData(data);
+    }
 
-            const departureTd = document.createElement('td');
-            departureTd.textContent = departure;
-            if (departure >= 10) departureTd.classList.add('red-text');
-            tr```html
-.appendChild(departureTd);
-
-            const adjustedTideTd = document.createElement('td');
-            adjustedTideTd.textContent = adjustedTide;
-            tr.appendChild(adjustedTideTd);
-
-            const adjustedDepartureTd = document.createElement('td');
-            adjustedDepartureTd.textContent = adjustedDeparture;
-            tr.appendChild(adjustedDepartureTd);
-
-            return tr;
-        }
-
-        async function displayData() {
-            try {
-                const tideData = await fetchJson(tideUrl);
-                const astroData = await fetchJson(astroUrl);
-
-                const tideTableBody = document.getElementById('tide-table-body');
-                const astroTableBody = document.getElementById('astro-table-body');
-
-                tideData.forEach((entry) => {
-                    const { time, tide, departure } = entry;
-                    const adjustedTide = tide - 100;
-                    const adjustedDeparture = departure - 10;
-                    tideTableBody.appendChild(createTableRow(time, tide, departure, adjustedTide, adjustedDeparture));
-                });
-
-                astroData.forEach((entry) => {
-                    const { time, tide } = entry;
-                    const adjustedTide = tide - 100;
-                    astroTableBody.appendChild(createTableRow(time, tide, '', adjustedTide, ''));
-                });
-
-                const averageTide = calculateAverage(tideData.map(entry => entry.tide), 10);
-                const averageDeparture = calculateAverage(tideData.map(entry => entry.departure), 10);
-
-                const averagesDiv = document.getElementById('averages');
-                averagesDiv.innerHTML = `Average Tide: ${averageTide}<br>Average Departure: ${averageDeparture}`;
-            } catch (e) {
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = 'Failed to fetch data. Please try again later.';
-            }
-        }
-
-        displayData();
-    </script>
+    // Call the main function to fetch and process data
+    fetchDataAndProcess();
+  </script>
 </body>
 </html>
