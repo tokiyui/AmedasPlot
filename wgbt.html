@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WBGT Forecast</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .high {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+ 
+<h1>WBGT Forecast</h1>
+<table id="forecastTable">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Hour</th>
+            <th>WBGT</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+ 
+<script>
+    const urls = [
+'https://www.wbgt.env.go.jp/prev15WG/dl/yohou_niigata.csv',
+'https://www.wbgt.env.go.jp/prev15WG/dl/yohou_toyama.csv',
+'https://www.wbgt.env.go.jp/prev15WG/dl/yohou_ishikawa.csv',
+'https://www.wbgt.env.go.jp/prev15WG/dl/yohou_fukui.csv'
+    ];
+ 
+    const locations = ['Niigata', 'Toyama', 'Ishikawa', 'Fukui'];
+ 
+    async function fetchCsvData(url) {
+        const response = await fetch(url);
+        const text = await response.text();
+        return text.split('\n').slice(1).map(line => line.split(','));
+    }
+ 
+    function appendToTable(data, location) {
+        const tbody = document.getElementById('forecastTable').querySelector('tbody');
+        data.forEach(row => {
+            if (row.length < 4) return;  // 不完全な行をスキップ
+            const tr = document.createElement('tr');
+            row.forEach((cell, index) => {
+                if (index > 2) {
+                    const wbgtValue = Math.floor(Number(cell) / 10);
+                    const td = document.createElement('td');
+                    td.textContent = wbgtValue;
+                    if (wbgtValue >= 33) {
+                        td.classList.add('high');
+                    }
+                    tr.appendChild(td);
+                } else {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                }
+            });
+            const locationTd = document.createElement('td');
+            locationTd.textContent = location;
+            tr.insertBefore(locationTd, tr.firstChild);
+            tbody.appendChild(tr);
+        });
+    }
+ 
+    async function loadData() {
+        for (let i = 0; i < urls.length; i++) {
+            const data = await fetchCsvData(urls[i]);
+            appendToTable(data, locations[i]);
+        }
+    }
+ 
+    loadData();
+</script>
+ 
+</body>
+</html>
