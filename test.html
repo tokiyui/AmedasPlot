@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Tide and Departure Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .red-text {
+            color: red;
+        }
+        .yellow-cell {
+            background-color: yellow;
+        }
+        .red-cell {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tide and Departure Data</h1>
+<p id="tide-average"></p>
+<p id="departure-average"></p>
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Tide</th>
+            <th>Departure</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+    }
+}
+
+function round(num) {
+    return Math.round(num);
+}
+
+function calculateAverage(data, key, count) {
+    const subset = data.slice(-count);
+    const sum = subset.reduce((acc, item) => acc + item[key], 0);
+    return round(sum / count);
+}
+
+function createRow(date, time, tide, departure) {
+    const row = document.createElement('tr');
+    const dateCell = document.createElement('td');
+    const timeCell = document.createElement('td');
+    const tideCell = document.createElement('td');
+    const departureCell = document.createElement('td');
+
+    dateCell.textContent = date;
+    timeCell.textContent = time;
+    tideCell.textContent = tide;
+    departureCell.textContent = departure;
+
+    if (departure >= 10) {
+        departureCell.classList.add('red-text');
+    }
+
+    if (departure >= 80) {
+        departureCell.classList.add('yellow-cell');
+    }
+    
+    if (departure >= 130) {
+        departureCell.classList.add('red-cell');
+    }
+
+    row.appendChild(dateCell);
+    row.appendChild(timeCell);
+    row.appendChild(tideCell);
+    row.appendChild(departureCell);
+
+    return row;
+}
+
+async function main() {
+    const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0].replace(/-/g, '');
+    let tideDataUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${today}_145681.json`;
+    let tideData = await fetchData(tideDataUrl);
+
+    if (!tideData) {
+        tideDataUrl = `https://www.jma.go.jp/bosai/tidelevel/data/tide/tide_obs_${yesterday}_145681.json`;
+        tideData = await fetchData(tideDataUrl);
+    }
+
+    if (!tideData) {
+        document.getElementById('tide-average').textContent = 'No tide data available.';
+        document.getElementById('departure-average').textContent = 'No departure data available.';
+        return;
+    }
+
+    const tideAverage = calculateAverage(tideData.tide, 'tide', 241);
+    const departureAverage = calculateAverage(tideData.departure, 'departure', 241);
+
+    document.getElementById('tide-average').textContent = `Tide Average: ${tideAverage}`;
+    document.getElementById('departure-average').textContent = `Departure Average: ${departureAverage}`;
+
+    const tideAstroUrl = `https://www.jma.go.jp/bosai/tidelevel/const/tide_astro/tide_astro_2024_145681.json`;
+    const tideAstroData = await fetchData(tideAstroUrl);
+
+    const tbody = document.querySelector('#data-table tbody');
+    const todayData = tideAstroData.find(item => item.date === today);
+    const tomorrowData = tideAstroData.find(item => item.date === new Date(Date.now() + 86400000).toISOString().split('T')[0].replace(/-/g, ''));
+
+    [todayData, tomorrowData].forEach(dayData => {
+        if (dayData) {
+            dayData.times.forEach((time, index) => {
+                const tideValue = dayData.values[index];
+                const departureValue = tideValue + departureAverage;
+                tbody.appendChild(createRow(dayData.date, time, tideValue, departureValue));
+            });
+        }
+    });
+}
+
+main();
+</script>
+</body>
+</html>
