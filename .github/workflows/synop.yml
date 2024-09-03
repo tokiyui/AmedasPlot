@@ -34,7 +34,6 @@ jobs:
         run: |
           pip install requests
           python synop.py "${{ steps.calculate_time.outputs.utc_time }}"
-          cp weather_data.csv "SYNOP/${{ steps.calculate_time.outputs.utc_time }}Z.csv"
 
       - name: Add changes to git
         run: |
