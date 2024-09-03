@@ -27,24 +27,27 @@ jobs:
           sudo apt-get install -y build-essential
           python -m pip install --upgrade pip
           pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install numpy==1.26.4
+          pip install cartopy
+          pip install metpy
+          pip install matplotlib
+          pip install pandas
+          pip install datetime
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
-          git rm ./*.png
 
       - name: Plotting
         env:
           PTree_ID: ${{ secrets.PTree_ID }}
           PTree_Pass: ${{ secrets.PTree_Pass }}
         run: |
-          python amedasplot.py 
+          git rm ./*.png
+          git rm ./*.csv
+          python amedasplot.py
 
-      - name: Check for Git changes
+      - name: Commit and Push Changes
         id: git_changes
         run: |
           git diff --quiet || echo "::set-output name=changes::yes"
-
-      - name: Commit and Push Changes
-        run: |
           echo ${{ secrets.TOKEN }}
           echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
