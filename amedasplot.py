@@ -368,7 +368,6 @@ def read_hima(time, band):
   time = time - offsets.Hour(9)
   day_dir = time.strftime("%Y%m/%d")
   basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(time.strftime("%Y%m%d_%H%M"))
-  print(time,day_dir,basename)
 
   # lftpコマンドを実行してFTPサーバーに接続
   PTree_ID = os.environ.get('PTree_ID')
@@ -466,8 +465,6 @@ y = coordinates[:, 1]
 values = np.array(values)
  
 # グリッドの作成
-print(x.shape,y.shape)
-
 xi = np.linspace(np.min(x), np.max(x), 370)
 yi = np.linspace(np.min(y), np.max(y), 481)
 xi, yi = np.meshgrid(xi, yi)
@@ -501,7 +498,6 @@ sealand = np.flip(data*10000, axis=0)
 #sealand[(grid_lon_s > 145.5)] = 0
 
 sealand = maximum_filter(sealand, size=(15, 15))
-print(np.max(sealand))
 
 # ガウシアンフィルタを適用
 sealand_filterd = gaussian_filter(sealand, sigma=1.0) # sigmaはガウス分布の標準偏差
@@ -813,7 +809,7 @@ dt = datetime(int(year), int(month), int(day), int(hour), 0)
 init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(6) 
 init = init - offsets.Hour(init.hour % 3) 
 ft = init + offsets.Hour(6)
-print(ft)
+
 # MSMは03シリーズ
 base_time =  init - offsets.Hour(9) 
 
