@@ -52,6 +52,7 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           mv ./*.png latest/ 
           git add latest/*.png
+          git add "*.csv"
           git diff --cached --quiet || git commit -m "Add Pictures"
           git push origin main
 
