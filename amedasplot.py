@@ -8,7 +8,7 @@
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
 
-import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys, csv
+import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys, csv, re
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -27,6 +27,67 @@ from ftplib import FTP
 import xarray as xr
 import requests
 from matplotlib.colors import ListedColormap, BoundaryNorm
+
+def dms_to_decimal(dms):
+    direction = dms[-1]
+    degrees, minutes = dms[:-1].split()
+    degrees = float(degrees)
+    minutes = float(minutes)
+    decimal = degrees + minutes / 60
+    if direction in ['S', 'W']:
+        decimal *= -1
+    return round(decimal,4)
+ 
+def process_url(cou, year, month, day, hour):
+    # URLからHTMLを取得
+    url = "http://www.meteomanz.com/sy6?cou={}&sh=map4&d1={}&m1={}&y1={}&h1={}Z&l=1".format(cou, day, month, year, hour)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
+    response = requests.get(url, headers= headers)
+    html = response.text
+ 
+    # 正規表現パターンを定義
+    pattern = r'<span id="(\d+)" style="Display:none;"><table.*?<u>(.*?), (.*?) \((.*?)\/(.*?)\/(.*?)\), (\d+)Z:</u>.*?<td>(.*?)</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>.*?Tmin:(.*?)ºC.*?Tmax:(.*?)ºC.*?</pre>'
+ 
+    # パターンにマッチするデータを抽出
+    matches = re.findall(pattern, html, re.DOTALL)
+ 
+    # データをリストに格納
+    data_list = []
+    for match in matches:
+        height = match[5].replace(' m', '')
+        temperature = match[7].replace('ÂºC', '')
+        if temperature == '':
+            temperature = '-'
+        humidity = match[8].replace('%', '')
+        pressure = '-' if 'N/A' in match[9] or 'm' in match[9] else match[9].replace(' Hpa', '')
+       
+        if 'calm' in match[10]:
+            wind_speed = 'calm'
+        else:
+            wind_speed = match[10].replace(' Km/h', '') if 'N/A' not in match[10] else '-'
+ 
+        lat = dms_to_decimal(match[3].replace('IN ASIA) (', ''))
+        lon = dms_to_decimal(match[4])
+ 
+        wind_info = match[10].split()
+        if len(wind_info) == 3:
+            wind_direction = wind_info[0]
+            wind_speed = wind_info[1]
+            wind_speed_decimal = round(float(wind_speed) / 3.6, 1)  # km/hをm/sに変換し、小数点以下1桁までに丸める
+        elif wind_info[0] == 'calm':
+            wind_direction = 'calm'
+            wind_speed_decimal = '-'
+        else:
+            wind_direction = '-'
+            wind_speed_decimal = '-'
+ 
+        data = [match[0], match[1], match[2], lat, lon, height, temperature, humidity, pressure, wind_direction , wind_speed_decimal]
+        if lat > 0 and lon > 90 :
+          data_list.append(data)
+        elif lat > 0 and lon < -150:
+          data_list.append(data)
+         
+    return data_list
 
 ## 極大/極小ピーク検出関数                                                             
 def detect_peaks(image, filter_size, dist_cut, flag=0):
@@ -283,6 +344,23 @@ if dt:
 else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
+
+# 対象のcouパラメータのリスト
+cou_list = [2010, 2140, 2150, 2176, 2180, 2190, 2250, 5030, 5420]
+ 
+# ヘッダー行を定義
+header = ['ID', 'City', 'Country', 'Latitude', 'Longitude', 'Height', 'Temperature', 'Humidity', 'Pressure', 'Wind Direction', 'Wind Speed']
+ 
+# CSVファイルにデータを書き込む
+with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(header)  # ヘッダー行を書き込む
+   
+    # 各URLについて処理を実行し、CSVに書き込む
+    for cou in cou_list:
+        data = process_url(cou, year, month, day, hour)
+        for row in data:
+            writer.writerow(row)
 
 def read_hima(time, band):
   # Himawari-9
