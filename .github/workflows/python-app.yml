@@ -34,6 +34,7 @@ jobs:
           pip install pandas
           pip install datetime
           pip install pygrib
+          pip install netCDF4
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
 
       - name: Plotting
