@@ -416,6 +416,7 @@ amd_json = json.loads(station_json)
 # アメダスデータと同じ時刻のUTCを計算
 time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
+print(utc)
 
 # 前1時間の雷実況
 for i in range(1,12):
