@@ -41,6 +41,7 @@ def dms_to_decimal(dms):
 def process_url(cou, year, month, day, hour):
     # URLからHTMLを取得
     url = "http://www.meteomanz.com/sy6?cou={}&sh=map4&d1={}&m1={}&y1={}&h1={}Z&l=1".format(cou, day, month, year, hour)
+    print(url)
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
     response = requests.get(url, headers= headers)
     html = response.text
