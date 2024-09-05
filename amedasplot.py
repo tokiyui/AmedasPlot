@@ -346,23 +346,6 @@ else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
 
-# 対象のcouパラメータのリスト
-cou_list = [2010, 2140, 2150, 2176, 2180, 2190, 2250, 5030, 5420]
- 
-# ヘッダー行を定義
-header = ['ID', 'City', 'Country', 'Latitude', 'Longitude', 'Height', 'Temperature', 'Humidity', 'Pressure', 'Wind Direction', 'Wind Speed']
- 
-# CSVファイルにデータを書き込む
-with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(header)  # ヘッダー行を書き込む
-   
-    # 各URLについて処理を実行し、CSVに書き込む
-    for cou in cou_list:
-        data = process_url(cou, year, month, day, hour)
-        for row in data:
-            writer.writerow(row)
-
 def read_hima(time, band):
   # Himawari-9
   # 日付とファイル名の生成
@@ -417,6 +400,28 @@ amd_json = json.loads(station_json)
 time = pd.Timestamp(year,month,day,hour,min)
 utc = time - offsets.Hour(9)
 print(utc)
+
+  # 対象のcouパラメータのリスト
+  cou_list = [2010, 2140, 2150, 2176, 2180, 2190, 2250, 5030, 5420]
+ 
+  # ヘッダー行を定義
+  header = ['ID', 'City', 'Country', 'Latitude', 'Longitude', 'Height', 'Temperature', 'Humidity', 'Pressure', 'Wind Direction', 'Wind Speed']
+
+  year = utc.strftime("%Y")
+  month = = utc.strftime("%m")
+  day = = utc.strftime("%d")
+  hour = = utc.strftime("%H")
+  
+  # CSVファイルにデータを書き込む
+  with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(header)  # ヘッダー行を書き込む
+   
+    # 各URLについて処理を実行し、CSVに書き込む
+    for cou in cou_list:
+      data = process_url(cou, year, month, day, hour)
+      for row in data:
+        writer.writerow(row)
 
 # 前1時間の雷実況
 for i in range(1,12):
