@@ -408,9 +408,9 @@ cou_list = [2010, 2140, 2150, 2176, 2180, 2190, 2250, 5030, 5420]
 header = ['ID', 'City', 'Country', 'Latitude', 'Longitude', 'Height', 'Temperature', 'Humidity', 'Pressure', 'Wind Direction', 'Wind Speed']
 
 year = utc.strftime("%Y")
-month = = utc.strftime("%m")
-day = = utc.strftime("%d")
-hour = = utc.strftime("%H")
+month = utc.strftime("%m")
+day = utc.strftime("%d")
+hour = utc.strftime("%H")
   
 # CSVファイルにデータを書き込む
 with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
