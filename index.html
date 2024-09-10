@@ -5,11 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実況監視ページ</title>
+    <style>
+        #selectLabel {
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
 
 <h1 id="pageTitle">実況監視ページ</h1>
-<h2>局地図地域選択：<select id="regionSelect" onchange="changeImage()" style="display: inline-block;">
+<h2>局地図地域選択：<select id="regionSelect" onchange="changeImage()">
   <option value="hokkaido">北海道</option>
   <option value="tohoku">北陸・東北</option>
   <option value="kanto" selected>関東〜近畿</option>
