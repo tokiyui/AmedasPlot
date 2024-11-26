@@ -708,6 +708,7 @@ for area in [0, 1, 2, 3, 4]:
     grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
     diff_npre = grid_npre - prmsl
+    diff_npre[sealand_filterd < 1.0] = 0
     
     diff_npre = gaussian_filter(diff_npre, sigma=2.0)
     diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
