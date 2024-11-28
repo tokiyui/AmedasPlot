@@ -862,7 +862,7 @@ kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.
 pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
 
 # 2次元配列を 3次元に展開 (253, 241, 2) の形にする
-pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2)
+pressure_levels = np.tile(pressure_levels, (1, tmp850.shape[0], tmp850.shape[1]))  # (253, 241, 2)
 print(pressure_levels.shape,tmp850.shape)
 
 ssi = tmp500 - mpcalc.parcel_profile(pressure_levels, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
