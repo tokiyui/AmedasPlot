@@ -858,16 +858,16 @@ ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * unit
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
 
-# 圧力レベル（500 hPa と 850 hPa）を作成
-pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
+# 圧力レベル（500 hPa と 850 hPa）を作成（逆順に並べる）
+#pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
 
 # 2次元配列を 3次元に展開 (253, 241, 2) の形にする
-pressure_levels = np.tile(pressure_levels, (1, tmp850.shape[0], tmp850.shape[1]))  # (253, 241, 2)
-print(pressure_levels.shape,tmp850.shape)
+#pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2)
 
-ssi = tmp500 - mpcalc.parcel_profile(pressure_levels, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
-ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
-ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
+
+#ssi = tmp500 - mpcalc.parcel_profile([500, 850], tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
+#ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
+#ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
@@ -1008,7 +1008,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, ssi, levels=[-float('inf'), 3, 0, -3, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, kindex58, levels=[-float('inf'), 0, 10, 20, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 10
