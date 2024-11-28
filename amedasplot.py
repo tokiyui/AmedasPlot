@@ -858,6 +858,9 @@ ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * unit
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
 pressure_levels = np.array([[850, 500]] * tmp850.shape[0] * tmp850.shape[1]).reshape(tmp850.shape[0], tmp850.shape[1], 2) * units.hPa
+print(pressure_levels.shape)
+pressure_levels = np.array([[850, 500]] * tmp850.shape[0] * tmp850.shape[1])
+print(pressure_levels.shape)
 ssi = tmp500 - mpcalc.parcel_profile(pressure_levels, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
 ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
 ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
