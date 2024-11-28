@@ -861,6 +861,7 @@ pressure_levels = np.array([[500, 850]] * tmp850.shape[0] * tmp850.shape[1]).res
 print(pressure_levels.shape)
 pressure_levels = np.array([[500, 850]] * tmp850.shape[0] * tmp850.shape[1]).reshape(2, tmp850.shape[0], tmp850.shape[1]) * units.hPa
 print(pressure_levels.shape)
+print(pressure_levels[1][1])
 ssi = tmp500 - mpcalc.parcel_profile(pressure_levels, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
 ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
 ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
