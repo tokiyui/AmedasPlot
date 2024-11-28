@@ -501,7 +501,7 @@ sealand = np.flip(data*10000, axis=0)
 #sealand[(grid_lat_s > 45.5)] = 0
 #sealand[(grid_lon_s > 145.5)] = 0
 
-sealand = maximum_filter(sealand, size=(15, 15))
+sealand = maximum_filter(sealand, size=(5, 5))
 
 # ガウシアンフィルタを適用
 sealand_filterd = gaussian_filter(sealand, sigma=1.0) # sigmaはガウス分布の標準偏差
