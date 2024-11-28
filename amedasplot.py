@@ -857,13 +857,14 @@ ttd850 = (tmp850 - mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * unit
 ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude)
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
-pressure_levels = np.array([[500, 850]] * tmp850.shape[0] * tmp850.shape[1]).reshape(tmp850.shape[0], tmp850.shape[1], 2) * units.hPa
-print(pressure_levels.shape)
-pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
-pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2) の形にする
 
-print(pressure_levels.shape)
-print(pressure_levels[1][1])
+# 圧力レベル（500 hPa と 850 hPa）を作成
+pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
+
+# 2次元配列を 3次元に展開 (253, 241, 2) の形にする
+pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2)
+print(pressure_levels.shape,tmp850.shape)
+
 ssi = tmp500 - mpcalc.parcel_profile(pressure_levels, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
 ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
 ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
