@@ -710,15 +710,11 @@ for area in [0, 1, 2, 3, 4]:
     diff_npre = grid_npre - prmsl
     diff_npre[sealand_filterd < 1.0] = 0
     
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 1000.0] = grid_npre[sealand_filterd > 1000.0] - prmsl[sealand_filterd > 1000.0]
-    diff_npre = gaussian_filter(diff_npre, sigma=2.0)
+    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
 
     grid_npre = prmsl + diff_npre
-    
-    #陸地から十分離れた格子は描画しない(MSMと実況の差が大きい場合があるため)
-    #grid_npre[sealand_filterd <= 1] = np.nan
-    #grid_temp[sealand_filterd <= 1] = np.nan
 
     # 描画領域のデータを切り出す（等圧線のラベルを表示するためのおまじない）
     lon_range = np.where((grid_lon_s[0, :] >= i_area[0] - 0.25) & (grid_lon_s[0, :] <= i_area[1] + 0.25))
@@ -747,6 +743,10 @@ for area in [0, 1, 2, 3, 4]:
 
     # 等圧線のラベルを付ける
     plt.clabel(cont, fontsize=15)
+
+    # 陸上の格子点の風は描画しない
+    u[sealand > 1000.0] = np.nan
+    v[sealand > 1000.0] = np.nan
 
     # ベクトルの間引き間隔
     stride = 8
@@ -863,7 +863,6 @@ kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.
 
 # 2次元配列を 3次元に展開 (253, 241, 2) の形にする
 #pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2)
-
 
 #ssi = tmp500 - mpcalc.parcel_profile([500, 850], tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
 #ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
