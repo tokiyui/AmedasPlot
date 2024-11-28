@@ -852,9 +852,14 @@ rh850 = np.flip(grbs.select(parameterName='Relative humidity', level=850, foreca
 rh925 = np.flip(grbs.select(parameterName='Relative humidity', level=925, forecastTime=6)[0].data()[0], axis=0)
 ept850 = gaussian_filter(mpcalc.equivalent_potential_temperature(850*units('hPa'), (tmp850+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100)), sigma=4.0)
 ept925 = gaussian_filter(mpcalc.equivalent_potential_temperature(925*units('hPa'), (tmp925+273.15) * units('K'), mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh850 / 100)), sigma=4.0)
-ttd = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
-# kindex = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
-kindex = 20 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd
+ttd700 = (tmp700 - mpcalc.dewpoint_from_relative_humidity((tmp700+273.15) * units('K'), rh700 / 100).magnitude)
+ttd850 = (tmp850 - mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude)
+ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude)
+kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
+kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
+ssi = tmp500 - mpcalc.parcel_profile([850, 500] * units.hPa, tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
+ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
+ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
@@ -964,7 +969,7 @@ gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, ttd, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
+plt.contourf(grid_lon_p, grid_lat_p, ttd700, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
 
 # ベクトルの間引き間隔
 stride = 10
@@ -974,7 +979,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("TTd700, T850, Wind850"), loc='left',size=15)
+plt.title('{}'.format("TTD700, T850, Wind850"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_700.png", format="png")
@@ -995,7 +1000,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, kindex, levels=[-float('inf'), 10, 25, 40, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, ssi, levels=[-float('inf'), 3, 0, -3, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 10
