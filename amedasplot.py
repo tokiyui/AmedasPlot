@@ -526,7 +526,7 @@ xi = np.linspace(np.min(x), np.max(x), 370)
 yi = np.linspace(np.min(y), np.max(y), 481)
 xi, yi = np.meshgrid(xi, yi)
 
-print(x)
+#print(x)
  
 # 値データを補間
 zi = np.zeros_like(xi)
@@ -534,7 +534,7 @@ for i in range(len(values)):
     xi_index = np.abs(xi[0] - x[i]).argmin()
     yi_index = np.abs(yi[:, 0] - y[i]).argmin()
     zi[yi_index, xi_index] = values[i]
-    #print(yi_index, xi_index, values[i])
+    print(x[i], y[i], yi_index, xi_index, values[i])
    
 # GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
