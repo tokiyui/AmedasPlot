@@ -779,8 +779,8 @@ for area in [0, 1, 2, 3, 4]:
     temp_grid = grid_temp[lat_indices][:, lon_indices]
 
     # 海上風
-    slon, slat, su, sv = get_toudaifu()
-    ax.barbs(slon, slat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+    sealon, sealat, su, sv = get_toudaifu()
+    ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
