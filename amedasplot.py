@@ -534,7 +534,7 @@ for i in range(len(values)):
     xi_index = np.abs(xi[0] - x[i]).argmin()
     yi_index = np.abs(yi[:, 0] - y[i]).argmin()
     zi[yi_index, xi_index] = values[i]
-    print(yi_index, xi_index, values[i])
+    #print(yi_index, xi_index, values[i])
    
 # GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
