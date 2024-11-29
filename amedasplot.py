@@ -312,6 +312,57 @@ def download_time(time):
     #return GgisFile
     return fname
 
+def get_toudaifu()
+    # URLからデータを取得
+    url = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        # データを分割
+        data = response.text.split(';')
+        results = []
+
+        for entry in data:
+            if entry.strip():  # 空のエントリを無視
+                try:
+                    # POINT(経度 緯度)@@画像@@風速
+                    point, wind_info, wind_speed_info = entry.split('@@')
+                
+                    # 緯度と経度を抽出
+                    lat, lon = map(float, point.strip('POINT()').split())
+                    
+                    # 風向番号を抽出
+                    try:
+                        wind_direction = int(wind_info.split('_')[1])
+                    except (IndexError, ValueError):
+                        wind_direction = np.nan  # 不正な形式の場合はNaNに設定
+                
+                    # 風速を確認し、特定の条件で処理
+                    if wind_speed_info == '風弱く':
+                        wind_speed = 0.0  # 風弱くの場合は0 m/sとする
+                    elif wind_speed_info == '不明':
+                        wind_speed = np.nan  # 不明の場合はNaN
+                    else:
+                        wind_speed = float(wind_speed_info.strip('m/s'))
+                      
+                    # 風速が不明または風向がNaNの場合はスキップ
+                    if np.isnan(wind_speed) or np.isnan(wind_direction):
+                        continue
+    
+                    # 風向をラジアンに変換
+                    angle_rad = math.radians(wind_direction * 22.5)  # 22.5度ごとの方向
+   
+                    # 東西 (u) 成分と南北 (v) 成分を計算
+                    u = -wind_speed * math.sin(angle_rad)  # 負号で右手系に合わせる
+                    v = -wind_speed * math.cos(angle_rad)
+
+                    # 結果をリストに追加
+                    results.append((lon, lat, u, v))
+                except Exception as e:
+                    continue
+                
+    return lon, lat, u, v
+
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
 npre_dispflag = False
 temp_dispflag = False
@@ -696,7 +747,7 @@ for area in [0, 1, 2, 3, 4]:
 
     prmsl = gaussian_filter(prmsl, sigma=4.0)
     tmp = gaussian_filter(tmp, sigma=4.0)
-
+    
     # 線形補間
     grid_temp = griddata((lon_list_t, lat_list_t), temp_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
@@ -726,6 +777,10 @@ for area in [0, 1, 2, 3, 4]:
     grid_lat_sliced = grid_lat_s[lat_indices][:, lon_indices]
     psea_grid = grid_npre[lat_indices][:, lon_indices]
     temp_grid = grid_temp[lat_indices][:, lon_indices]
+
+    # 海上風
+    slon, slat, su, sv = get_toudaifu()
+    ax.barbs(slon, slat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
