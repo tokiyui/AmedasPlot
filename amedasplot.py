@@ -1,5 +1,4 @@
-# AMeDAS 観測データプロット図 （地図領域は、緯度・経度のそれぞれ2度の範囲)
-# 矢羽,気温(左上),湿球温度（右下）,露点温度(左下),海面更正気圧(右上)
+# AMeDAS 観測データプロット図
 # 黒良先生のプログラムにレーダーGPVを重ね合わせ
 # アメダス地点テーブルJSON  https://www.jma.go.jp/bosai/amedas/const/amedastable.json
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
