@@ -312,7 +312,7 @@ def download_time(time):
     #return GgisFile
     return fname
 
-def get_toudaifu()
+def get_toudaifu():
     # URLからデータを取得
     url = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry"
     response = requests.get(url)
