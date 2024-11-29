@@ -525,6 +525,8 @@ values[values == 0.4] = 0.0
 xi = np.linspace(np.min(x), np.max(x), 370)
 yi = np.linspace(np.min(y), np.max(y), 481)
 xi, yi = np.meshgrid(xi, yi)
+
+print(xi,x)
  
 # 値データを補間
 zi = np.zeros_like(xi)
