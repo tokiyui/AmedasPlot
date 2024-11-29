@@ -613,18 +613,7 @@ for area in [0, 1, 2, 3, 4]:
 
     # カラーマップの作成
     norm = BoundaryNorm(clevs, len(clevs) - 1)
-
-    # レーダーGPV描画
-    lon = np.arange(slon, elon, rlon)
-    lat = np.arange(slat, elat, rlat)
-    LON, LAT = np.meshgrid(lon, lat)
-    LON, LAT = LON.T, LAT.T
-    #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
-    cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
-
-    cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
-    #cb.ax.tick_params(labelsize=8) 
-
+    
     # グリッド線を引く                                                               
     xticks=np.arange(-180,180,dlon)
     yticks=np.arange(-90,90.1,dlat)
@@ -784,6 +773,18 @@ for area in [0, 1, 2, 3, 4]:
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
     ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+
+    # レーダーGPV描画
+    lon = np.arange(slon, elon, rlon)
+    lat = np.arange(slat, elat, rlat)
+    LON, LAT = np.meshgrid(lon, lat)
+    LON, LAT = LON.T, LAT.T
+    #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+    cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
+
+    cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
+    #cb.ax.tick_params(labelsize=8) 
+
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
