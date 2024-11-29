@@ -517,6 +517,9 @@ y = coordinates[:, 1]
 
 # 値データをNumPy配列に変換
 values = np.array(values)
+
+# 解析雨量の最小値は0.4??
+values[values == 0.4] = 0.0
  
 # グリッドの作成
 xi = np.linspace(np.min(x), np.max(x), 370)
