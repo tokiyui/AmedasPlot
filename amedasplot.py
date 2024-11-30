@@ -319,8 +319,11 @@ def get_toudaifu():
     if response.status_code == 200:
         # データを分割
         data = response.text.split(';')
-        results = []
-
+        sealon = []
+        sealat = []
+        su = []
+        sv = []
+        
         for entry in data:
             if entry.strip():  # 空のエントリを無視
                 try:
@@ -356,11 +359,14 @@ def get_toudaifu():
                     v = -wind_speed * math.cos(angle_rad)
 
                     # 結果をリストに追加
-                    results.append((lon, lat, u, v))
+                    sealon.append(lon)
+                    sealat.append(lat)
+                    su.append(u)
+                    sv.append(v)
                 except Exception as e:
                     continue
                 
-    return lon, lat, u, v
+    return sealon, sealat, su, sv
 
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
 npre_dispflag = False
@@ -772,7 +778,7 @@ for area in [0, 1, 2, 3, 4]:
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
     print(sealon, sealat, su, sv)
-    #ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+    ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
     # レーダーGPV描画
     lon = np.arange(slon, elon, rlon)
