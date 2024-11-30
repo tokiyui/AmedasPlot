@@ -528,8 +528,8 @@ values = np.array(values)
 values[values == 0.4] = 0.0
  
 # グリッドの作成
-xi = np.linspace(np.min(x), np.max(x), 250) #481
-yi = np.linspace(np.min(y), np.max(y), 364) #370
+xi = np.linspace(np.min(x), np.max(x), 300) #481
+yi = np.linspace(np.min(y), np.max(y), 365) #370 #364
 xi, yi = np.meshgrid(xi, yi)
  
 # 値データを補間
@@ -953,6 +953,8 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
+div = mpcalc.vorticity(u300 * units('m/s'), v300 * units('m/s'), dx=dx, dy=dy) * 1000000
+div = gaussian_filter(div, sigma=2.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -981,6 +983,8 @@ wind_speed = gaussian_filter(wind_speed, sigma=4.0)
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2, colors='lightblue')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[80], linewidths=2, colors='lightpink')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[100], linewidths=2, colors='violet')
+
+plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 0, float('inf')], colors=['none', 'red'], alpha=0.5)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
