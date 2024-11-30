@@ -954,7 +954,7 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
 div = mpcalc.divergence(u300 * units('m/s'), v300 * units('m/s'), dx=dx, dy=dy) * 1000000
-div = gaussian_filter(div, sigma=4.0)
+div = gaussian_filter(div, sigma=6.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -978,7 +978,7 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 # 風速の計算
 #wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-wind_speed = gaussian_filter(wind_speed, sigma=4.0)
+wind_speed = gaussian_filter(wind_speed, sigma=6.0)
 #plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2, colors='lightblue')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[80], linewidths=2, colors='lightpink')
