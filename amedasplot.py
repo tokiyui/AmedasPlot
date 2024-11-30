@@ -954,7 +954,7 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
 div = mpcalc.divergence(u300 * units('m/s'), v300 * units('m/s'), dx=dx, dy=dy) * 1000000
-div = gaussian_filter(div, sigma=2.0)
+div = gaussian_filter(div, sigma=4.0)
 
 ### 300hPa ###
 # 作図                                                                                    
