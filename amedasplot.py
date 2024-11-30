@@ -984,7 +984,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[80], linewidths=2, colors='lightpink')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[100], linewidths=2, colors='violet')
 
-plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 10, float('inf')], colors=['none', 'red'], alpha=0.2)
+plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 100, float('inf')], colors=['none', 'red'], alpha=0.9)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
