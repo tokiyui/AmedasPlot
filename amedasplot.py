@@ -528,7 +528,7 @@ values = np.array(values)
 values[values == 0.4] = 0.0
  
 # グリッドの作成
-xi = np.linspace(np.min(x), np.max(x), 304) #481 #309
+xi = np.linspace(np.min(x), np.max(x), 300) #481 #309
 yi = np.linspace(np.min(y), np.max(y), 365) #370 #364
 xi, yi = np.meshgrid(xi, yi)
  
