@@ -649,6 +649,18 @@ for area in [0, 1, 2, 3, 4]:
     except Exception as e:
         print(f"An error occurred: {e}")
 
+    
+    # レーダーGPV描画
+    lon = np.arange(slon, elon, rlon)
+    lat = np.arange(slat, elat, rlat)
+    LON, LAT = np.meshgrid(lon, lat)
+    LON, LAT = LON.T, LAT.T
+    #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
+    cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
+
+    cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
+    #cb.ax.tick_params(labelsize=8) 
+
     # 地点プロット                                                                                                 
     for stno,val in dat_json.items():
         # 緯度・経度のtuple(度分形式)をtuple(度単位)に変換
@@ -779,18 +791,6 @@ for area in [0, 1, 2, 3, 4]:
     sealon, sealat, su, sv = get_toudaifu()
     print(sealon, sealat, su, sv)
     ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
-
-    # レーダーGPV描画
-    lon = np.arange(slon, elon, rlon)
-    lat = np.arange(slat, elat, rlat)
-    LON, LAT = np.meshgrid(lon, lat)
-    LON, LAT = LON.T, LAT.T
-    #cs = ax.contourf(LON, LAT, rain, colors=jmacolors, levels=clevs, extend="max")
-    cs = ax.contourf(xi, yi, zi, levels=clevs, cmap=ListedColormap(jmacolors), norm=norm)
-
-    cb = plt.colorbar(cs, orientation="vertical", ticks=clevs, shrink=0.6)    
-    #cb.ax.tick_params(labelsize=8) 
-
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
