@@ -525,8 +525,6 @@ values[values == 0.4] = 0.0
 xi = np.linspace(np.min(x), np.max(x), 309) #481
 yi = np.linspace(np.min(y), np.max(y), 364) #370
 xi, yi = np.meshgrid(xi, yi)
-print(np.min(x),np.max(x),np.min(y),np.max(y))
-#print(x)
  
 # 値データを補間
 zi = np.zeros_like(xi)
@@ -534,7 +532,6 @@ for i in range(len(values)):
     xi_index = np.abs(xi[0] - x[i]).argmin()
     yi_index = np.abs(yi[:, 0] - y[i]).argmin()
     zi[yi_index, xi_index] = values[i]
-    print(x[i], y[i], yi_index, xi_index, values[i])
    
 # GPVデータの時間の指定(年,月,日,時,分)
 filepath = download_time(utc)
@@ -774,6 +771,7 @@ for area in [0, 1, 2, 3, 4]:
 
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
+    print(sealon, sealat, su, sv)
     ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
     # レーダーGPV描画
