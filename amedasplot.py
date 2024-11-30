@@ -954,7 +954,7 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
 div = mpcalc.divergence(u300 * units('m/s'), v300 * units('m/s'), dx=dx, dy=dy) * 1000000
-div = gaussian_filter(div, sigma=6.0)
+div = gaussian_filter(div, sigma=8.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -978,19 +978,18 @@ plt.tight_layout(rect=[0, 0, 1, 0.96])
 # 風速の計算
 #wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
-wind_speed = gaussian_filter(wind_speed, sigma=6.0)
-#plt.contourf(grid_lon_p, grid_lat_p, wind_speed, levels=[0, 60, 120, np.inf], colors=['none', 'blue', 'purple'], alpha=0.2)
+wind_speed = gaussian_filter(wind_speed, sigma=8.0)
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2, colors='lightblue')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[80], linewidths=2, colors='lightpink')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[100], linewidths=2, colors='violet')
 
-plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 10, float('inf')], colors=['none', 'red'], alpha=0.2)
+plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 0, float('inf')], colors=['none', 'red'], alpha=0.2)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("WindSpeed300, WV Image"), loc='left',size=15)
+plt.title('{}'.format("WS300, DIV300, WV Image"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_300.png", format="png")
@@ -1022,7 +1021,7 @@ ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u500[::
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
-plt.title('{}'.format("Z500, T500, Vor500"), loc='left',size=15)
+plt.title('{}'.format("Z500, T500, VOR500"), loc='left',size=15)
 plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_500.png", format="png")
