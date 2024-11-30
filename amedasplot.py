@@ -1012,7 +1012,7 @@ plt.clabel(cont, fontsize=15)
 cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 100, float('inf')], colors=['none', 'darkorange', 'brown'])
+plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 10, float('inf')], colors=['none', 'darkorange', 'brown'])
 
 # ベクトルの間引き間隔
 stride = 10
