@@ -1101,7 +1101,7 @@ gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
 
 # プロット
-prmsl = gaussian_filter(prmsl, sigma=8.0) 
+prmsl = gaussian_filter(prmsl, sigma=16.0) 
 cont = plt.contour(grid_lon_s, grid_lat_s, prmsl, levels=np.arange(900, 1100, 4), linewidths=2, linestyles='solid', colors='pink')
 plt.clabel(cont, fontsize=15)
 
