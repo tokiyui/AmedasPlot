@@ -23,6 +23,7 @@ from ftplib import FTP
 import xarray as xr
 import requests
 from matplotlib.colors import ListedColormap, BoundaryNorm
+from bs4 import BeautifulSoup
 
 def dms_to_decimal(dms):
     direction = dms[-1]
