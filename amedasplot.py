@@ -476,6 +476,52 @@ with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
         for row in data:
             writer.writerow(row)
 
+# URLからHTMLを取得
+url_bouy = "https://www.ndbc.noaa.gov/ship_obs.php?uom=M&time=1"
+response = requests.get(url_bouy)
+html = response.text
+
+# HTMLを解析
+soup = BeautifulSoup(html, "html.parser")
+
+# <span>タグ内のSHIPデータを取得して処理
+ship_data = soup.find_all("span")
+
+# ヘッダー行を特定する
+header_row = None
+for data in ship_data:
+    data_str = data.text.split()
+    if len(data_str) >= 22 and all(char in data_str[0] for char in "SHIP"):
+        header_row = data
+        break
+
+# ヘッダー行以降のデータを処理
+if header_row:
+    for data in ship_data[ship_data.index(header_row) + 1:]:
+        data_str = data.text.split()
+        #print(data_str)
+        if len(data_str) >= 22 and "SHIP" in data_str[0] and "04" in data_str[1]:
+            lat = float(data_str[2])
+            lon = float(data_str[3])
+            if lat > 0 and lon >= 90 and lon <= 180:
+                wdir = data_str[4]
+                wspd = data_str[5]
+                pres = data_str[9]
+
+                # 風のx成分とy成分の計算
+                if wdir != "-" and wspd != "-":
+                    wdir_rad = math.radians(float(wdir))
+                    wx = float(wspd) * math.cos(wdir_rad)
+                    wy = float(wspd) * math.sin(wdir_rad)
+                else:
+                    wx = "nan"
+                    wy = "nan"
+
+                # 結果の表示
+                print(f"緯度: {lat}, 経度: {lon}")
+                print(f"風のx成分: {wx}, 風のy成分: {wy}, 気圧: {pres}")
+                print()
+
 # 前1時間の雷実況
 for i in range(1,12):
     time_liden = utc - offsets.Minute(5*i)
