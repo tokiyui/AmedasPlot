@@ -983,14 +983,14 @@ cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[80], linewidths=2, colors='lightpink')
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[100], linewidths=2, colors='violet')
 
-plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 0, float('inf')], colors=['none', 'red'], alpha=0.2)
+plt.contourf(grid_lon_p, grid_lat_p, div, levels=[-float('inf'), 10, float('inf')], colors=['none', 'red'], alpha=0.2)
 
 # 海岸線
 ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
             
 # 図の説明
 plt.title('{}'.format("WS300, DIV300, WV Image"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_300.png", format="png")
 plt.clf()
@@ -1022,7 +1022,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Z500, T500, VOR500"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_500.png", format="png")
 plt.clf()
@@ -1052,7 +1052,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("TTD700, T850, Wind850"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_700.png", format="png")
 plt.clf()
@@ -1084,7 +1084,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("EPT850, Wind850, K-index"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(ft), loc='right',size=15);
+plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_850.png", format="png")
 plt.clf()
