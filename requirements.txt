@@ -7,3 +7,4 @@ datetime
 pybufrkit
 pygrib
 netCDF4
+bs4
