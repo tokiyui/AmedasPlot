@@ -497,9 +497,13 @@ for data in ship_data:
         break
 
 # データを格納する配列
-ship_array = []
-
-print("{}".format(time.strftime("%H")))
+lat_list_p = []
+lon_list_p = []
+npre_list = []
+lat_list_w = []
+lon_list_w = []
+wind_x_components = []
+wind_y_components = []
 
 # ヘッダー行以降のデータを処理
 if header_row:
@@ -522,18 +526,14 @@ if header_row:
                     wx = "nan"
                     wy = "nan"
 
-                # データを配列に追加
-                ship_array.append({
-                    "緯度": lat,
-                    "経度": lon,
-                    "風のx成分": wx,
-                    "風のy成分": wy,
-                    "気圧": pres
-                })
-
-# 配列の内容を表示
-for data in ship_array:
-    print(data)
+                # データを各配列に追加
+                lat_list_p.append(lat)
+                lon_list_p.append(lon)
+                wind_x_components.append(wx)
+                lat_list_w.append(lat)
+                lon_list_w.append(lon)
+                wind_y_components.append(wy)
+                npre_list.append(pres)
 
 # 前1時間の雷実況
 for i in range(1,12):
@@ -689,9 +689,6 @@ for area in [0, 1, 2, 3, 4]:
     lat_list_t = []
     lon_list_t = []
     temp_list = []
-    lat_list_p = []
-    lon_list_p = []
-    npre_list = []
 
     synop_file_name = "weather_data.csv"
     try:
