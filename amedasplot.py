@@ -496,12 +496,14 @@ for data in ship_data:
         header_row = data
         break
 
+# データを格納する配列
+ship_array = []
+
 # ヘッダー行以降のデータを処理
 if header_row:
     for data in ship_data[ship_data.index(header_row) + 1:]:
         data_str = data.text.split()
-        #print(data_str)
-        if len(data_str) >= 22 and "SHIP" in data_str[0] and "04" in data_str[1]:
+        if len(data_str) >= 22 and "SHIP" in data_str[0]:
             lat = float(data_str[2])
             lon = float(data_str[3])
             if lat > 0 and lon >= 90 and lon <= 180:
@@ -518,10 +520,18 @@ if header_row:
                     wx = "nan"
                     wy = "nan"
 
-                # 結果の表示
-                print(f"緯度: {lat}, 経度: {lon}")
-                print(f"風のx成分: {wx}, 風のy成分: {wy}, 気圧: {pres}")
-                print()
+                # データを配列に追加
+                ship_array.append({
+                    "緯度": lat,
+                    "経度": lon,
+                    "風のx成分": wx,
+                    "風のy成分": wy,
+                    "気圧": pres
+                })
+
+# 配列の内容を表示
+for data in ship_array:
+    print(data)
 
 # 前1時間の雷実況
 for i in range(1,12):
