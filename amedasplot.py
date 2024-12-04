@@ -499,11 +499,13 @@ for data in ship_data:
 # データを格納する配列
 ship_array = []
 
+print({}.format(time.strftime("%H")))
+
 # ヘッダー行以降のデータを処理
 if header_row:
     for data in ship_data[ship_data.index(header_row) + 1:]:
         data_str = data.text.split()
-        if len(data_str) >= 22 and "SHIP" in data_str[0]:
+        if len(data_str) >= 22 and "SHIP" in data_str[0] and {}.format(time.strftime("%H")) in data_str[1]:
             lat = float(data_str[2])
             lon = float(data_str[3])
             if lat > 0 and lon >= 90 and lon <= 180:
