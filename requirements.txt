@@ -7,4 +7,4 @@ datetime
 pybufrkit
 pygrib
 netCDF4
-bs4
+beautifulsoup4
