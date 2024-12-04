@@ -478,8 +478,8 @@ with open('weather_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
             writer.writerow(row)
 
 # URLからHTMLを取得
-url_bouy = "https://www.ndbc.noaa.gov/ship_obs.php?uom=M&time=1"
-response = requests.get(url_bouy)
+url_buoy = "https://www.ndbc.noaa.gov/ship_obs.php?uom=M&time=1"
+response = requests.get(url_buoy)
 html = response.text
 
 # HTMLを解析
@@ -845,8 +845,11 @@ for area in [0, 1, 2, 3, 4]:
 
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
-    print(sealon, sealat, su, sv)
+    
     ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+
+    # BUOY
+    ax.barbs(lat_list_w, lon_list_w, (wind_x_components * units('m/s')).to('kt').m, (wind_y_components * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
