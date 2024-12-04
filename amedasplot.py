@@ -850,7 +850,7 @@ for area in [0, 1, 2, 3, 4]:
             
     # 図の説明
     plt.title('{}'.format("AMeDAS, RA1h, LIDEN1h"), loc='left',size=15)
-    plt.title('Valid Time: {}'.format(dt), loc='right',size=15);
+    plt.title('{}'.format(dt), loc='right',size=15);
     #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
     plt.savefig("latest{}.png".format(areaname), format="png")
     plt.clf()
@@ -954,7 +954,7 @@ ug500, vg500 = mpcalc.geostrophic_wind(height500 * units('m'), dx=dx, dy=dy, lat
 vor = mpcalc.vorticity(u500 * units('m/s'), v500 * units('m/s'), dx=dx, dy=dy) * 1000000
 vor = gaussian_filter(vor, sigma=2.0)
 div = mpcalc.divergence(u300 * units('m/s'), v300 * units('m/s'), dx=dx, dy=dy) * 1000000
-div = gaussian_filter(div, sigma=8.0)
+div = gaussian_filter(div, sigma=2.0)
 
 ### 300hPa ###
 # 作図                                                                                    
@@ -990,7 +990,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("WS300, DIV300, WV Image"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
+plt.title('{}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_300.png", format="png")
 plt.clf()
@@ -1022,7 +1022,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Z500, T500, VOR500"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
+plt.title('{}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_500.png", format="png")
 plt.clf()
@@ -1052,7 +1052,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("TTD700, T850, Wind850"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
+plt.title('{}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_700.png", format="png")
 plt.clf()
@@ -1084,7 +1084,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("EPT850, Wind850, K-index"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
+plt.title('{}'.format(time.strftime("%Y-%m-%d-%HJST")), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest_850.png", format="png")
 plt.clf()
@@ -1145,7 +1145,7 @@ ax.coastlines(resolution='10m', linewidth=1.6, color='black')
             
 # 図の説明
 plt.title('{}'.format("Psea, Rader and IR Image"), loc='left',size=15)
-plt.title('Valid Time: {}'.format(time), loc='right',size=15);
+plt.title('{}'.format(time), loc='right',size=15);
 #plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
 plt.savefig("latest.png", format="png")
 plt.clf()
