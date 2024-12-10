@@ -57,7 +57,7 @@ jobs:
       - name: Commit and Push Changes
         id: git_changes
         run: |
-          git diff --quiet || echo "::set-output name=changes::yes"
+          echo "::set-output name=changes::yes"
           echo ${{ secrets.TOKEN }}
           echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
