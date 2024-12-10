@@ -43,6 +43,7 @@ jobs:
           sudo apt-get install -y git
           python -m pip install git-filter-repo
           git filter-repo --path-glob "*.png" --invert-paths || exit 0
+          git filter-repo --path-glob "*.csv" --invert-paths || exit 0
           git reflog expire --expire=now --all
           git gc --prune=now --aggressive
           
@@ -51,8 +52,6 @@ jobs:
           PTree_ID: ${{ secrets.PTree_ID }}
           PTree_Pass: ${{ secrets.PTree_Pass }}
         run: |
-          git rm ./*.png
-          git rm ./*.csv
           python amedasplot.py
 
       - name: Commit and Push Changes
