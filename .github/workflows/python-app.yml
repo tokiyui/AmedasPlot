@@ -38,7 +38,6 @@ jobs:
           pip install beautifulsoup4
           export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
 
-      # PNGファイルの更新履歴は残さない（重くなるため）
       - name: Remove PNG file history
         run: |
           sudo apt-get install -y git
