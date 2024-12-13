@@ -173,9 +173,6 @@ def parse_datetime(arg):
     except ValueError:
         return None
 
-def set_table(section5):
-
-
 def decode_runlength(code, hi_level):
     for raw in code:
         if raw <= hi_level:
