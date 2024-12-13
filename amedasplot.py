@@ -4,7 +4,7 @@
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
 
-import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys, csv, re
+import argparse, json, math, matplotlib, os, pygrib, pytz, struct, subprocess, sys, csv, re, requests
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -12,16 +12,15 @@ import metpy.calc as mpcalc
 import numpy as np
 import pandas as pd
 import pandas.tseries.offsets as offsets
+import netCDF4 as nc
+import xarray as xr
 from datetime import datetime, timedelta
 from itertools import repeat
 from metpy.units import units
 from scipy.interpolate import griddata, interp2d, RectBivariateSpline, RegularGridInterpolator
 from scipy.ndimage import gaussian_filter, maximum_filter, minimum_filter
 from urllib.request import urlopen
-import netCDF4 as nc
 from ftplib import FTP
-import xarray as xr
-import requests
 from matplotlib.colors import ListedColormap, BoundaryNorm
 from bs4 import BeautifulSoup
 
@@ -81,8 +80,6 @@ def process_url(cou, year, month, day, hour):
  
         data = [match[0], match[1], match[2], lat, lon, height, temperature, humidity, pressure, wind_direction , wind_speed_decimal]
         if lat > 0 and lon > 90 :
-          data_list.append(data)
-        elif lat > 0 and lon < -150:
           data_list.append(data)
          
     return data_list
@@ -177,12 +174,7 @@ def parse_datetime(arg):
         return None
 
 def set_table(section5):
-    max_level = struct.unpack_from('>H', section5, 15)[0]
-    table = (
-        -10, # define representative of level 0 (Missing Value)
-        *struct.unpack_from('>'+str(max_level)+'H', section5, 18)
-    )
-    return np.array(table, dtype=np.int16)
+
 
 def decode_runlength(code, hi_level):
     for raw in code:
@@ -210,7 +202,9 @@ def load_jmara_grib2(file):
     section7 = binary[end6:(end6+len_['sec7']+1)]
 
     highest_level = struct.unpack_from('>H', section5, 13)[0]
-    level_table = set_table(section5)
+    max_level = struct.unpack_from('>H', section5, 15)[0]
+    table = (10, *struct.unpack_from('>'+str(max_level)+'H', section5, 18)) # define representative of level 0 (Missing Value)
+    level_table = np.array(table, dtype=np.int16)
     decoded = np.fromiter(decode_runlength(section7[6:], highest_level), dtype=np.int16).reshape((3360, 2560))
 
     transposed_flipped_data = np.flip(np.transpose(decoded), axis=1)
