@@ -506,6 +506,7 @@ if header_row:
                 wdir = data_str[4]
                 wspd = data_str[5]
                 pres = data_str[9]
+                print(wdir,wspd,pres)
 
                 # 風のx成分とy成分の計算
                 if wdir != "-" and wspd != "-":
