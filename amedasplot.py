@@ -32,11 +32,11 @@ def dms_to_decimal(dms):
     if direction in ['S', 'W']:
         decimal *= -1
     return round(decimal,4)
- 
+
+## SYNOPを取ってくる
 def process_url(cou, year, month, day, hour):
     # URLからHTMLを取得
     url = "http://www.meteomanz.com/sy6?cou={}&sh=map4&d1={}&m1={}&y1={}&h1={}Z&l=1".format(cou, day, month, year, hour)
-    print(url)
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
     response = requests.get(url, headers= headers)
     html = response.text
@@ -502,7 +502,8 @@ if header_row:
         if len(data_str) >= 22 and "SHIP" in data_str[0] and "{}".format(time.strftime("%H")) in data_str[1]:
             lat = float(data_str[2])
             lon = float(data_str[3])
-            if lat > 0 and lon >= 90 and lon <= 180:
+            #if lat > 0 and lon >= 90 and lon <= 180:
+            if lat > 0 or lat < 0:
                 wdir = data_str[4]
                 wspd = data_str[5]
                 pres = data_str[9]
@@ -970,16 +971,7 @@ ttd850 = (tmp850 - mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * unit
 ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude)
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
-
-# 圧力レベル（500 hPa と 850 hPa）を作成（逆順に並べる）
-#pressure_levels = np.array([500, 850]) * units.hPa  # 500 hPa と 850 hPa
-
-# 2次元配列を 3次元に展開 (253, 241, 2) の形にする
-#pressure_levels = np.tile(pressure_levels, (tmp850.shape[0], tmp850.shape[1], 1))  # (253, 241, 2)
-
-#ssi = tmp500 - mpcalc.parcel_profile([500, 850], tmp850 * units.degC, (tmp850 + ttd850) * units.degC).to('degC')[1].m
-#ssi_winter = tmp700 - mpcalc.parcel_profile([925, 700] * units.hPa, tmp925 * units.degC, (tmp925 + ttd925) * units.degC).to('degC')[1].m
-#ssi[(tmp700 + 273.15) < -20.0] = ssi_winter[(tmp700 + 273.15) < -20.0]
+KTTnew = (tmp850 - tmp500) + ttd700 + (ept925 - tmp500)
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
@@ -1123,7 +1115,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, kindex58, levels=[-float('inf'), 0, 10, 20, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 0, 10, 20, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 10
