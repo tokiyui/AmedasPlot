@@ -518,13 +518,13 @@ if header_row:
                     wy = "nan"
 
                 # データを各配列に追加
-                lat_list_p.append(lat)
-                lon_list_p.append(lon)
-                wind_x_components.append(wx)
-                lat_list_w.append(lat)
-                lon_list_w.append(lon)
-                wind_y_components.append(wy)
-                npre_list.append(pres)
+                #lat_list_p.append(lat)
+                #lon_list_p.append(lon)
+                #wind_x_components.append(wx)
+                #lat_list_w.append(lat)
+                #lon_list_w.append(lon)
+                #wind_y_components.append(wy)
+                #npre_list.append(pres)
 
 # 前1時間の雷実況
 for i in range(1,12):
