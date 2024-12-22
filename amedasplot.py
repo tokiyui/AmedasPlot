@@ -1,5 +1,4 @@
 # AMeDAS 観測データプロット図
-# 黒良先生のプログラムにレーダーGPVを重ね合わせ
 # アメダス地点テーブルJSON  https://www.jma.go.jp/bosai/amedas/const/amedastable.json
 # アメダス観測データJSON  YYYY/MM/DD HH:mm(JST)  https:https://www.jma.go.jp/bosai/amedas/data/map/{YYYY}{MM}{DD}{HH}{mm}00.json
 # 生存圏研究所ダウンロード元サイト  http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/jma-radar/synthetic/original
