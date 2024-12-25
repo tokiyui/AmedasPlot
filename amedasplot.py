@@ -499,7 +499,7 @@ wind_y_components = []
 if header_row:
     for data in ship_data[ship_data.index(header_row) + 1:]:
         data_str = data.text.split()
-        print(data_str)
+        print(len(data_str), data_str[0], data_str[1], "{}".format(time.strftime("%H")))
         if len(data_str) >= 22 and "SHIP" in data_str[0] and "{}".format(time.strftime("%H")) in data_str[1]:
             lat = float(data_str[2])
             lon = float(data_str[3])
