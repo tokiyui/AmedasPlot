@@ -970,7 +970,7 @@ ttd850 = (tmp850 - mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * unit
 ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude)
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
-KTTnew = (tmp850 - tmp500) + ttd700 + (ept925 - tmp500)
+KTTnew = (tmp850 - tmp500) + ttd700 + ((tmp925 -ttd925) - tmp500)
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
