@@ -525,6 +525,7 @@ if header_row:
                     lon_list_w.append(lon)
                     wind_x_components.append(wx)
                     wind_y_components.append(wy)
+                    print(lat, lon, wx, wy)
 
 # 前1時間の雷実況
 for i in range(1,12):
