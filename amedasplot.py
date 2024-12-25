@@ -1018,7 +1018,6 @@ plt.imshow(data_wv, cmap='gray_r', extent=(lon.min(), lon.max(), lat.max(), lat.
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 風速の計算
-#wind_speed = mpcalc.wind_speed(ug300 * units('m/s'), vg300 * units('m/s')).to(units.knots)
 wind_speed = mpcalc.wind_speed(u300 * units('m/s'), v300 * units('m/s')).to(units.knots)
 wind_speed = gaussian_filter(wind_speed, sigma=8.0)
 cont = plt.contour(grid_lon_p, grid_lat_p, wind_speed, levels=[60], linewidths=2, colors='lightblue')
@@ -1114,7 +1113,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 40, 60, 80, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 15, 30, 40, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 10
