@@ -970,7 +970,7 @@ ttd850 = (tmp850 - mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * unit
 ttd925 = (tmp925 - mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude)
 kindex58 = tmp850 - tmp500 + mpcalc.dewpoint_from_relative_humidity((tmp850+273.15) * units('K'), rh850 / 100).magnitude - ttd700
 kindex79 = tmp925 - tmp700 + mpcalc.dewpoint_from_relative_humidity((tmp925+273.15) * units('K'), rh925 / 100).magnitude - ttd850
-KTTnew = (tmp850 - tmp500) + ttd700 + ((tmp925 -ttd925) - tmp500)
+KTTnew = (tmp850 - tmp500) - ttd700 + ((tmp925 -ttd925) - tmp500)
 
 tmp500 = gaussian_filter(tmp500, sigma=4)
 tmp850 = gaussian_filter(tmp850, sigma=4)
@@ -1114,7 +1114,7 @@ cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3)
 cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
 plt.clabel(cont, fontsize=15)
 
-plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 60, 80, 100, np.inf], colors=['none', 'yellow', 'pink', 'red'])
+plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 40, 60, 80, np.inf], colors=['none', 'yellow', 'pink', 'red'])
 
 # ベクトルの間引き間隔
 stride = 10
