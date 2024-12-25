@@ -504,30 +504,27 @@ if header_row:
             lat = float(data_str[2])
             lon = float(data_str[3])
             #if lat > 0 and lon >= 90 and lon <= 180:
-            if lat > 0 or lat < 0:
+            if lat > 0 or lon > 90 :
                 wdir = data_str[4]
                 wspd = data_str[5]
                 pres = data_str[9]
                 print(wdir,wspd,pres)
 
+                if pres != "-":
+                    lat_list_p.append(lat)
+                    lon_list_p.append(lon)                    
+                    npre_list.append(pres)
+                
                 # 風のx成分とy成分の計算
                 if wdir != "-" and wspd != "-":
                     wdir_rad = math.radians(float(wdir))
                     wx = float(wspd) * math.cos(wdir_rad)
                     wy = float(wspd) * math.sin(wdir_rad)
-                else:
-                    wx = "nan"
-                    wy = "nan"
-
-                # データを各配列に追加
-                lat_list_p.append(lat)
-                lon_list_p.append(lon)
-                wind_x_components.append(wx)
-                lat_list_w.append(lat)
-                lon_list_w.append(lon)
-                wind_y_components.append(wy)
-                npre_list.append(pres)
-                print(lat,lon,pres)
+                    # データを各配列に追加
+                    lat_list_w.append(lat)
+                    lon_list_w.append(lon)
+                    wind_x_components.append(wx)
+                    wind_y_components.append(wy)
 
 # 前1時間の雷実況
 for i in range(1,12):
