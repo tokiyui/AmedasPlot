@@ -807,10 +807,10 @@ for area in [0, 1, 2, 3, 4]:
     grid_npre = griddata((lon_list_p, lat_list_p), npre_list, (grid_lon_s, grid_lat_s), method='linear')
     grid_temp = np.where(np.isnan(grid_temp), tmp, grid_temp)
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
-    grid_npre = gaussian_filter(grid_npre, sigma=2.0)
+    #grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
-    prmsl_max = maximum_filter(prmsl, size=(5,5))
-    prmsl_min = minimum_filter(prmsl, size=(5,5))
+    prmsl_max = maximum_filter(prmsl, size=(2,2))
+    prmsl_min = minimum_filter(prmsl, size=(2,2))
     
     diff_npre = grid_npre - prmsl
     diff_npre[grid_npre > prmsl_max + 1.0] = grid_npre - prmsl_max + 1.0
