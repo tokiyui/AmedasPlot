@@ -508,7 +508,6 @@ if header_row:
                 wdir = data_str[4]
                 wspd = data_str[5]
                 pres = data_str[9]
-                print(wdir,wspd,pres)
 
                 if pres != "-":
                     lat_list_p.append(lat)
