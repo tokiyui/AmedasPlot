@@ -813,8 +813,8 @@ for area in [0, 1, 2, 3, 4]:
     prmsl_min = minimum_filter(prmsl, size=(2,2))
     
     diff_npre = grid_npre - prmsl
-    diff_npre[grid_npre > prmsl_max + 1.0] = grid_npre - prmsl_max + 1.0
-    diff_npre[grid_npre < prmsl_min - 4.0] = grid_npre - prmsl_min - 4.0
+    diff_npre[grid_npre > prmsl_max] = grid_npre - prmsl_max
+    diff_npre[grid_npre < prmsl_min] = grid_npre - prmsl_min
     diff_npre[sealand_filterd < 1000.0] = 0
     
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
