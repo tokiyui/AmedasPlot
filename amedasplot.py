@@ -815,8 +815,13 @@ for area in [0, 1, 2, 3, 4]:
     print(grid_npre.shape,prmsl_max.shape)
     
     diff_npre = grid_npre - prmsl
-    diff_npre[grid_npre > prmsl_max] = grid_npre - prmsl_max
-    diff_npre[grid_npre < prmsl_min] = grid_npre - prmsl_min
+    
+    # 条件に応じて更新（マスクを使うことで要素ごとの計算にする）
+    mask_max = grid_npre > prmsl_max
+    mask_min = grid_npre < prmsl_min
+    diff_npre[mask_max] = grid_npre[mask_max] - prmsl_max[mask_max]
+    diff_npre[mask_min] = grid_npre[mask_min] - prmsl_min[mask_min]
+
     diff_npre[sealand_filterd < 1000.0] = 0
     
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
