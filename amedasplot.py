@@ -348,6 +348,7 @@ def get_toudaifu():
                     # 東西 (u) 成分と南北 (v) 成分を計算
                     u = -wind_speed * math.sin(angle_rad)  # 負号で右手系に合わせる
                     v = -wind_speed * math.cos(angle_rad)
+                    print(lon,lat,u,v)
 
                     # 結果をリストに追加
                     sealon.append(lon)
