@@ -611,7 +611,7 @@ sealand = np.flip(data*10000, axis=0)
 sealand = maximum_filter(sealand, size=(5, 5))
 
 # ガウシアンフィルタを適用
-sealand_filterd = gaussian_filter(sealand, sigma=1.0) # sigmaはガウス分布の標準偏差
+sealand_filterd = sealand #gaussian_filter(sealand, sigma=1.0) # sigmaはガウス分布の標準偏差
 
 # 図法指定                                                                             
 proj = ccrs.PlateCarree()
@@ -815,10 +815,10 @@ for area in [0, 1, 2, 3, 4]:
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
-    diff_npre = gaussian_filter(diff_npre, sigma=1.0)
+    #diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
+    #diff_npre = gaussian_filter(diff_npre, sigma=1.0)
+    #diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
+    #diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     
     grid_npre = prmsl + diff_npre
 
