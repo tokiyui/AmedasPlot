@@ -604,9 +604,9 @@ data = data.reshape(505, 481)
 grid_lon_s, grid_lat_s = np.meshgrid(np.arange(120, 150 + 0.0625, 0.0625), np.arange(22.4, 47.6, 0.05))
 sealand = np.flip(data*10000, axis=0)
 
-#sealand[(grid_lon_s - grid_lat_s < 94.5) & (grid_lon_s < 132)] = 0
-#sealand[(grid_lat_s > 45.5)] = 0
-#sealand[(grid_lon_s > 145.5)] = 0
+sealand[(grid_lon_s - grid_lat_s < 94.5) & (grid_lon_s < 132)] = 0
+sealand[(grid_lat_s > 45.5)] = 0
+sealand[(grid_lon_s > 145.5)] = 0
 
 sealand = maximum_filter(sealand, size=(5, 5))
 
