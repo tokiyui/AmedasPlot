@@ -356,6 +356,7 @@ def get_toudaifu():
                     sv.append(v)
                 except Exception as e:
                     continue
+    print(sealon, sealat, su, sv)
                 
     return sealon, sealat, su, sv
 
