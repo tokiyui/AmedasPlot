@@ -837,7 +837,7 @@ for area in [0, 1, 2, 3, 4]:
     sealon, sealat, su, sv = get_toudaifu()
     print(sealon, sealat, su, sv) 
     
-    ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj,cplor='magenta')
+    ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj,color='magenta')
 
     # BUOY
     ax.barbs(lat_list_w, lon_list_w, (wind_x_components * units('m/s')).to('kt').m, (wind_y_components * units('m/s')).to('kt').m, length=barb_length, transform=proj)
