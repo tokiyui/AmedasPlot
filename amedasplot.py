@@ -809,16 +809,17 @@ for area in [0, 1, 2, 3, 4]:
     grid_npre = np.where(np.isnan(grid_npre), prmsl, grid_npre)
     grid_npre = gaussian_filter(grid_npre, sigma=2.0)
 
+    prmsl_max = maximum_filter(prmsl, size=(10,10))
+    prmsl_min = minimum_filter(prmsl, size=(10,10))
+    
     diff_npre = grid_npre - prmsl
+    diff_npre[grid_npre > prmsl_max + 1.0] = 0
+    diff_npre[grid_npre < prmsl_min - 4.0] = 0
     diff_npre[sealand_filterd < 1000.0] = 0
     
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
     diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    #diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
-    #diff_npre = gaussian_filter(diff_npre, sigma=1.0)
-    #diff_npre[sealand_filterd > 9000.0] = grid_npre[sealand_filterd > 9000.0] - prmsl[sealand_filterd > 9000.0]
-    #diff_npre = gaussian_filter(diff_npre, sigma=1.0)
     
     grid_npre = prmsl + diff_npre
 
