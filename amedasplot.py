@@ -811,6 +811,8 @@ for area in [0, 1, 2, 3, 4]:
 
     prmsl_max = maximum_filter(prmsl, size=(2,2))
     prmsl_min = minimum_filter(prmsl, size=(2,2))
+
+    print(grid_npre.shape,prmsl_max.shape)
     
     diff_npre = grid_npre - prmsl
     diff_npre[grid_npre > prmsl_max] = grid_npre - prmsl_max
