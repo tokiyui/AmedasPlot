@@ -348,7 +348,6 @@ def get_toudaifu():
                     # 東西 (u) 成分と南北 (v) 成分を計算
                     u = -wind_speed * math.sin(angle_rad)  # 負号で右手系に合わせる
                     v = -wind_speed * math.cos(angle_rad)
-                    print(lon,lat,u,v)
 
                     # 結果をリストに追加
                     sealon.append(lon)
@@ -835,9 +834,8 @@ for area in [0, 1, 2, 3, 4]:
 
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
-    print(sealon, sealat, su, sv) 
     
-    ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj,color='magenta')
+    ax.barbs(sealat, sealon, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj,color='magenta')
 
     # BUOY
     ax.barbs(lat_list_w, lon_list_w, (wind_x_components * units('m/s')).to('kt').m, (wind_y_components * units('m/s')).to('kt').m, length=barb_length, transform=proj)
