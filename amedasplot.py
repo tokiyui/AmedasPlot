@@ -514,7 +514,7 @@ if header_row:
                     npre_list.append(pres)
                 
                 # 風のx成分とy成分の計算
-                if wdir != "-" and wspd != "-":
+                if wdir != "-" and wspd != "-" and wdir != "VRB":
                     wdir_rad = math.radians(float(wdir))
                     wx = float(wspd) * math.cos(wdir_rad)
                     wy = float(wspd) * math.sin(wdir_rad)
