@@ -357,7 +357,6 @@ def get_toudaifu():
                     sv.append(v)
                 except Exception as e:
                     continue
-    print(sealon, sealat, su, sv)
                 
     return sealon, sealat, su, sv
 
@@ -836,6 +835,7 @@ for area in [0, 1, 2, 3, 4]:
 
     # 海上風
     sealon, sealat, su, sv = get_toudaifu()
+    print(sealon, sealat, su, sv) 
     
     ax.barbs(sealon, sealat, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj)
 
