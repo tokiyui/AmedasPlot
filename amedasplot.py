@@ -359,6 +359,37 @@ def get_toudaifu():
                 
     return sealon, sealat, su, sv
 
+def read_hima(time, band):
+    # Himawari-9
+    # 日付とファイル名の生成
+    time = time - offsets.Hour(9)
+    day_dir = time.strftime("%Y%m/%d")
+    basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(time.strftime("%Y%m%d_%H%M"))
+
+    # lftpコマンドを実行してFTPサーバーに接続
+    PTree_ID = os.environ.get('PTree_ID')
+    PTree_Pass = os.environ.get('PTree_Pass')
+
+    # ダウンロードするファイルのURLを作成
+    url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
+
+    # wgetコマンドを使用してファイルをダウンロード
+    wget_command = "wget --user={} --password={} {} -P ./ > /dev/null 2>&1".format(PTree_ID, PTree_Pass, url)
+    subprocess.run(wget_command, shell=True)
+
+    # NetCDF ファイルを開く
+    nc_file = nc.Dataset(basename, 'r')
+
+    # 緯度、経度、およびデータの取得
+    latitude = nc_file.variables['latitude'][:]
+    longitude = nc_file.variables['longitude'][:]
+    data = nc_file.variables[f"tbb_{band}"][:].reshape(2401, 2401)
+
+    # メッシュグリッドを作成
+    lon, lat = np.meshgrid(longitude, latitude)
+    
+    return data, lon, lat
+    
 # 描画指定：順に気圧(右上),気温(左上),湿球温度(右下),露点温度(左下))
 npre_dispflag = False
 temp_dispflag = False
@@ -390,37 +421,6 @@ else:
     print('Usage: python script.py [YYYYMMDDHH(MM)]')
     exit()
 
-def read_hima(time, band):
-  # Himawari-9
-  # 日付とファイル名の生成
-  time = time - offsets.Hour(9)
-  day_dir = time.strftime("%Y%m/%d")
-  basename = "NC_H09_{}_R21_FLDK.02401_02401.nc".format(time.strftime("%Y%m%d_%H%M"))
-
-  # lftpコマンドを実行してFTPサーバーに接続
-  PTree_ID = os.environ.get('PTree_ID')
-  PTree_Pass = os.environ.get('PTree_Pass')
-
-  # ダウンロードするファイルのURLを作成
-  url = "ftp://ftp.ptree.jaxa.jp/jma/netcdf/{}/{}".format(day_dir, basename)
-
-  # wgetコマンドを使用してファイルをダウンロード
-  wget_command = "wget --user={} --password={} {} -P ./ > /dev/null 2>&1".format(PTree_ID, PTree_Pass, url)
-  subprocess.run(wget_command, shell=True)
-
-  # NetCDF ファイルを開く
-  nc_file = nc.Dataset(basename, 'r')
-
-  # 緯度、経度、およびデータの取得
-  latitude = nc_file.variables['latitude'][:]
-  longitude = nc_file.variables['longitude'][:]
-  data = nc_file.variables[f"tbb_{band}"][:].reshape(2401, 2401)
-
-  # メッシュグリッドを作成
-  lon, lat = np.meshgrid(longitude, latitude)
-
-  return data, lon, lat
-    
 # 観測データJSONの url作成
 url_data_json= 'https://www.jma.go.jp/bosai/amedas/data/map/{:4d}{:02d}{:02d}{:02d}{:02d}00.json'
 url_data_json=url_data_json.format(year,month,day,hour,min)
@@ -619,7 +619,7 @@ proj = ccrs.PlateCarree()
 # カラーバーの設定
 #気象庁RGBカラー
 jmacolors=np.array(
-   [#[0.95,0.95,0.95,1],#white
+   [[0.95,0.95,0.95,1],#white
     [0.63,0.82,0.99,1],
     [0.13,0.55,0.99,1],
     [0.00,0.25,0.99,1],
