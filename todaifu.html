@@ -74,7 +74,7 @@
             className: 'custom-wind-icon',
             html: `
               <div style="text-align:center;">
-                <svg width="24" height="24" viewBox="0 0 24 24"
+                <svg width="48" height="24" viewBox="0 0 24 24"
                      style="transform: rotate(${angle}deg);">
                   <polygon points="12,2 16,10 12,8 8,10" fill="${arrowColor}"/>
                   <line x1="12" y1="2" x2="12" y2="20" stroke="${arrowColor}" stroke-width="2"/>
@@ -85,14 +85,6 @@
             iconSize: [30, 30],
             iconAnchor: [15, 15]
           });
-
-          L.marker([lat, lon], { icon: customIcon })
-            .addTo(map)
-            .bindPopup(`
-              <b>緯度経度</b>: ${lat.toFixed(3)}, ${lon.toFixed(3)}<br>
-              <b>風速</b>: ${windSpeed} m/s<br>
-              <b>風向</b>: ${windDir * 22.5}° (${windDir}/16)
-            `);
         });
       })
       .catch(err => {
