@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>風向・風速マップ</title>
+  <title>風向SVGマップ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link
     rel="stylesheet"
@@ -12,11 +12,10 @@
     #map {
       height: 100vh;
     }
-    .wind-label {
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 2px 4px;
-      border-radius: 4px;
+    .wind-speed-label {
       font-size: 12px;
+      text-align: center;
+      margin-top: -4px;
     }
   </style>
 </head>
@@ -25,11 +24,6 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const windDirections = [
-      "↑", "↗", "→", "↘", "↓", "↙", "←", "↖",
-      "↑", "↗", "→", "↘", "↓", "↙", "←", "↖"
-    ];
-
     const map = L.map('map').setView([42.0, 143.0], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -37,17 +31,20 @@
     }).addTo(map);
 
     const proxy = "https://api.allorigins.win/raw?url=";
-    const targetUrl = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry";
+    const dataUrl = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry";
 
-    fetch(proxy + encodeURIComponent(targetUrl))
+    // 風向番号(0〜15)から回転角度（南を0°、時計回り）
+    const windIndexToAngle = idx => (idx * 22.5 + 180);
+
+    fetch(proxy + encodeURIComponent(dataUrl))
       .then(res => res.text())
       .then(data => {
         const points = data.split(";");
+
         points.forEach(entry => {
           const [pointStr, iconFile, speedStr] = entry.split("@@");
-          if (!pointStr || !speedStr) return;
+          if (!pointStr || !iconFile || !speedStr) return;
 
-          // 修正ポイント：正規表現のエスケープ修正
           const match = pointStr.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
           if (!match) return;
 
@@ -55,19 +52,30 @@
           const lat = parseFloat(match[2]);
 
           const windDirMatch = iconFile.match(/wind_(\d+)_/);
-          const windDir = windDirMatch ? parseInt(windDirMatch[1], 10) : null;
+          if (!windDirMatch) return;
 
+          const windDir = parseInt(windDirMatch[1], 10);
+          const angle = windIndexToAngle(windDir);
           const windSpeed = speedStr.trim();
-          const arrow = windDir !== null ? windDirections[windDir % 16] : "";
 
-          const label = `${arrow} ${windSpeed}`;
+          // SVG矢印を回転して表示
+          const customIcon = L.divIcon({
+            className: 'custom-wind-icon',
+            html: `
+              <div style="text-align:center;">
+                <svg width="24" height="24" viewBox="0 0 24 24"
+                     style="transform: rotate(${angle}deg);">
+                  <polygon points="12,2 16,10 12,8 8,10" fill="blue"/>
+                  <line x1="12" y1="2" x2="12" y2="20" stroke="blue" stroke-width="2"/>
+                </svg>
+                <div class="wind-speed-label">${windSpeed}</div>
+              </div>
+            `,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+          });
 
-          L.marker([lat, lon])
-            .addTo(map)
-            .bindTooltip(`<div class="wind-label">${label}</div>`, {
-              permanent: true,
-              direction: 'top'
-            });
+          L.marker([lat, lon], { icon: customIcon }).addTo(map);
         });
       })
       .catch(err => {
