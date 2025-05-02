@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>高層気温表示（虹色グラデーション）</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 800px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      text-align: center;
+    }
+    th {
+      background: #eee;
+    }
+    select {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    #loading {
+      font-weight: bold;
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>気温帳票&nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="location">地点：</label>
+  <select id="location">
+    <option value="45.415,141.678">稚内</option>
+    <option value="43.06,141.328">札幌</option>
+    <option value="42.953,144.438">釧路</option>
+    <option value="39.719,140.1">秋田</option>
+    <option value="37.392,136.889">輪島</option>
+    <option value="36.059,140.125" selected>館野</option>
+    <option value="33.122,139.778">八丈島</option>
+    <option value="35.458,133.067">松江</option>
+    <option value="33.452,135.762">潮岬</option>
+    <option value="33.583,130.383">福岡</option>
+    <option value="31.555,130.548">鹿児島</option>
+    <option value="28.394,129.553">名瀬</option>
+    <option value="24.337,124.163">石垣島</option>
+    <option value="25.83,131.222">南大東島</option>
+    <option value="27.095,142.185">父島</option>
+    <option value="24.29,153.983">南鳥島</option>
+  </select>
+  </h2>
+
+  <div id="loading" style="display: none;">読み込み中...</div>
+  <div id="table-container"></div> <!-- 👈 これが必要！ -->
+
+  <script>
+    const tableContainer = document.getElementById("table-container");
+    const locationSelect = document.getElementById("location");
+    const loading = document.getElementById("loading");
+
+    locationSelect.addEventListener("change", () => {
+      loadData();
+    });
+
+    function loadData() {
+      const [lat, lon] = locationSelect.value.split(",");
+      const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&hourly=temperature_300hPa,temperature_500hPa,temperature_700hPa,temperature_850hPa,temperature_925hPa` +
+        `&models=ecmwf_aifs025_single&timezone=UTC`;
+
+      loading.style.display = "block";  // 表示
+      tableContainer.innerHTML = "";
+
+      fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+          const timeUTC = data.hourly.time;
+          const temps = {
+            "300hPa": data.hourly.temperature_300hPa,
+            "500hPa": data.hourly.temperature_500hPa,
+            "700hPa": data.hourly.temperature_700hPa,
+            "850hPa": data.hourly.temperature_850hPa,
+            "925hPa": data.hourly.temperature_925hPa,
+          };
+
+          const levels = Object.keys(temps);
+          const fixedAverages = {
+            "300hPa": -39,
+            "500hPa": -15,
+            "700hPa": 0,
+            "850hPa": 8,
+            "925hPa": 12,
+          };
+
+          const table = document.createElement("table");
+          const thead = document.createElement("thead");
+          const tbody = document.createElement("tbody");
+
+          const header = document.createElement("tr");
+          header.innerHTML = `<th>時刻(JST)</th>` + levels.map(l => `<th>${l}</th>`).join("");
+          thead.appendChild(header);
+
+          for (let i = 0; i < timeUTC.length; i += 6) {
+            const date = new Date(timeUTC[i]);
+            date.setHours(date.getHours() + 9);  // JST変換
+            const timeStr = `${String(date.getMonth()+1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}時`;
+
+            const row = document.createElement("tr");
+            let rowHTML = `<td>${timeStr}</td>`;
+
+            levels.forEach(lvl => {
+              const val = temps[lvl][i];
+              const avg = fixedAverages[lvl];
+              const color = getRainbowColor(val, avg);
+              rowHTML += `<td style="background:${color}">${val?.toFixed(1)}</td>`;
+            });
+
+            row.innerHTML = rowHTML;
+            tbody.appendChild(row);
+          }
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+          tableContainer.innerHTML = '';
+          tableContainer.appendChild(table);
+        })
+        .catch(err => {
+          console.error(err);
+          tableContainer.innerText = "データの取得に失敗しました。";
+        })
+        .finally(() => {
+          loading.style.display = "none";  // 非表示
+        });
+    }
+
+    function getRainbowColor(temp, avg) {
+      if (temp == null) return "#ccc";
+      const diff = temp - avg;
+      if (diff <= -15) return "#0000ff";
+      if (diff <= -12) return "#3366ff";
+      if (diff <= -9)  return "#3399ff";
+      if (diff <= -6)  return "#33ccff";
+      if (diff <= -3)  return "#66ffcc";
+      if (diff <= 3)   return "#ffffff";
+      if (diff <= 6)   return "#ffff99";
+      if (diff <= 9)   return "#ffcc66";
+      if (diff <= 12)  return "#ff9966";
+      if (diff <= 15)  return "#ff6666";
+      return "#ff0000";
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
