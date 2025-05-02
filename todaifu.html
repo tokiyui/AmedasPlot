@@ -13,7 +13,7 @@
       height: 100vh;
     }
     .wind-speed-label {
-      font-size: 12px;
+      font-size: 16px;
       text-align: center;
       margin-top: -4px;
     }
@@ -33,8 +33,8 @@
     const proxy = "https://api.allorigins.win/raw?url=";
     const dataUrl = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry";
 
-    // 風向番号(0〜15)から回転角度（北を0°、時計回り）
-    const windIndexToAngle = idx => (idx * 22.5);
+    // 風向番号(0〜15)から回転角度（南を0°、時計回り）
+    const windIndexToAngle = idx => (idx * 22.5 + 180);
 
     // 風速に応じた矢印の色を決定
     const getArrowColor = (speed) => {
@@ -79,7 +79,7 @@
                   <polygon points="12,2 16,10 12,8 8,10" fill="${arrowColor}"/>
                   <line x1="12" y1="2" x2="12" y2="20" stroke="${arrowColor}" stroke-width="2"/>
                 </svg>
-                <div class="wind-speed-label">${windSpeed} m/s</div>
+                <div class="wind-speed-label">${windSpeed}</div>
               </div>
             `,
             iconSize: [30, 30],
