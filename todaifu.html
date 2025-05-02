@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>風向SVGマップ</title>
+  <title>風向SVGマップ（風速色分け）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link
     rel="stylesheet"
@@ -33,8 +33,16 @@
     const proxy = "https://api.allorigins.win/raw?url=";
     const dataUrl = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry";
 
-    // 風向番号(0〜15)から回転角度（南を0°、時計回り）
-    const windIndexToAngle = idx => (idx * 22.5 + 180);
+    // 風向番号(0〜15)から回転角度（北を0°、時計回り）
+    const windIndexToAngle = idx => (idx * 22.5);
+
+    // 風速に応じた矢印の色を決定
+    const getArrowColor = (speed) => {
+      if (speed >= 20) return "red";      // 20m/s以上 → 赤
+      if (speed >= 15) return "orange";  // 15m/s以上 → オレンジ
+      if (speed >= 10) return "yellow";  // 10m/s以上 → 黄色
+      return "blue";                     // それ未満 → 青（デフォルト）
+    };
 
     fetch(proxy + encodeURIComponent(dataUrl))
       .then(res => res.text())
@@ -56,7 +64,10 @@
 
           const windDir = parseInt(windDirMatch[1], 10);
           const angle = windIndexToAngle(windDir);
-          const windSpeed = speedStr.trim();
+          const windSpeed = parseFloat(speedStr.trim());
+
+          // 風速に応じた色を決定
+          const arrowColor = getArrowColor(windSpeed);
 
           // SVG矢印を回転して表示
           const customIcon = L.divIcon({
@@ -65,17 +76,23 @@
               <div style="text-align:center;">
                 <svg width="24" height="24" viewBox="0 0 24 24"
                      style="transform: rotate(${angle}deg);">
-                  <polygon points="12,2 16,10 12,8 8,10" fill="blue"/>
-                  <line x1="12" y1="2" x2="12" y2="20" stroke="blue" stroke-width="2"/>
+                  <polygon points="12,2 16,10 12,8 8,10" fill="${arrowColor}"/>
+                  <line x1="12" y1="2" x2="12" y2="20" stroke="${arrowColor}" stroke-width="2"/>
                 </svg>
-                <div class="wind-speed-label">${windSpeed}</div>
+                <div class="wind-speed-label">${windSpeed} m/s</div>
               </div>
             `,
             iconSize: [30, 30],
             iconAnchor: [15, 15]
           });
 
-          L.marker([lat, lon], { icon: customIcon }).addTo(map);
+          L.marker([lat, lon], { icon: customIcon })
+            .addTo(map)
+            .bindPopup(`
+              <b>緯度経度</b>: ${lat.toFixed(3)}, ${lon.toFixed(3)}<br>
+              <b>風速</b>: ${windSpeed} m/s<br>
+              <b>風向</b>: ${windDir * 22.5}° (${windDir}/16)
+            `);
         });
       })
       .catch(err => {
