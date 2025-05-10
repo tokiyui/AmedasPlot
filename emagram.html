@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MSM温位エマグラム</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #controls {
+      margin-top: 10px;
+    }
+    select {
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSM温位エマグラム</h1>
+
+  <div id="controls">
+    <span id="initTimeText"></span>
+    <a>&nbsp;</a>
+    <label for="stationSelector">地点:</label>
+    <select id="stationSelector"></select>
+    <a>&nbsp;</a>
+    <label for="timeSelector">FT=</label>
+    <select id="timeSelector"></select>
+    <a>&nbsp;</a>
+    <span id="targetTimeText"></span>
+  </div>
+
+  <canvas id="emagramCanvas" width="1200" height="600"></canvas>
+
+  <script>
+    let chartInstance = null;
+    let weatherData = null;
+    const DISPLAY_MAX = 39;
+    const STEP = 3;
+    let currentStation = "44132";
+
+    const stations = {
+      "12442": "旭川", "14163": "札幌", "19432": "釧路", "31312": "青森", "33431": "盛岡",
+      "32402": "秋田", "34392": "仙台", "41277": "宇都宮", "44132": "東京", "54232": "新潟",
+      "48156": "長野", "56227": "金沢", "50331": "静岡", "51106": "名古屋", "62078": "大阪",
+      "66408": "岡山", "68132": "松江", "67437": "広島", "72086": "高松", "73166": "松山",
+      "82182": "福岡", "88317": "鹿児島", "91197": "那覇"
+    };
+
+    const initTimeText = document.getElementById('initTimeText');
+    const timeSelector = document.getElementById('timeSelector');
+    const stationSelector = document.getElementById('stationSelector');
+    const targetTimeText = document.getElementById('targetTimeText');
+
+    // 現在時刻から初期値UTC文字列（YYYYMMDDHH0000）を生成
+    const initDateObj = new Date(Date.now() - 2.5 * 3600000); // 2.5時間前
+    initDateObj.setUTCHours(Math.floor(initDateObj.getUTCHours() / 3) * 3, 0, 0, 0);
+    const pad = (n) => n.toString().padStart(2, '0');
+    const initTimeStr = `${initDateObj.getUTCFullYear()}${pad(initDateObj.getUTCMonth() + 1)}${pad(initDateObj.getUTCDate())}${pad(initDateObj.getUTCHours())}0000`;
+    initTimeText.textContent = `初期値：${initDateObj.getUTCFullYear()}年${pad(initDateObj.getUTCMonth() + 1)}月${pad(initDateObj.getUTCDate())}日${pad(initDateObj.getUTCHours())}UTC`;
+
+    for (let val = 0; val <= DISPLAY_MAX; val += STEP) {
+      const option = document.createElement('option');
+      option.value = val;
+      option.textContent = `${val}`;
+      timeSelector.appendChild(option);
+    }
+
+    for (const [code, name] of Object.entries(stations)) {
+      const option = document.createElement('option');
+      option.value = code;
+      option.textContent = name;
+      if (code === currentStation) option.selected = true;
+      stationSelector.appendChild(option);
+    }
+
+    async function fetchWeatherData(stationCode) {
+      const corsProxy = 'https://api.allorigins.win/raw?url=';
+      const url = corsProxy + encodeURIComponent(
+        `https://lab.weathermap.co.jp/GPV_point_api/v1/get.py?model=MSM&ini=${initTimeStr}&ftmax=39&amedas=${stationCode}`
+      );
+      const response = await fetch(url);
+      return await response.json();
+    }
+
+    function calculatePotentialTemperature(tempK, pressureHpa) {
+      const Rd = 287.05, Cp = 1005, P0 = 1000;
+      return tempK * Math.pow(P0 / pressureHpa, Rd / Cp);
+    }
+
+    function calculateEquivalentPotentialTemperature(tempK, pressureHpa, rh) {
+      const L = 2.5e6, Cp = 1005, epsilon = 0.622;
+      const tempC = tempK - 273.15;
+      const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
+      const e = rh * es / 100;
+      const q = epsilon * e / (pressureHpa - e);
+      return tempK * Math.pow(1000 / pressureHpa, 0.2854 * (1 - 0.28 * q)) * Math.exp((L * q) / (Cp * tempK));
+    }
+
+    function updateTargetTimeText(ftHour) {
+      const ftMillis = ftHour * 3600000;
+      const targetTime = new Date(initDateObj.getTime() + ftMillis);
+      const pad = (n) => n.toString().padStart(2, '0');
+      targetTimeText.textContent = `対象時刻：${targetTime.getFullYear()}年${pad(targetTime.getMonth() + 1)}月${pad(targetTime.getDate())}日${pad(targetTime.getHours())}JST`;
+    }
+
+    async function plotEmagram(displayTime) {
+      const timeIndex = displayTime / 3;
+      updateTargetTimeText(displayTime);
+
+      if (!weatherData) {
+        weatherData = await fetchWeatherData(currentStation);
+      }
+
+      const levels = Object.keys(weatherData)
+        .filter(k => !isNaN(k) && parseInt(k) >= 300)
+        .sort((a, b) => b - a);
+
+      const thetaPoints = [];
+      const thetaEPoints = [];
+      const satuationthetaEPoints = [];
+
+      for (const level of levels) {
+        const levelData = weatherData[level];
+        const tempK = levelData?.TMP?.[timeIndex];
+        const rh = levelData?.RH?.[timeIndex];
+        const height = levelData?.HGT?.[timeIndex];
+        const pressure = parseInt(level);
+
+        if (
+          typeof tempK === 'number' && !isNaN(tempK) &&
+          typeof rh === 'number' && !isNaN(rh) &&
+          typeof height === 'number' && !isNaN(height)
+        ) {
+          const theta = calculatePotentialTemperature(tempK, pressure);
+          const thetaE = calculateEquivalentPotentialTemperature(tempK, pressure, rh);
+          const satuationthetaE = calculateEquivalentPotentialTemperature(tempK, pressure, 100);
+          if (isFinite(theta) && isFinite(thetaE) && isFinite(satuationthetaE)) {
+            thetaPoints.push({ x: theta, y: height });
+            thetaEPoints.push({ x: thetaE, y: height });
+            satuationthetaEPoints.push({ x: satuationthetaE, y: height });
+          }
+        }
+      }
+
+      const ctx = document.getElementById('emagramCanvas').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: '温位 (θ)',
+              data: thetaPoints,
+              borderColor: 'red',
+              backgroundColor: 'rgba(255, 0, 0, 0.5)',
+              showLine: true,
+              pointRadius: 2,
+              tension: 0.1
+            },
+            {
+              label: '相当温位 (θₑ)',
+              data: thetaEPoints,
+              borderColor: 'blue',
+              backgroundColor: 'rgba(0, 0, 255, 0.5)',
+              showLine: true,
+              pointRadius: 2,
+              tension: 0.1
+            },
+            {
+              label: '飽和相当温位 (θₑ*)',
+              data: satuationthetaEPoints,
+              borderColor: 'green',
+              backgroundColor: 'rgba(0, 255, 0, 0.5)',
+              showLine: true,
+              pointRadius: 2,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: false,
+          scales: {
+            x: {
+              title: { display: true, text: '温位 (K)' },
+              min: 240,
+              max: 400
+            },
+            y: {
+              title: { display: true, text: '高度 (m)' },
+              min: 0,
+              max: 10000
+            }
+          }
+        }
+      });
+    }
+
+    // 初期表示
+    plotEmagram(0);
+
+    // FT変更時
+    timeSelector.addEventListener('change', () => {
+      const displayTime = parseInt(timeSelector.value);
+      plotEmagram(displayTime);
+    });
+
+    // 地点変更時
+    stationSelector.addEventListener('change', async () => {
+      currentStation = stationSelector.value;
+      weatherData = null;
+      plotEmagram(parseInt(timeSelector.value));
+    });
+
+    // キーボード操作
+    document.addEventListener('keydown', (e) => {
+      let displayTime = parseInt(timeSelector.value);
+      if (e.key === 'ArrowLeft' && displayTime > 0) {
+        timeSelector.value = displayTime - STEP;
+        plotEmagram(displayTime - STEP);
+      }
+      if (e.key === 'ArrowRight' && displayTime < DISPLAY_MAX) {
+        timeSelector.value = displayTime + STEP;
+        plotEmagram(displayTime + STEP);
+      }
+    });
+  </script>
+</body>
+</html>
