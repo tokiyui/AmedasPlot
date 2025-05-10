@@ -99,13 +99,31 @@
     }
 
     function calculateEquivalentPotentialTemperature(tempK, pressureHpa, rh) {
-      const L = 2.5e6, Cp = 1005, epsilon = 0.622;
       const tempC = tempK - 273.15;
+
+      // Tetens式による飽和水蒸気圧 es (hPa)
       const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
-      const e = rh * es / 100;
-      const q = epsilon * e / (pressureHpa - e);
-      return tempK * Math.pow(1000 / pressureHpa, 0.2854 * (1 - 0.28 * q)) * Math.exp((L * q) / (Cp * tempK));
+
+      // 実際の水蒸気圧 e (hPa)
+      const e = rh / 100 * es;
+
+      // Tetens式から求めた露点温度 Td (°C)
+      const lnRatio = Math.log(e / 6.112);
+      const Td_C = (243.5 * lnRatio) / (17.67 - lnRatio);
+      const Td_K = Td_C + 273.15;
+
+      // 混合比 w (kg/kg)
+      const w = 0.622 * e / (pressureHpa - e);
+
+      // LCL温度 (K)
+      const TLCL = 1 / (1 / (Td_K - 56) + Math.log(tempK / Td_K) / 800) + 56;
+
+      // 相当温位 θe (K)
+      const thetaE = tempK * Math.pow(1000 / pressureHpa, 0.2854) * Math.exp(((3376 / TLCL) - 2.54) * w * (1 + 0.81 * w));
+
+      return thetaE;
     }
+
 
     function updateTargetTimeText(ftHour) {
       const ftMillis = ftHour * 3600000;
