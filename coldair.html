@@ -31,7 +31,7 @@
   </style>
 </head>
 <body>
-  <h2>気温帳票&nbsp;&nbsp;&nbsp;&nbsp;
+  <h2>AIFS気温帳票&nbsp;&nbsp;&nbsp;&nbsp;
   <label for="location">地点：</label>
   <select id="location">
     <option value="45.415,141.678">稚内</option>
@@ -69,7 +69,7 @@
       const [lat, lon] = locationSelect.value.split(",");
       const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&hourly=temperature_300hPa,temperature_500hPa,temperature_700hPa,temperature_850hPa,temperature_925hPa` +
-        `&models=ecmwf_aifs025_single&forecast_days=14&timezone=UTC`;
+        `&models=ecmwf_aifs025_single&forecast_days=14&timezone=UTC&cell_selection=nearest`;
 
       loading.style.display = "block";  // 表示
       tableContainer.innerHTML = "";
