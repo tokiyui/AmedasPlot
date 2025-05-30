@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>高層気温表示（虹色グラデーション）</title>
+  <title>AIFS寒気帳簿</title>
   <style>
     body { font-family: sans-serif; text-align: center; }
     table {
@@ -54,7 +54,7 @@
   </h2>
 
   <div id="loading" style="display: none;">読み込み中...</div>
-  <div id="table-container"></div> <!-- 👈 これが必要！ -->
+  <div id="table-container"></div>
 
   <script>
     const tableContainer = document.getElementById("table-container");
@@ -69,7 +69,7 @@
       const [lat, lon] = locationSelect.value.split(",");
       const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&hourly=temperature_300hPa,temperature_500hPa,temperature_700hPa,temperature_850hPa,temperature_925hPa` +
-        `&models=ecmwf_aifs025_single&timezone=UTC`;
+        `&models=ecmwf_aifs025_single&forecast_days=14&timezone=UTC`;
 
       loading.style.display = "block";  // 表示
       tableContainer.innerHTML = "";
