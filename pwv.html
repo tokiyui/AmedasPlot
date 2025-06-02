@@ -283,7 +283,7 @@ async function loadAmedasWind(datetimeStr) {
   const h = String(utcDate.getHours()).padStart(2, "0");
   const jmaDatetimeStr = `${y}${m}${d}${h}`;
 
-  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${jmaDatetimeStr}00.json`;
+  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${jmaDatetimeStr}0000.json`;
 
   const res = await fetch(url);
   if (!res.ok) {
