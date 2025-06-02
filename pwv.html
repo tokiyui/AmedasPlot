@@ -150,35 +150,45 @@ async function loadPWV(datetimeStr) {
       };
     });
 
+    // --- PWV値の集計（同じIDが複数行あっても平均を取る）---
+    const pwvValuesById = {};
+
     pwvText.trim().split("\n").forEach((line) => {
       const [id, pwvStr] = line.split(",");
-      const info = stationData[id];
       const pwv = parseFloat(pwvStr);
-      if (info && !isNaN(pwv)) {
-        const roundedPWV = Math.round(pwv);
-
-        // --- 円（PWV値に応じて色とサイズ）---
-        const color = getColor(pwv);
-        const circle = L.circleMarker([info.lat, info.lon], {
-          radius: 8,
-          color: color,
-          fillColor: color,
-          fillOpacity: 0.6,
-          weight: 1,
-        });
-        circle.addTo(pwvLayerGroup);
-
-        // --- ラベル（整数PWV値） ---
-        const labelColor = "black"; // 必要なら色分け
-        const label = L.divIcon({
-          className: "pwv-label",
-          html: `<div style="color:${labelColor}; font-size:12px; font-weight:bold;">${roundedPWV}</div>`,
-          iconSize: [30, 12],
-          iconAnchor: [15, 6],
-        });
-        const marker = L.marker([info.lat, info.lon], { icon: label });
-        marker.addTo(pwvLayerGroup);
+      if (!isNaN(pwv)) {
+        if (!pwvValuesById[id]) {
+          pwvValuesById[id] = [];
+        }
+        pwvValuesById[id].push(pwv);
       }
+    });
+
+    Object.entries(pwvValuesById).forEach(([id, pwvList]) => {
+      const info = stationData[id];
+      if (!info || pwvList.length === 0) return;
+
+      const avgPWV = pwvList.reduce((sum, val) => sum + val, 0) / pwvList.length;
+      const roundedPWV = Math.round(avgPWV);
+
+      const color = getColor(avgPWV);
+      const circle = L.circleMarker([info.lat, info.lon], {
+        radius: 8,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.6,
+        weight: 1,
+      });
+      circle.addTo(pwvLayerGroup);
+
+      const label = L.divIcon({
+        className: "pwv-label",
+        html: `<div style="color:black; font-size:12px; font-weight:bold;">${roundedPWV}</div>`,
+        iconSize: [30, 12],
+        iconAnchor: [15, 6],
+      });
+      const marker = L.marker([info.lat, info.lon], { icon: label });
+      marker.addTo(pwvLayerGroup);
     });
   } catch (err) {
     console.error(err);
