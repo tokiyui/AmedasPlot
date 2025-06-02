@@ -245,7 +245,6 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
 
 async function loadAmedasWind(datetimeStr) {
   windLayerGroup.clearLayers();
-  pwvLayerGroup.clearLayers();
 
   if (!amedasLocData) {
     await loadAmedasLocData();
