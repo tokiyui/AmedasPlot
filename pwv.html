@@ -122,7 +122,7 @@
     }
 
 async function loadPWV(datetimeStr) {
-  pwvLayerGroup.clearLayers();
+  ///////pwvLayerGroup.clearLayers();
 
   const ymd = datetimeStr.substring(0, 8);
   const h = datetimeStr.substring(8, 10);
@@ -157,30 +157,27 @@ async function loadPWV(datetimeStr) {
       if (info && !isNaN(pwv)) {
         const roundedPWV = Math.round(pwv);
 
-// --- 円（PWV値に応じて色とサイズ）---
-const color = getColor(pwv);
-const circle = L.circleMarker([info.lat, info.lon], {
-  radius: 8,
-  color: color,
-  fillColor: color,
-  fillOpacity: 0.6,
-  weight: 1,
-});
+        // --- 円（PWV値に応じて色とサイズ）---
+        const color = getColor(pwv);
+        const circle = L.circleMarker([info.lat, info.lon], {
+          radius: 8,
+          color: color,
+          fillColor: color,
+          fillOpacity: 0.6,
+          weight: 1,
+        });
+        circle.addTo(pwvLayerGroup);
 
-// --- ラベル（整数PWV値） ---
-const labelColor = "black"; // 必要なら色分け
-const label = L.divIcon({
-  className: "pwv-label",
-  html: `<div style="color:${labelColor}; font-size:12px; font-weight:bold;">${roundedPWV}</div>`,
-  iconSize: [30, 12],
-  iconAnchor: [15, 6],
-});
-const marker = L.marker([info.lat, info.lon + 0.01], { icon: label });
-
-// --- 円とラベルをまとめて1グループとして追加 ---
-    circle.addTo(pwvLayerGroup);
-    marker.addTo(pwvLayerGroup);
-
+        // --- ラベル（整数PWV値） ---
+        const labelColor = "black"; // 必要なら色分け
+        const label = L.divIcon({
+          className: "pwv-label",
+          html: `<div style="color:${labelColor}; font-size:12px; font-weight:bold;">${roundedPWV}</div>`,
+          iconSize: [30, 12],
+          iconAnchor: [15, 6],
+        });
+        const marker = L.marker([info.lat, info.lon+0.01], { icon: label });
+        marker.addTo(pwvLayerGroup);
       }
     });
   } catch (err) {
@@ -248,6 +245,7 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
 
 async function loadAmedasWind(datetimeStr) {
   windLayerGroup.clearLayers();
+  pwvLayerGroup.clearLayers();
 
   if (!amedasLocData) {
     await loadAmedasLocData();
