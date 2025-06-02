@@ -76,7 +76,7 @@
       const now = new Date();
       // UTC時刻に変換
       const utc = new Date(
-        now.getTime()// + now.getTimezoneOffset() * 60000
+        now.getTime()
       );
       // 40分引く
       utc.setUTCMinutes(utc.getUTCMinutes() - 40);
@@ -266,7 +266,28 @@ async function loadAmedasWind(datetimeStr) {
     await loadAmedasLocData();
   }
 
-  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${datetimeStr}00.json`;
+  // UTC文字列 → Dateオブジェクト
+  const utcDate = new Date(
+    Date.UTC(
+      parseInt(datetimeStr.slice(0, 4), 10),
+      parseInt(datetimeStr.slice(4, 6), 10) - 1,
+      parseInt(datetimeStr.slice(6, 8), 10),
+      parseInt(datetimeStr.slice(8, 10), 10)
+    )
+  );
+
+  // JSTに変換（9時間加算）
+  utcDate.setHours(utcDate.getHours() + 9);
+
+  // JST形式に整形（JMA用）
+  const y = utcDate.getFullYear();
+  const m = String(utcDate.getMonth() + 1).padStart(2, "0");
+  const d = String(utcDate.getDate()).padStart(2, "0");
+  const h = String(utcDate.getHours()).padStart(2, "0");
+  const jmaDatetimeStr = `${y}${m}${d}${h}`;
+
+  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${jmaDatetimeStr}00.json`;
+
   const res = await fetch(url);
   if (!res.ok) {
     console.error("アメダス風データ取得失敗:", url);
@@ -282,7 +303,7 @@ async function loadAmedasWind(datetimeStr) {
     const lat = loc.lat[0] + loc.lat[1] / 60;
     const lon = loc.lon[0] + loc.lon[1] / 60;
 
-    const windDir = val.windDirection?.[0] * 360/16.0;
+    const windDir = val.windDirection?.[0] * 360 / 16.0;
     const windSpeed = val.wind?.[0];
 
     if (typeof windDir !== "number" || typeof windSpeed !== "number") return;
@@ -290,7 +311,6 @@ async function loadAmedasWind(datetimeStr) {
     drawWindArrowWithSpeed(lat, lon, windDir, windSpeed);
   });
 }
-
 
     // 時刻変更時の更新処理
     async function updateAll() {
