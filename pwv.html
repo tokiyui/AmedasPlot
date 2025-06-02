@@ -282,7 +282,7 @@ async function loadAmedasWind(datetimeStr) {
     const lat = loc.lat[0] + loc.lat[1] / 60;
     const lon = loc.lon[0] + loc.lon[1] / 60;
 
-    const windDir = val.windDirection?.[0];
+    const windDir = val.windDirection?.[0] * 360/16.0;
     const windSpeed = val.wind?.[0];
 
     if (typeof windDir !== "number" || typeof windSpeed !== "number") return;
