@@ -50,6 +50,7 @@
 
     // PWVと風のレイヤーグループ
     let pwvLayerGroup = L.layerGroup().addTo(map);
+    let pwvLabelLayerGroup = L.layerGroup().addTo(map);
     let windLayerGroup = L.layerGroup().addTo(map);
 
     // PWVの色分け関数
@@ -123,6 +124,7 @@
 
 async function loadPWV(datetimeStr) {
   pwvLayerGroup.clearLayers();
+  pwvLabelLayerGroup.clearLayers();
 
   const ymd = datetimeStr.substring(0, 8);
   const h = datetimeStr.substring(8, 10);
@@ -177,7 +179,7 @@ async function loadPWV(datetimeStr) {
           iconAnchor: [15, 6],
         });
         const marker = L.marker([info.lat, info.lon+0.01], { icon: label });
-        marker.addTo(pwvLayerGroup);
+        marker.addTo(pwvLabelLayerGroup);
       }
     });
   } catch (err) {
@@ -295,8 +297,6 @@ async function loadAmedasWind(datetimeStr) {
 
     // 時刻変更時の更新処理
     async function updateAll() {
-      windLayerGroup.clearLayers();
-      pwvLayerGroup.clearLayers();
       const datetimeStr = document.getElementById("datetime").value;
 
       // JST表示も更新
