@@ -176,7 +176,7 @@ async function loadPWV(datetimeStr) {
           iconSize: [30, 12],
           iconAnchor: [15, 6],
         });
-        const marker = L.marker([info.lat, info.lon+0.01], { icon: label });
+        const marker = L.marker([info.lat, info.lon], { icon: label });
         marker.addTo(pwvLayerGroup);
       }
     });
