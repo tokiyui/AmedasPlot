@@ -207,8 +207,8 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
   const startLon = lon;
 
   // 終点計算
-  const endLat = startLat + length * Math.cos(rad);
-  const endLon = startLon + length * Math.sin(rad);
+  const endLat = startLat + length * windSpeed / 5.0 * Math.cos(rad);
+  const endLon = startLon + length * windSpeed / 5.0 * Math.sin(rad);
 
   // 矢印本体（線）
   const line = L.polyline([[startLat, startLon], [endLat, endLon]], {
