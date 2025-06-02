@@ -43,7 +43,7 @@
       proxy + encodeURIComponent("https://web.lhtc-pwv.com/web/pwv.station.csv");
 
     // Leaflet地図初期化
-    const map = L.map("map").setView([36, 139], 8);
+    const map = L.map("map").setView([35.8, 139.8], 9);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
@@ -76,7 +76,7 @@
       const now = new Date();
       // UTC時刻に変換
       const utc = new Date(
-        now.getTime()// + now.getTimezoneOffset() * 60000
+        now.getTime()
       );
       // 40分引く
       utc.setUTCMinutes(utc.getUTCMinutes() - 40);
@@ -207,8 +207,8 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
   const startLon = lon;
 
   // 終点計算
-  const endLat = startLat + length * Math.cos(rad);
-  const endLon = startLon + length * Math.sin(rad);
+  const endLat = startLat + length * windSpeed / 4.0 * Math.cos(rad);
+  const endLon = startLon + length * windSpeed / 4.0 * Math.sin(rad);
 
   // 矢印本体（線）
   const line = L.polyline([[startLat, startLon], [endLat, endLon]], {
@@ -226,11 +226,11 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
   const tipLon = endLon;
 
   // 左右の矢印頭の点を計算
-  const leftLat = tipLat - headLength * Math.cos(rad - headAngle);
-  const leftLon = tipLon - headLength * Math.sin(rad - headAngle);
+  const leftLat = tipLat - headLength * windSpeed / 4.0 * Math.cos(rad - headAngle);
+  const leftLon = tipLon - headLength * windSpeed / 4.0 * Math.sin(rad - headAngle);
 
-  const rightLat = tipLat - headLength * Math.cos(rad + headAngle);
-  const rightLon = tipLon - headLength * Math.sin(rad + headAngle);
+  const rightLat = tipLat - headLength * windSpeed / 4.0 * Math.cos(rad + headAngle);
+  const rightLon = tipLon - headLength * windSpeed / 4.0 * Math.sin(rad + headAngle);
 
   // 矢印頭（三角形）をポリラインで作成（閉じる）
   const arrowHead = L.polygon(
@@ -241,22 +241,6 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
     ],
     { color: "blue", fillColor: "blue", fillOpacity: 0.9 }
   ).addTo(windLayerGroup);
-
-  // 風速テキストを矢印の線の中央より少し先に表示
-  const textLat = startLat + (length + 0.01) * Math.cos(rad);
-  const textLon = startLon + (length + 0.01) * Math.sin(rad);
-
-  // 風速は整数に丸めて表示
-  const speedText = Math.round(windSpeed).toString();
-
-  L.marker([textLat, textLon], {
-    icon: L.divIcon({
-      className: "wind-speed-label",
-      html: `<span style="color: blue; font-weight: bold; font-size: 12px;">${speedText}</span>`,
-      iconSize: [30, 20],
-      iconAnchor: [15, 10],
-    }),
-  }).addTo(windLayerGroup);
 }
 
 async function loadAmedasWind(datetimeStr) {
@@ -266,7 +250,25 @@ async function loadAmedasWind(datetimeStr) {
     await loadAmedasLocData();
   }
 
-  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${datetimeStr}00.json`;
+  // UTC文字列 → Dateオブジェクト
+  const utcDate = new Date(
+    Date.UTC(
+      parseInt(datetimeStr.slice(0, 4), 10),
+      parseInt(datetimeStr.slice(4, 6), 10) - 1,
+      parseInt(datetimeStr.slice(6, 8), 10),
+      parseInt(datetimeStr.slice(8, 10), 10)
+    )
+  );
+
+  // JST形式に整形（JMA用）
+  const y = utcDate.getFullYear();
+  const m = String(utcDate.getMonth() + 1).padStart(2, "0");
+  const d = String(utcDate.getDate()).padStart(2, "0");
+  const h = String(utcDate.getHours()).padStart(2, "0");
+  const jmaDatetimeStr = `${y}${m}${d}${h}`;
+
+  const url = `https://www.jma.go.jp/bosai/amedas/data/map/${jmaDatetimeStr}0000.json`;
+
   const res = await fetch(url);
   if (!res.ok) {
     console.error("アメダス風データ取得失敗:", url);
@@ -282,7 +284,7 @@ async function loadAmedasWind(datetimeStr) {
     const lat = loc.lat[0] + loc.lat[1] / 60;
     const lon = loc.lon[0] + loc.lon[1] / 60;
 
-    const windDir = val.windDirection?.[0] * 360/16.0;
+    const windDir = val.windDirection?.[0] * 360 / 16.0;
     const windSpeed = val.wind?.[0];
 
     if (typeof windDir !== "number" || typeof windSpeed !== "number") return;
@@ -290,7 +292,6 @@ async function loadAmedasWind(datetimeStr) {
     drawWindArrowWithSpeed(lat, lon, windDir, windSpeed);
   });
 }
-
 
     // 時刻変更時の更新処理
     async function updateAll() {
