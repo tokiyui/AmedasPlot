@@ -122,7 +122,7 @@
     }
 
 async function loadPWV(datetimeStr) {
-  ///////pwvLayerGroup.clearLayers();
+  pwvLayerGroup.clearLayers();
 
   const ymd = datetimeStr.substring(0, 8);
   const h = datetimeStr.substring(8, 10);
@@ -240,7 +240,7 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
       [rightLat, rightLon],
     ],
     { color: "blue", fillColor: "blue", fillOpacity: 0.9 }
-  ).addTo(windLayerGroup);
+  ).addTo();
 }
 
 async function loadAmedasWind(datetimeStr) {
