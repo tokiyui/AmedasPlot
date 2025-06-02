@@ -178,7 +178,8 @@ const label = L.divIcon({
 const marker = L.marker([info.lat, info.lon + 0.01], { icon: label });
 
 // --- 円とラベルをまとめて1グループとして追加 ---
-L.layerGroup([circle, marker]).addTo(pwvLayerGroup);
+    circle.addTo(pwvLayerGroup);
+    marker.addTo(pwvLayerGroup);
 
       }
     });
