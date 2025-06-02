@@ -207,8 +207,8 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
   const startLon = lon;
 
   // 終点計算
-  const endLat = startLat + length * windSpeed / 5.0 * Math.cos(rad);
-  const endLon = startLon + length * windSpeed / 5.0 * Math.sin(rad);
+  const endLat = startLat + length * windSpeed / 4.0 * Math.cos(rad);
+  const endLon = startLon + length * windSpeed / 4.0 * Math.sin(rad);
 
   // 矢印本体（線）
   const line = L.polyline([[startLat, startLon], [endLat, endLon]], {
@@ -226,11 +226,11 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
   const tipLon = endLon;
 
   // 左右の矢印頭の点を計算
-  const leftLat = tipLat - headLength * Math.cos(rad - headAngle);
-  const leftLon = tipLon - headLength * Math.sin(rad - headAngle);
+  const leftLat = tipLat - headLength * windSpeed / 4.0 * Math.cos(rad - headAngle);
+  const leftLon = tipLon - headLength * windSpeed / 4.0 * Math.sin(rad - headAngle);
 
-  const rightLat = tipLat - headLength * Math.cos(rad + headAngle);
-  const rightLon = tipLon - headLength * Math.sin(rad + headAngle);
+  const rightLat = tipLat - headLength * windSpeed / 4.0 * Math.cos(rad + headAngle);
+  const rightLon = tipLon - headLength * windSpeed / 4.0 * Math.sin(rad + headAngle);
 
   // 矢印頭（三角形）をポリラインで作成（閉じる）
   const arrowHead = L.polygon(
@@ -241,22 +241,6 @@ function drawWindArrowWithSpeed(lat, lon, windDir, windSpeed) {
     ],
     { color: "blue", fillColor: "blue", fillOpacity: 0.9 }
   ).addTo(windLayerGroup);
-
-  // 風速テキストを矢印の線の中央より少し先に表示
-  const textLat = startLat + (length + 0.01) * Math.cos(rad);
-  const textLon = startLon + (length + 0.01) * Math.sin(rad);
-
-  // 風速は整数に丸めて表示
-  const speedText = Math.round(windSpeed).toString();
-
-  L.marker([textLat, textLon], {
-    icon: L.divIcon({
-      className: "wind-speed-label",
-      html: `<span style="color: blue; font-weight: bold; font-size: 12px;">${speedText}</span>`,
-      iconSize: [30, 20],
-      iconAnchor: [15, 10],
-    }),
-  }).addTo(windLayerGroup);
 }
 
 async function loadAmedasWind(datetimeStr) {
