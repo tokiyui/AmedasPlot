@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>可降水量とアメダス風マップ（UTC/JST対応版）</title>
+  <title>可降水量とアメダス風</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link
     rel="stylesheet"
@@ -78,8 +78,8 @@
       const utc = new Date(
         now.getTime()// + now.getTimezoneOffset() * 60000
       );
-      // 10分引く
-      utc.setUTCMinutes(utc.getUTCMinutes() - 20);
+      // 30分引く
+      utc.setUTCMinutes(utc.getUTCMinutes() - 30);
       // 正時に丸める
       utc.setUTCMinutes(0, 0, 0);
       return utc;
