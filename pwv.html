@@ -296,6 +296,8 @@ async function loadAmedasWind(datetimeStr) {
 
     // 時刻変更時の更新処理
     async function updateAll() {
+      windLayerGroup.clearLayers();
+      pwvLayerGroup.clearLayers();
       const datetimeStr = document.getElementById("datetime").value;
 
       // JST表示も更新
