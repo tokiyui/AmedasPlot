@@ -90,7 +90,7 @@
       const select = document.getElementById("datetime");
       const baseUTC = getRoundedHourUTC();
 
-      for (let i = 0; i <= 168; i++) {
+      for (let i = 0; i <= 192; i++) {
         const dtUTC = new Date(baseUTC.getTime() - i * 3600000);
         const utcStr = formatDatetimeJMA(dtUTC); // YYYYMMDDHH00 (UTC時刻API用)
 
