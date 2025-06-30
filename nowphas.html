@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>波高地図（NOWPHAS）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { height: 100vh; width: 100vw; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const proxy = "https://api.allorigins.win/raw?url=";
+    const setupURL = proxy + encodeURIComponent("https://nowphas.mlit.go.jp/PROG/xml/POINT_SETUP.xml");
+    const dataURL = proxy + encodeURIComponent("https://nowphas.mlit.go.jp/mapxml/DataMap.xml");
+
+    // 色分け関数（波高によってマーカーの色を変更）
+    function getColor(height) {
+      if (height < 0.5) return "blue";
+      if (height < 1.0) return "green";
+      if (height < 1.5) return "yellow";
+      if (height < 2.0) return "orange";
+      return "red";
+    }
+
+    // カスタムマーカー（色付き円）
+    function createCircleMarker(lat, lon, color, text) {
+      return L.circleMarker([lat, lon], {
+        radius: 8,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.8,
+        weight: 1
+      }).bindTooltip(text, { permanent: false });
+    }
+
+    async function fetchXML(url) {
+      const res = await fetch(url);
+      const txt = await res.text();
+      return new DOMParser().parseFromString(txt, "application/xml");
+    }
+
+    async function plotWaveData() {
+      const [setupXML, dataXML] = await Promise.all([fetchXML(setupURL), fetchXML(dataURL)]);
+
+      const points = {};
+      for (const pt of setupXML.getElementsByTagName("point")) {
+        const code = pt.getAttribute("code");
+        points[code] = {
+          name: pt.getAttribute("name"),
+          lat: parseFloat(pt.getAttribute("lat")),
+          lon: parseFloat(pt.getAttribute("lon")),
+        };
+      }
+
+      const map = L.map("map").setView([36.2, 138], 5.4);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+
+      const mapdata = dataXML.getElementsByTagName("mapdata");
+      for (const md of mapdata) {
+        const code = md.getAttribute("code");
+        const yugihaEl = md.getElementsByTagName("yugiha")[0];
+        const yugiha = yugihaEl?.textContent;
+        if (yugiha && points[code]) {
+          const h = parseFloat(yugiha);
+          if (h >= 100) continue;  // 異常値をスキップ
+          const color = getColor(h);
+          const { name, lat, lon } = points[code];
+          const text = `${name} (${h.toFixed(2)} m)`;
+          createCircleMarker(lat, lon, color, text).addTo(map);
+        }
+      }
+    }
+
+    plotWaveData().catch(e => {
+      console.error("エラー:", e);
+      alert("データの取得に失敗しました");
+    });
+  </script>
+</body>
+</html>
