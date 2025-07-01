@@ -297,9 +297,9 @@
               min: 300,
               max: 1000,
               ticks: {
-                callback: function(value) {
-                  return value + ' hPa';
-                }
+              callback: function(value) {
+                const shownTicks = [1000, 900, 800, 700, 600, 500, 400, 300];
+                return shownTicks.includes(value) ? value + ' hPa' : '';
               }
             }
           },
