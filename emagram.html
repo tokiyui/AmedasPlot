@@ -23,10 +23,16 @@
     select {
       margin: 0 10px;
     }
+    #loading {
+      color: red;
+      font-size: 1.5em;
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>MSM温位エマグラム</h1>
+  <div id="loading">読み込み中...</div>
 
   <div id="controls">
     <span id="initTimeText"></span>
@@ -61,9 +67,9 @@
     const timeSelector = document.getElementById('timeSelector');
     const stationSelector = document.getElementById('stationSelector');
     const targetTimeText = document.getElementById('targetTimeText');
+    const loadingDiv = document.getElementById('loading');
 
-    // 現在時刻から初期値UTC文字列（YYYYMMDDHH0000）を生成
-    const initDateObj = new Date(Date.now() - 2.5 * 3600000); // 2.5時間前
+    const initDateObj = new Date(Date.now() - 2.5 * 3600000);
     initDateObj.setUTCHours(Math.floor(initDateObj.getUTCHours() / 3) * 3, 0, 0, 0);
     const pad = (n) => n.toString().padStart(2, '0');
     const initTimeStr = `${initDateObj.getUTCFullYear()}${pad(initDateObj.getUTCMonth() + 1)}${pad(initDateObj.getUTCDate())}${pad(initDateObj.getUTCHours())}0000`;
@@ -100,30 +106,16 @@
 
     function calculateEquivalentPotentialTemperature(tempK, pressureHpa, rh) {
       const tempC = tempK - 273.15;
-
-      // Tetens式による飽和水蒸気圧 es (hPa)
       const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
-
-      // 実際の水蒸気圧 e (hPa)
       const e = rh / 100 * es;
-
-      // Tetens式から求めた露点温度 Td (°C)
       const lnRatio = Math.log(e / 6.112);
       const Td_C = (243.5 * lnRatio) / (17.67 - lnRatio);
       const Td_K = Td_C + 273.15;
-
-      // 混合比 w (kg/kg)
       const w = 0.622 * e / (pressureHpa - e);
-
-      // LCL温度 (K)
       const TLCL = 1 / (1 / (Td_K - 56) + Math.log(tempK / Td_K) / 800) + 56;
-
-      // 相当温位 θe (K)
       const thetaE = tempK * Math.pow(1000 / pressureHpa, 0.2854) * Math.exp(((3376 / TLCL) - 2.54) * w * (1 + 0.81 * w));
-
       return thetaE;
     }
-
 
     function updateTargetTimeText(ftHour) {
       const ftMillis = ftHour * 3600000;
@@ -133,6 +125,7 @@
     }
 
     async function plotEmagram(displayTime) {
+      loadingDiv.style.display = 'block';
       const timeIndex = displayTime / 3;
       updateTargetTimeText(displayTime);
 
@@ -144,9 +137,9 @@
         .filter(k => !isNaN(k) && parseInt(k) >= 300)
         .sort((a, b) => b - a);
 
-      const thetaPoints = [];
-      const thetaEPoints = [];
-      const satuationthetaEPoints = [];
+      const thetaPoints = [], thetaEPoints = [], satuationthetaEPoints = [];
+      let thetaE950 = null;
+      let lfcPoint = null, elPoint = null, prevDiff = null;
 
       for (const level of levels) {
         const levelData = weatherData[level];
@@ -167,9 +160,45 @@
             thetaPoints.push({ x: theta, y: height });
             thetaEPoints.push({ x: thetaE, y: height });
             satuationthetaEPoints.push({ x: satuationthetaE, y: height });
+
+            const diff = thetaE - satuationthetaE;
+            if (prevDiff !== null && diff * prevDiff < 0) {
+              const x1 = thetaEPoints[thetaEPoints.length - 2].x;
+              const y1 = thetaEPoints[thetaEPoints.length - 2].y;
+              const x2 = thetaE;
+              const y2 = height;
+              const crossY = y1 + (0 - prevDiff) * (y2 - y1) / (diff - prevDiff);
+              const crossX = x1 + (0 - prevDiff) * (x2 - x1) / (diff - prevDiff);
+              if (!lfcPoint) lfcPoint = { x: crossX, y: crossY };
+              else if (!elPoint) elPoint = { x: crossX, y: crossY };
+            }
+            prevDiff = diff;
+
+            if (pressure === 950) thetaE950 = thetaE;
           }
         }
       }
+
+      function getTemp(level) {
+        return weatherData[level]?.TMP?.[timeIndex];
+      }
+      function getRH(level) {
+        return weatherData[level]?.RH?.[timeIndex];
+      }
+
+      const T850 = getTemp("850"), T700 = getTemp("700"), T500 = getTemp("500");
+      const Td = (T, rh) => {
+        const tempC = T - 273.15;
+        const es = 6.112 * Math.exp((17.67 * tempC) / (tempC + 243.5));
+        const e = rh / 100 * es;
+        const lnRatio = Math.log(e / 6.112);
+        return (243.5 * lnRatio) / (17.67 - lnRatio);
+      };
+      const Td850 = Td(T850, getRH("850"));
+      const Td700 = Td(T700, getRH("700"));
+      const K = (T850 - 273.15) - (T500 - 273.15) + Td850 - Td700;
+      const TT = (T850 - 273.15) + (T500 - 273.15) - 2 * (T700 - 273.15);
+      targetTimeText.textContent += `　K-Index=${K.toFixed(1)}  TT=${TT.toFixed(1)}`;
 
       const ctx = document.getElementById('emagramCanvas').getContext('2d');
       if (chartInstance) chartInstance.destroy();
@@ -204,7 +233,34 @@
               showLine: true,
               pointRadius: 4,
               tension: 0.1
-            }
+            },
+            ...(thetaE950 ? [{
+              label: 'θₑ (950hPa)',
+              data: [
+                { x: thetaE950, y: 0 },
+                { x: thetaE950, y: 10000 }
+              ],
+              borderColor: 'black',
+              borderWidth: 2,
+              showLine: true,
+              pointRadius: 0
+            }] : []),
+            ...(lfcPoint ? [{
+              label: 'LFC',
+              data: [lfcPoint],
+              borderColor: 'orange',
+              backgroundColor: 'orange',
+              pointRadius: 6,
+              showLine: false
+            }] : []),
+            ...(elPoint ? [{
+              label: 'EL',
+              data: [elPoint],
+              borderColor: 'red',
+              backgroundColor: 'red',
+              pointRadius: 6,
+              showLine: false
+            }] : [])
           ]
         },
         options: {
@@ -223,25 +279,23 @@
           }
         }
       });
+
+      loadingDiv.style.display = 'none';
     }
 
-    // 初期表示
     plotEmagram(0);
 
-    // FT変更時
     timeSelector.addEventListener('change', () => {
       const displayTime = parseInt(timeSelector.value);
       plotEmagram(displayTime);
     });
 
-    // 地点変更時
     stationSelector.addEventListener('change', async () => {
       currentStation = stationSelector.value;
       weatherData = null;
       plotEmagram(parseInt(timeSelector.value));
     });
 
-    // キーボード操作
     document.addEventListener('keydown', (e) => {
       let displayTime = parseInt(timeSelector.value);
       if (e.key === 'ArrowLeft' && displayTime > 0) {
