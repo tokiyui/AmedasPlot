@@ -315,12 +315,9 @@
                   const data = context.raw;
                   if (!data) return '';
 
-                  // yは気圧(hPa)
                   const pres = data.y;
-                  // tooltip表示用に高度[m]を取得
                   const height = data.height !== undefined ? data.height.toFixed(0) : 'N/A';
                   if (datasetLabel == '温位 (θ)') {
-                    // 気温はK→℃変換
                     const tempC = (data.tempK !== undefined) ? (data.tempK - 273.15).toFixed(1) : 'N/A';
                     return `高度 ${height} m, 気温 ${tempC}℃`;
                   }
@@ -339,7 +336,8 @@
               }
             }
           }
-      };
+        } 
+      });
 
       loadingDiv.style.display = 'none';
     }
