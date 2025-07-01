@@ -253,7 +253,7 @@ chartInstance = new Chart(ctx, {
           yAxisKey: 'y'
         }
       },
-      ...(thetaE950 ? [{
+      {
         label: 'θₑ(950hPa)',
         data: [{ x: thetaE950, y: 950 }, { x: thetaE950, y: 100 }],
         borderColor: 'black',
@@ -261,8 +261,8 @@ chartInstance = new Chart(ctx, {
         showLine: true,
         pointRadius: 0,
         parsing: { xAxisKey: 'x', yAxisKey: 'y' }
-      }] : []),
-      ...(lfcPoint ? [{
+      },
+      {
         label: 'LFC',
         data: [lfcPoint],
         backgroundColor: 'orange',
@@ -270,8 +270,8 @@ chartInstance = new Chart(ctx, {
         pointRadius: 8,
         showLine: false,
         parsing: { xAxisKey: 'x', yAxisKey: 'y' }
-      }] : []),
-      ...(elPoint ? [{
+      },
+      {
         label: 'EL',
         data: [elPoint],
         backgroundColor: 'red',
@@ -279,7 +279,7 @@ chartInstance = new Chart(ctx, {
         pointRadius: 8,
         showLine: false,
         parsing: { xAxisKey: 'x', yAxisKey: 'y' }
-      }] : [])
+      }
     ]
   },
   options: {
