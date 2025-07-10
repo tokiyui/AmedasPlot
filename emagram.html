@@ -162,7 +162,7 @@
           if (prevThetaE !== null && prevSatuationThetaE !== null) {
             const diffCurr = thetaE950 - satuationthetaE;
             const diffPrev = thetaE950 - prevSatuationThetaE;
-            if (isFinite(diffCurr) && isFinite(diffPrev) && diffCurr * diffPrev < 0) {
+            if (isFinite(diffCurr) && isFinite(diffPrev) && diffCurr * diffPrev < 0 && pressure <= 950) {
               // 線形補間
               const frac = Math.abs(diffPrev) / (Math.abs(diffPrev) + Math.abs(diffCurr));
               const crossX = prevSatuationThetaE + frac * (satuationthetaE - prevSatuationThetaE);
