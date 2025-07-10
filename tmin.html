@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>最低気温・霧予測ツール</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, select { margin: 5px; padding: 5px; }
+    button { padding: 8px 12px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>最低気温・霧予測ツール（<a href="https://www.asahi-net.or.jp/~rk7j-kndu/kenkyu/ke50.html">近藤純正氏考案の放射冷却の見積もり手法</a>をアレンジ）</h2>
+  <label>気温（℃）: <input type="number" id="temp" step="0.1"></label><br>
+  <label>相対湿度（%）: <input type="number" id="rh" step="1"></label><br>
+
+  <h4>冷却時間（季節）</h4>
+  <label><input type="radio" name="cooltime" value="12"> 夏</label><br>
+  <label><input type="radio" name="cooltime" value="14" checked> 春・秋</label><br>
+  <label><input type="radio" name="cooltime" value="16"> 冬</label><br>
+
+  <h4>地表面の状態</h4>
+  <label><input type="radio" name="landparam" value="3000000"> 湿っている</label><br>
+  <label><input type="radio" name="landparam" value="1000000" checked> 平均的</label><br>
+  <label><input type="radio" name="landparam" value="300000"> 乾いている</label><br>
+
+  <h4>雲量条件</h4>
+  <label><input type="radio" name="cloud" value="1" checked> 快晴</label><br>
+  <label><input type="radio" name="cloud" value="0.67"> 上層雲</label><br>
+  <label><input type="radio" name="cloud" value="0.45"> 中層雲</label><br>
+  <label><input type="radio" name="cloud" value="0.3"> 下層雲</label><br>
+  <label><input type="radio" name="cloud" value="0.2"> 雨天</label><br>
+
+  <button onclick="calculate()">判定する</button>
+
+  <h3>結果:</h3>
+  <div id="result"></div>
+
+  <script>
+    function calculate() {
+      const T = parseFloat(document.getElementById('temp').value);
+      const RH = parseFloat(document.getElementById('rh').value);
+      if (isNaN(T) || isNaN(RH) || RH <= 0 || RH > 100) {
+        document.getElementById('result').innerHTML = '正しい気温と相対湿度を入力してください。';
+        return;
+      }
+
+      const cooltime = parseFloat(document.querySelector('input[name="cooltime"]:checked').value);
+      const landparam = parseFloat(document.querySelector('input[name="landparam"]:checked').value);
+      const cloudFactor = parseFloat(document.querySelector('input[name="cloud"]:checked').value);
+
+      const sigma = 5.67e-8;  // シュテファン・ボルツマン定数
+
+      // 水蒸気圧 e
+      const es = 6.1078 * Math.exp((17.27 * T) / (T + 237.3));
+      const e = es * (RH / 100);
+
+      // deltaT（基本式）
+      const TK = T + 273.15;
+      const ln_e = Math.log(e);
+      let deltaT_base = TK / 4 * (0.42 - 0.044 * ln_e - 0.011 * ln_e * ln_e);
+
+      // 係数補正
+      const x = Math.pow((4 * sigma * Math.pow(TK, 3)), 2) / landparam * (cooltime * 60 * 60);
+      const factor = (0.001 + 1.168 * Math.sqrt(x) + x) / (1.062 + 1.725 * Math.sqrt(x) + x);
+      let deltaT = deltaT_base * factor;
+
+      // 雲量補正
+      deltaT *= cloudFactor;
+
+      // 最低気温
+      const Tmin = T - deltaT;
+
+      // 最低気温での飽和水蒸気圧
+      const es_Tmin_1 = 6.1078 * Math.exp((17.27 * (Tmin - 1)) / ((Tmin - 1) + 237.3));
+      const es_Tmin_2 = 6.1078 * Math.exp((17.27 * (Tmin - 2)) / ((Tmin - 2) + 237.3));
+      const es_Tmin_3 = 6.1078 * Math.exp((17.27 * (Tmin - 3)) / ((Tmin - 3) + 237.3));
+
+      // 判定（3段階）
+      let fog = '霧の可能性は低い';
+      if (e >= es_Tmin_1) {
+        fog = '霧が発生する可能性が高い';
+      } else if (e >= es_Tmin_2) {
+        fog = '実況監視';
+      } else if (e >= es_Tmin_3) {
+        fog = '留意';
+      }
+
+      document.getElementById('result').innerHTML = `
+        最低気温: ${Tmin.toFixed(1)} ℃<br>
+        <strong>${fog}</strong>
+      `;
+    }
+  </script>
+</body>
+</html>
