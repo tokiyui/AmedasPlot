@@ -208,7 +208,7 @@
       const Td700 = Td(T700, RH700);
       const K = T850 + Td850 - T500 - Td700;
       const TT = T850 + Td850 - 2 * T500 + 273.15;
-      targetTimeText.textContent += `  K-Index=${K.toFixed(1)}  TotalTotals=${TT.toFixed(1)}  T500=${T500.toFixed(1)-273.15}`;
+      targetTimeText.textContent += `  K-Index=${K.toFixed(1)}  TotalTotals=${TT.toFixed(1)}  T500=${(T500 - 273.15).toFixed(1)}`;
 
       const ctx = document.getElementById('emagramCanvas').getContext('2d');
       if (chartInstance) chartInstance.destroy();
