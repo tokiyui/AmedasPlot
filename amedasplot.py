@@ -1045,68 +1045,6 @@ plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
 plt.savefig("latest_300.png", format="png")
 plt.clf()
 
-### 500hPa ###
-# 作図                                                                                    
-ax = fig.add_subplot(1, 1, 1, projection=proj)
-ax.set_extent([120, 150, 22.4, 47.6], proj)
-
-# グリッド線を引く                                                               
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
-gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
-
-# プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, tmp500, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-plt.clabel(cont, fontsize=15)
-cont = plt.contour(grid_lon_p, grid_lat_p, height500, levels=np.arange(5100, 6000, 60), linewidths=2, colors='black')
-plt.clabel(cont, fontsize=15)
-
-plt.contourf(grid_lon_p, grid_lat_p, vor, levels=[-float('inf'), 0, 100, float('inf')], colors=['none', 'darkorange', 'brown'])
-
-# ベクトルの間引き間隔
-stride = 10
-ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u500[::stride, ::stride], v500[::stride, ::stride], length=4, transform=proj)
-
-# 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
-            
-# 図の説明
-plt.title('{}'.format("Z500, T500, VOR500"), loc='left',size=15)
-plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
-#plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
-plt.savefig("latest_500.png", format="png")
-plt.clf()
-
-### 700hPa ###
-# 作図                                                                                    
-ax = fig.add_subplot(1, 1, 1, projection=proj)
-ax.set_extent([120, 150, 22.4, 47.6], proj)
-
-# グリッド線を引く                                                               
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
-gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
-
-# プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, tmp850, levels=np.arange(-60, 60, 3), linewidths=2, linestyles='solid', colors='red')
-plt.clabel(cont, fontsize=15)
-
-plt.contourf(grid_lon_p, grid_lat_p, ttd700, levels=[-float('inf'), 3, 15, float('inf')], colors=['lightgreen', 'none', 'yellow'])
-
-# ベクトルの間引き間隔
-stride = 10
-ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
-
-# 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
-            
-# 図の説明
-plt.title('{}'.format("TTD700, T850, Wind850"), loc='left',size=15)
-plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
-#plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
-plt.savefig("latest_700.png", format="png")
-plt.clf()
-
 ### 850hPa ###
 # 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
