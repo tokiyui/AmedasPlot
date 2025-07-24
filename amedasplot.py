@@ -920,6 +920,10 @@ barb_length=8 # 矢羽の長さ
 dlon,dlat=5,5   # 緯線・経線は1度ごと
 
 ### Surface ###
+
+data_wv, lon, lat = read_hima(ft, '08')
+data_ir, lon, lat = read_hima(time, '13')
+
 # 作図                                                             
 plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=0.96)  
 ax = fig.add_subplot(1, 1, 1, projection=proj)
