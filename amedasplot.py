@@ -919,8 +919,13 @@ char_size=16 # 文字サイズ
 barb_length=8 # 矢羽の長さ
 dlon,dlat=5,5   # 緯線・経線は1度ごと
 
-### Surface ###
 
+
+### Surface ###
+# 初期値から5時間後に配信される
+init = pd.Timestamp(year,month,day,hour,0) - offsets.Hour(6) 
+init = init - offsets.Hour(init.hour % 3) 
+ft = init + offsets.Hour(6)
 data_wv, lon, lat = read_hima(ft, '08')
 data_ir, lon, lat = read_hima(time, '13')
 
