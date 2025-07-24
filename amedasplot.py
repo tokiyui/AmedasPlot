@@ -920,6 +920,21 @@ barb_length=8 # 矢羽の長さ
 dlon,dlat=5,5   # 緯線・経線は1度ごと
 
 
+# 描画地域と描画時刻の設定
+if len(sys.argv) == 2:
+    year = arg[:4]
+    month = arg[4:6]
+    day = arg[6:8]
+    hour = arg[8:10]
+else:
+    jst = pytz.timezone('Asia/Tokyo')
+    dt = datetime.now(jst) - timedelta(minutes=30)
+    year=dt.year
+    month=dt.month
+    day=dt.day
+    hour=dt.hour
+
+dt = datetime(int(year), int(month), int(day), int(hour), 0)
 
 ### Surface ###
 # 初期値から5時間後に配信される
