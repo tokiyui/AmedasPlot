@@ -1045,38 +1045,6 @@ plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
 plt.savefig("latest_300.png", format="png")
 plt.clf()
 
-### 850hPa ###
-# 作図                                                                                    
-ax = fig.add_subplot(1, 1, 1, projection=proj)
-ax.set_extent([120, 150, 22.4, 47.6], proj)
-
-# グリッド線を引く                                                               
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-gl.xlocator = mticker.FixedLocator(np.arange(-180,180,5))
-gl.ylocator = mticker.FixedLocator(np.arange(-90,90,5))
-
-# プロット
-cont = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 3), linewidths=1, linestyles='solid', colors='green')
-cont2 = plt.contour(grid_lon_p, grid_lat_p, ept850, levels=np.arange(210, 390, 15), linewidths=2, linestyles='solid', colors='green')
-plt.clabel(cont, fontsize=15)
-
-plt.contourf(grid_lon_p, grid_lat_p, KTTnew, levels=[-float('inf'), 40, 50, 60, np.inf], colors=['none', 'yellow', 'pink', 'red'])
-
-# ベクトルの間引き間隔
-stride = 10
-
-ax.barbs(grid_lon_p[::stride, ::stride], grid_lat_p[::stride, ::stride], u850[::stride, ::stride], v850[::stride, ::stride], length=4, transform=proj)
-
-# 海岸線
-ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
-            
-# 図の説明
-plt.title('{}'.format("EPT850, Wind850, K-index"), loc='left',size=15)
-plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
-#plt.savefig("{}.png".format(time.strftime("%Y%m%d%H%M")), format="png")
-plt.savefig("latest_850.png", format="png")
-plt.clf()
-
 ### Surface ###
 # 作図                                                             
 plt.subplots_adjust(left=0.04, right=1.1, bottom=0.0, top=0.96)  
