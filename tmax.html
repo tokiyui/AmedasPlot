@@ -9,8 +9,8 @@
   </style>
 </head>
 <body>
-  <h1>日本の850hPa・925hPa気温一覧（UWYO）</h1>
-  <div id="date-display"></div>
+  <h1>(試行中)可能最高気温</h1>
+  <a>可能最高気温=(2*T925+T850)/3 +15</a> <div id="date-display"></div>
   <table id="data-table">
     <thead>
       <tr>
@@ -85,7 +85,7 @@
     async function displayAll() {
       const datetime = getDateString();
       // 表示する日付を上部に記載
-      dateDisplay.textContent = `観測時刻（UTC）: ${datetime}`;
+      dateDisplay.textContent = `観測時刻:${datetime.substr(0, 11)}`;
 
       for (const station of stations) {
         const row = document.createElement("tr");
