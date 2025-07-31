@@ -39,33 +39,18 @@
 
     const tableBody = document.querySelector("#data-table tbody");
 
-    // プロキシURL候補（順に試す）
+    // 複数プロキシ順に試すfetch
     const proxyUrls = [
       url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
       url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     ];
 
-    // fetchに1秒タイムアウトを付ける関数
-    async function fetchWithTimeout(url, timeout = 1000) {
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), timeout);
-      try {
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(id);
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-        return await res.text();
-      } catch (e) {
-        clearTimeout(id);
-        throw e;
-      }
-    }
-
-    // 複数プロキシ順に試すfetch
     async function fetchWithFallback(url) {
       for (const proxy of proxyUrls) {
         try {
-          const text = await fetchWithTimeout(proxy(url), 1000);
-          return text;
+          const res = await fetch(proxy(url));
+          if (!res.ok) continue;
+          return await res.text();
         } catch {}
       }
       throw new Error("すべてのプロキシで取得失敗");
@@ -111,6 +96,9 @@
           `;
         }
         tableBody.appendChild(row);
+
+        // 次の取得まで1秒待つ
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
 
