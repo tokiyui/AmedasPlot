@@ -40,7 +40,7 @@
 
     async function fetchData(wmo) {
       const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?id=${wmo}&src=FM35&type=TEXT:LIST`;
-      const url = `	https://api.allorigins.win/raw?${encodeURIComponent(baseUrl)}`;
+      const url = `	https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`;
       
       const response = await fetch(url);
       if (!response.ok) throw new Error("データ取得失敗");
