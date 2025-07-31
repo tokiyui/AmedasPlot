@@ -10,6 +10,7 @@
 </head>
 <body>
   <h1>日本の850hPa・925hPa気温一覧（UWYO）</h1>
+  <div id="date-display"></div>
   <table id="data-table">
     <thead>
       <tr>
@@ -37,6 +38,7 @@
     ];
 
     const tableBody = document.querySelector("#data-table tbody");
+    const dateDisplay = document.getElementById("date-display");
 
     const proxyUrls = [
       url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
@@ -82,6 +84,9 @@
 
     async function displayAll() {
       const datetime = getDateString();
+      // 表示する日付を上部に記載
+      dateDisplay.textContent = `観測時刻（UTC）: ${datetime}`;
+
       for (const station of stations) {
         const row = document.createElement("tr");
         try {
@@ -98,8 +103,6 @@
           console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
           row.innerHTML = `
             <td>${station.name}</td>
-            <td>${station.wmo}</td>
-            <td>${datetime.split(' ')[0]}</td>
             <td colspan="3">取得失敗</td>
           `;
         }
