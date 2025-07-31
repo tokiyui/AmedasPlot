@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>日本の上空気温一覧</title>
+  <style>
+    table { border-collapse: collapse; margin: 1em 0; width: 100%; }
+    th, td { border: 1px solid #999; padding: 0.5em; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>日本の850hPa・925hPa気温一覧（UWYO）</h1>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>地点</th>
+        <th>WMO</th>
+        <th>850hPa 気温 (℃)</th>
+        <th>925hPa 気温 (℃)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const stations = [
+      { wmo: "47401", name: "稚内" },
+      { wmo: "47412", name: "札幌" },
+      { wmo: "47418", name: "釧路" },
+      { wmo: "47582", name: "秋田" },
+      { wmo: "47646", name: "館野" },
+      { wmo: "47678", name: "八丈島" },
+      { wmo: "47741", name: "松江" },
+      { wmo: "47778", name: "潮岬" },
+      { wmo: "47807", name: "福岡" },
+      { wmo: "47827", name: "鹿児島" },
+    ];
+
+    const tableBody = document.querySelector("#data-table tbody");
+
+    async function fetchData(wmo) {
+      const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?id=${wmo}&src=FM35&type=TEXT:LIST`;
+      const url = `	https://api.allorigins.win/raw?${encodeURIComponent(baseUrl)}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("データ取得失敗");
+
+      const text = await response.text();
+      const lines = text.split("\n");
+
+      const data = {};
+      for (let line of lines) {
+        const cols = line.trim().split(/\s+/);
+        if (cols.length >= 3) {
+          const p = cols[0];
+          const t = cols[2];
+          if (p === "850.0") data["850"] = parseFloat(t);
+          if (p === "925.0") data["925"] = parseFloat(t);
+        }
+      }
+      return data;
+    }
+
+    async function displayAll() {
+      for (const station of stations) {
+        try {
+          const temps = await fetchData(station.wmo);
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${station.name}</td>
+            <td>${station.wmo}</td>
+            <td>${temps["850"] ?? "N/A"}</td>
+            <td>${temps["925"] ?? "N/A"}</td>
+          `;
+          tableBody.appendChild(row);
+        } catch (err) {
+          console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${station.name}</td>
+            <td>${station.wmo}</td>
+            <td colspan="2">取得失敗</td>
+          `;
+          tableBody.appendChild(row);
+        }
+      }
+    }
+
+    displayAll();
+  </script>
+</body>
+</html>
