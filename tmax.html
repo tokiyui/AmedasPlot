@@ -54,8 +54,8 @@
     datetimeDisplay.textContent = `対象時刻: ${y}-${m}-${d} 00Z`;
 
     const proxyUrls = [
-      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
       url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
     ];
 
     async function fetchWithFallback(url) {
