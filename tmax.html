@@ -10,9 +10,9 @@
 </head>
 <body>
   <h1>(試行中)可能最高気温 <span id="date-display"></span></h1>
-  <a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 * 925T + 850T</a><br>
-  <a>可能最高気温 = ------------------------ + 15 で計算しています</a><br>
-  <a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3</a> 
+  <a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 * 925T + 850T</a><br>
+  <a>可能最高気温 = ---------------------- + 15 で計算しています</a><br>
+  <a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3</a> 
   <table id="data-table">
     <thead>
       <tr>
@@ -87,7 +87,7 @@
     async function displayAll() {
       const datetime = getDateString();
       // 表示する日付を上部に記載
-      dateDisplay.textContent = `観測日:${datetime.substr(0, 11)}`;
+      dateDisplay.textContent = `観測日:${datetime.substr(0, 10)}`;
 
       for (const station of stations) {
         const row = document.createElement("tr");
