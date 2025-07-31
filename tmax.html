@@ -39,18 +39,33 @@
 
     const tableBody = document.querySelector("#data-table tbody");
 
-    // プロキシURLを複数用意し順番に試す（フェイルオーバー）
+    // プロキシURL候補（順に試す）
     const proxyUrls = [
       url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
       url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     ];
 
+    // fetchに1秒タイムアウトを付ける関数
+    async function fetchWithTimeout(url, timeout = 1000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(id);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        return await res.text();
+      } catch (e) {
+        clearTimeout(id);
+        throw e;
+      }
+    }
+
+    // 複数プロキシ順に試すfetch
     async function fetchWithFallback(url) {
       for (const proxy of proxyUrls) {
         try {
-          const res = await fetch(proxy(url));
-          if (!res.ok) continue;
-          return await res.text();
+          const text = await fetchWithTimeout(proxy(url), 1000);
+          return text;
         } catch {}
       }
       throw new Error("すべてのプロキシで取得失敗");
@@ -58,11 +73,9 @@
 
     async function fetchData(wmo) {
       const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?id=${wmo}&src=FM35&type=TEXT:LIST`;
-
       const text = await fetchWithFallback(baseUrl);
       const lines = text.split("\n");
       const data = {};
-
       for (let line of lines) {
         const cols = line.trim().split(/\s+/);
         if (cols.length >= 3) {
@@ -75,46 +88,30 @@
       return data;
     }
 
-    // 並列数制限付きで順次fetchする関数
     async function displayAll() {
-      const concurrency = 3; // 同時に実行するリクエスト数
-      let index = 0;
-
-      async function worker() {
-        while (index < stations.length) {
-          const i = index++;
-          const station = stations[i];
-          let row = document.createElement("tr");
-
-          try {
-            const temps = await fetchData(station.wmo);
-            row.innerHTML = `
-              <td>${station.name}</td>
-              <td>${station.wmo}</td>
-              <td>${(temps["925"] != null && temps["850"] != null) 
-                    ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1) 
-                    : "N/A"}</td>
-              <td>${temps["850"] ?? "N/A"}</td>
-              <td>${temps["925"] ?? "N/A"}</td>
-            `;
-          } catch (err) {
-            console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
-            row.innerHTML = `
-              <td>${station.name}</td>
-              <td>${station.wmo}</td>
-              <td colspan="3">取得失敗</td>
-            `;
-          }
-          tableBody.appendChild(row);
+      for (const station of stations) {
+        const row = document.createElement("tr");
+        try {
+          const temps = await fetchData(station.wmo);
+          row.innerHTML = `
+            <td>${station.name}</td>
+            <td>${station.wmo}</td>
+            <td>${(temps["925"] != null && temps["850"] != null) 
+                  ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1) 
+                  : "N/A"}</td>
+            <td>${temps["850"] ?? "N/A"}</td>
+            <td>${temps["925"] ?? "N/A"}</td>
+          `;
+        } catch (err) {
+          console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
+          row.innerHTML = `
+            <td>${station.name}</td>
+            <td>${station.wmo}</td>
+            <td colspan="3">取得失敗</td>
+          `;
         }
+        tableBody.appendChild(row);
       }
-
-      // concurrency個のworkerを同時に回す
-      const workers = [];
-      for (let i = 0; i < concurrency; i++) {
-        workers.push(worker());
-      }
-      await Promise.all(workers);
     }
 
     displayAll();
