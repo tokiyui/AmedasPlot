@@ -62,31 +62,47 @@
       return data;
     }
 
-    async function displayAll() {
-      for (const station of stations) {
-        try {
-          const temps = await fetchData(station.wmo);
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${station.name}</td>
-            <td>${station.wmo}</td>
-            <td>${(temps["925"] != null && temps["850"] != null) ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1) : "N/A"}</td>
-            <td>${temps["850"] ?? "N/A"}</td>
-            <td>${temps["925"] ?? "N/A"}</td>
-          `;
-          tableBody.appendChild(row);
-        } catch (err) {
-          console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${station.name}</td>
-            <td>${station.wmo}</td>
-            <td colspan="2">取得失敗</td>
-          `;
-          tableBody.appendChild(row);
-        }
-      }
+async function displayAll() {
+  const promises = stations.map(async (station) => {
+    try {
+      const temps = await fetchData(station.wmo);
+      return {
+        name: station.name,
+        wmo: station.wmo,
+        temps
+      };
+    } catch (err) {
+      console.error(`${station.name} (${station.wmo}) の取得に失敗:`, err);
+      return {
+        name: station.name,
+        wmo: station.wmo,
+        temps: null
+      };
     }
+  });
+
+  const results = await Promise.all(promises);
+
+  for (const res of results) {
+    const row = document.createElement("tr");
+    if (res.temps) {
+      row.innerHTML = `
+        <td>${res.name}</td>
+        <td>${res.wmo}</td>
+        <td>${(res.temps["925"] != null && res.temps["850"] != null) ? ((res.temps["925"] * 2 + res.temps["850"]) / 3 + 15).toFixed(1) : "N/A"}</td>
+        <td>${res.temps["850"] ?? "N/A"}</td>
+        <td>${res.temps["925"] ?? "N/A"}</td>
+      `;
+    } else {
+      row.innerHTML = `
+        <td>${res.name}</td>
+        <td>${res.wmo}</td>
+        <td colspan="3">取得失敗</td>
+      `;
+    }
+    tableBody.appendChild(row);
+  }
+}
 
     displayAll();
   </script>
