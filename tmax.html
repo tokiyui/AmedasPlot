@@ -70,7 +70,7 @@
     }
 
     async function fetchData(wmo) {
-      const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?TYPE=TEXT:LIST&DATE=${ymdz}&TIME=${z}&STNM=${wmo}`;
+      const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?TYPE=TEXT:LIST&id=${wmo}&DATE=${ymdz}&TIME=${z}`;
       const text = await fetchWithFallback(baseUrl);
       const lines = text.split("\n");
       const data = {};
