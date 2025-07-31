@@ -10,6 +10,7 @@
 </head>
 <body>
   <h1>日本の850hPa・925hPa気温一覧（UWYO）</h1>
+  <p id="datetime"></p>
   <table id="data-table">
     <thead>
       <tr>
@@ -38,8 +39,20 @@
     ];
 
     const tableBody = document.querySelector("#data-table tbody");
+    const datetimeDisplay = document.getElementById("datetime");
 
-    // 複数プロキシ順に試すfetch
+    // UTCの90分前を切り捨てて、その日の00Zを求める
+    const now = new Date();
+    const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+    const utc90 = new Date(utc.getTime() - 90 * 60 * 1000);
+    const y = utc90.getUTCFullYear();
+    const m = (utc90.getUTCMonth() + 1).toString().padStart(2, "0");
+    const d = utc90.getUTCDate().toString().padStart(2, "0");
+    const z = "00";
+
+    const ymdz = `${y}${m}${d}${z}`;
+    datetimeDisplay.textContent = `対象時刻: ${y}-${m}-${d} 00Z`;
+
     const proxyUrls = [
       url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
       url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
@@ -57,7 +70,7 @@
     }
 
     async function fetchData(wmo) {
-      const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?id=${wmo}&src=FM35&type=TEXT:LIST`;
+      const baseUrl = `https://weather.uwyo.edu/wsgi/sounding?TYPE=TEXT:LIST&DATE=${ymdz}&TIME=${z}&STNM=${wmo}`;
       const text = await fetchWithFallback(baseUrl);
       const lines = text.split("\n");
       const data = {};
@@ -81,8 +94,8 @@
           row.innerHTML = `
             <td>${station.name}</td>
             <td>${station.wmo}</td>
-            <td>${(temps["925"] != null && temps["850"] != null) 
-                  ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1) 
+            <td>${(temps["925"] != null && temps["850"] != null)
+                  ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1)
                   : "N/A"}</td>
             <td>${temps["850"] ?? "N/A"}</td>
             <td>${temps["925"] ?? "N/A"}</td>
@@ -97,8 +110,8 @@
         }
         tableBody.appendChild(row);
 
-        // 次の取得まで1秒待つ
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // 次の取得まで待機（1秒以上）
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
     }
 
