@@ -14,8 +14,6 @@
     <thead>
       <tr>
         <th>地点</th>
-        <th>WMO</th>
-        <th>日付(00Z)</th>
         <th>可能最高気温</th>
         <th>850T</th>
         <th>925T</th>
@@ -90,8 +88,6 @@
           const temps = await fetchData(station.wmo, datetime);
           row.innerHTML = `
             <td>${station.name}</td>
-            <td>${station.wmo}</td>
-            <td>${datetime.split(' ')[0]}</td>
             <td>${(temps["925"] != null && temps["850"] != null)
                   ? ((temps["925"] * 2 + temps["850"]) / 3 + 15).toFixed(1)
                   : "N/A"}</td>
