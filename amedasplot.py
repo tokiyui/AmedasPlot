@@ -787,10 +787,8 @@ for area in [0, 1, 2, 3, 4]:
     psea_grid = grid_npre[lat_indices][:, lon_indices]
     temp_grid = grid_temp[lat_indices][:, lon_indices]
 
-    ax.barbs(sealat, sealon, (su * units('m/s')).to('kt').m, (sv * units('m/s')).to('kt').m, length=barb_length, transform=proj,color='magenta')
-
     # BUOY
-    ax.barbs(lat_list_w, lon_list_w, (wind_x_components * units('m/s')).to('kt').m, (wind_y_components * units('m/s')).to('kt').m, length=barb_length, transform=proj)
+    ax.barbs(lat_list_w, lon_list_w, (wind_x_components * units('m/s')).to('kt').m, (wind_y_components * units('m/s')).to('kt').m, length=barb_length, transform=proj,color='magenta')
 
     # 等温線をプロット
     levels = np.arange(-30, 45, 3)
