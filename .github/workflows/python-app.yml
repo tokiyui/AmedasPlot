@@ -58,6 +58,7 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           ls -l
           pwd
+          mkdir latest
           mv ./*.png latest/ 
           git add latest/*.png
           git add "*.csv"
