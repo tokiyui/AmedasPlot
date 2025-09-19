@@ -302,63 +302,6 @@ def download_time(time):
     #return GgisFile
     return fname
 
-def get_toudaifu():
-    # URLからデータを取得
-    url = "https://www6.kaiho.mlit.go.jp/micsgis/KishouGenkyouPoint/geometry"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        # データを分割
-        data = response.text.split(';')
-        sealon = []
-        sealat = []
-        su = []
-        sv = []
-        
-        for entry in data:
-            if entry.strip():  # 空のエントリを無視
-                try:
-                    # POINT(経度 緯度)@@画像@@風速
-                    point, wind_info, wind_speed_info = entry.split('@@')
-                
-                    # 緯度と経度を抽出
-                    lat, lon = map(float, point.strip('POINT()').split())
-                    
-                    # 風向番号を抽出
-                    try:
-                        wind_direction = int(wind_info.split('_')[1])
-                    except (IndexError, ValueError):
-                        wind_direction = np.nan  # 不正な形式の場合はNaNに設定
-                
-                    # 風速を確認し、特定の条件で処理
-                    if wind_speed_info == '風弱く':
-                        wind_speed = 0.0  # 風弱くの場合は0 m/sとする
-                    elif wind_speed_info == '不明':
-                        wind_speed = np.nan  # 不明の場合はNaN
-                    else:
-                        wind_speed = float(wind_speed_info.strip('m/s'))
-                      
-                    # 風速が不明または風向がNaNの場合はスキップ
-                    if np.isnan(wind_speed) or np.isnan(wind_direction):
-                        continue
-    
-                    # 風向をラジアンに変換
-                    angle_rad = math.radians(wind_direction * 22.5)  # 22.5度ごとの方向
-   
-                    # 東西 (u) 成分と南北 (v) 成分を計算
-                    u = -wind_speed * math.sin(angle_rad)  # 負号で右手系に合わせる
-                    v = -wind_speed * math.cos(angle_rad)
-
-                    # 結果をリストに追加
-                    sealon.append(lon)
-                    sealat.append(lat)
-                    su.append(u)
-                    sv.append(v)
-                except Exception as e:
-                    continue
-                
-    return sealon, sealat, su, sv
-
 def read_hima(time, band):
     # Himawari-9
     # 日付とファイル名の生成
